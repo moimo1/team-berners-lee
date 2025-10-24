@@ -1,0 +1,4 @@
+module.exports = {
+    php: "C:\\wamp64\\bin\\php\\php8.4.0\\php.exe"
+  }
+  

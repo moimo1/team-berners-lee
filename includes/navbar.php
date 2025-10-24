@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Project</title>
-</head>
-<body>
-
 <nav class="navbar">
     <div class="nav-logo">
-        <a href="../index.php">MyWebsite</a>
+        <a href="../index.php">Site Name Here (idk name)</a>
     </div>
     <ul class="nav-links">
         <li><a href="../view/home.php">Home</a></li>
