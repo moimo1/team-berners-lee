@@ -1,0 +1,39 @@
+<?php
+class PrescriptionDetails {
+    private $prescID;
+    private $medID;
+    private $dosage;
+    private $description;
+
+    public function getPrescID() {
+        return $this->prescID;
+    }
+
+    public function setPrescID($prescID) {
+        $this->prescID = $prescID;
+    }
+
+    public function getMedID() {
+        return $this->medID;
+    }
+
+    public function setMedID($medID) {
+        $this->medID = $medID;
+    }
+
+    public function getDosage() {
+        return $this->dosage;
+    }
+
+    public function setDosage($dosage) {
+        $this->dosage = $dosage;
+    }
+
+    public function getDescription() {
+        return $this->description;
+    }
+
+    public function setDescription($description) {
+        $this->description = $description;
+    }
+}
