@@ -8,7 +8,7 @@ class Doctor {
     private $email;
     private $password;
 
-    public function __construct($id) {
+    public function setId($id) {
         $this->id = $id;
     }    
     
@@ -16,7 +16,7 @@ class Doctor {
         return $this->id;
     }
     
-    public function __construct($name) {
+    public function setName($name) {
         $this->name = $name;
     }
 
@@ -24,7 +24,7 @@ class Doctor {
         return $this->name;
     }
 
-    public function __construct($specialty) {
+    public function setSpecialty($specialty) {
         $this->specialty = $specialty;
     }
 
@@ -32,7 +32,7 @@ class Doctor {
         return $this->specialty;
     }
     
-    public function __construct($location) {
+    public function setLocation($location) {
         $this->location = $location;
     }
 
@@ -40,7 +40,7 @@ class Doctor {
         return $this->location;
     }
 
-    public function __construct($phoneNum) {
+    public function setPhoneNum($phoneNum) {
         $this->phoneNum = $phoneNum;
     }
 
@@ -48,7 +48,7 @@ class Doctor {
         return $this->phoneNum;
     }
 
-    public function __construct($email) {
+    public function setEmail($email) {
         $this->email = $email;
     }
 
@@ -56,7 +56,7 @@ class Doctor {
         return $this->name;
     }
 
-    public function __construct($password) {
+    public function setPassword($password) {
         $this->password = $password;
     }
 
