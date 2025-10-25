@@ -1,5 +1,6 @@
 <?php
 class Medicine {
+    private $db;
     private $id;
     private $name;
     private $brand;

@@ -1,5 +1,6 @@
 <?php
 class PrescriptionDetails {
+    private $db;
     private $prescID;
     private $medID;
     private $dosage;

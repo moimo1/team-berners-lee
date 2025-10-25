@@ -1,5 +1,6 @@
 <?php
 class Prescription {
+    private $db;
     private $prescID;
     private $doctorID;
     private $clientID;

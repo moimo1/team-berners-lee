@@ -1,5 +1,6 @@
 <?php
 class Pharmacist {
+    private $db;
     private $id;
     private $name;
     private $location;
