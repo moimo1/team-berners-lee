@@ -9,6 +9,10 @@ class Medicine {
     private $amount;
     private $description;
 
+    public function __construct($db) {
+        $this->db = $db;
+    }
+
         public function getId() {
         return $this->id;
     }

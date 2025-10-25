@@ -9,6 +9,10 @@ class Doctor {
     private $email;
     private $password;
 
+    public function __construct($db) {
+        $this->db = $db;
+    }
+
     public function setId($id) {
         $this->id = $id;
     }    

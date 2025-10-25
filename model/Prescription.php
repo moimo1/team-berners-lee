@@ -7,6 +7,10 @@ class Prescription {
     private $dateGiven;
     private $dateExpiry;
 
+    public function __construct($db) {
+        $this->db = $db;
+    }
+
     public function getPrescID() {
         return $this->prescID;
     }
