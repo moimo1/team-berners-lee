@@ -1,14 +1,18 @@
 <?php
 class Client {
-    private $db;
     private $name;
     private $birthdate;
     private $address;
     private $email;
     private $password;
+    
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($name, $birthdate, $address, $email, $password) {
+        $this->name = $name;
+        $this->birthdate = $birthdate;
+        $this->address = $address;
+        $this->email = $email;
+        $this->password = $password;
     }
 
     public function getName() {
