@@ -1,28 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My PHP Project</title>
-  <link rel="stylesheet" href="assets/css/auth/login.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../assets/css/auth/login.css">
 </head>
 <body>
+    <div class="wrapper">
+        <div class="card">
+            <div class="logo">MediTrack </div>
+            <p class="subtitle">Please sign in to continue</p>
 
-<form method="POST" action="/controller/login.php">
-  <h2>Login</h2>
-  <input type="text" name="email" placeholder="Email" required>
-  <input type="password" name="password" placeholder="Password" required>
-  
-  <select name="role" required>
-    <option value="client">Client</option>
-    <option value="doctor">Doctor</option>
-    <option value="pharma">Pharmacist</option>
-    <option value="admin">Admin</option>
-  </select>
+            <?php if (!empty($_GET['error'])): ?>
+                <div class="error"><?php echo htmlspecialchars($_GET['error']); ?></div>
+            <?php endif; ?>
 
-  <button type="submit">Login</button>
-</form>
+            <form method="post" action="../controller/login.php" autocomplete="on">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="text" id="username" name="email" placeholder="Enter email" required />
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required />
+                </div>
 
-
+                <select name="role" required>
+                  <option value="client">Client</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="pharma">Pharmacist</option>
+                </select>
+                
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a class="btn btn-secondary" href="#">Sign up</a>
+                </div>
+                <div class="muted">Forgot password? <a href="#">Reset</a></div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
+
