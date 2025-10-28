@@ -1,6 +1,5 @@
 <?php
 class Medicine {
-    private $db;
     private $id;
     private $name;
     private $brand;
@@ -9,8 +8,14 @@ class Medicine {
     private $amount;
     private $description;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($id, $name, $brand, $manufactureDate, $expiryDate, $amount, $description) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->brand = $brand;
+        $this->manufactureDate = $manufactureDate;
+        $this->expiryDate = $expiryDate;
+        $this->amount = $amount;
+        $this->description = $description;
     }
 
         public function getId() {
