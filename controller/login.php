@@ -24,7 +24,8 @@ $result = $stmt->get_result();
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
 
-    $_SESSION['user_id'] = $user['clientID'];
+    // Set a consistent session id across roles, handling varying PK column names
+    $_SESSION['id'] = $user['clientID'] ?? $user['id'] ?? $user['doctorID'] ?? $user['pharmacistID'] ?? $user['adminID'] ?? null;
     $_SESSION['role'] = $role;
 
     switch ($role) {

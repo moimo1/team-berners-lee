@@ -1,9 +1,14 @@
 
 
 <?php
+    session_start();
     $role = 'client';
     include '../../includes/navbar.php';
-    include '../../includes/search-bar.php'; ?>
+    include '../../includes/search-bar.php'; 
+    
+    ?>
+
+     
 
 
 <!DOCTYPE html>
@@ -20,16 +25,21 @@
     <main class="client-dashboard">
 
         <!-- all header elements will stay here -->
-        <section class="item header">Header</div>
+        <section class="item header">Header</section>
 
         <!-- all sidebar elements stay here -->
-        <section class="item sidebar">Sidebar</div>
+        <section class="item sidebar">Sidebar</section>
         
         <!-- all main content elements stay here -->
-        <section class="item main-content">Content</div>
+        <section class="item main-content">
+            <div class="prescription-list"></div>
+        </section>
     
     </main>
 
     <?php include '../../includes/footer.php'; ?>
+
+    <script src="../../assets/js/client/get-prescription.js"></script>
 </body>
+
 </html>

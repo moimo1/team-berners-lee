@@ -1,25 +1,42 @@
-document.addEventListener(() => {
-    const listContainer = document.getElementById('prescription-list');
+document.addEventListener('DOMContentLoaded', () => {
+    const listContainer = document.querySelector('.prescription-list');
+    if (!listContainer) return;
 
-    fetch('../../controller/get-prescriptions.php')
-    .then(res => res.json())
-    .then(data => {
-        listContainer.innerHTML='';
+    fetch('../../../controller/get-prescription.php', { credentials: 'same-origin' })
+        .then(async res => {
+            if (res.status === 401) {
+                listContainer.innerHTML = '<p>Please log in as a client to view prescriptions.</p>';
+                return null;
+            }
+            if (!res.ok) {
+                const text = await res.text().catch(() => '');
+                throw new Error(`Request failed (${res.status}): ${text}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data === null) return; 
+            listContainer.innerHTML = '';
 
-        data.forEach(prescription => {
-            card = document.createElement('div');
-            card.classList.add('prescription-card');
-            card.innerHTML = `
-                <p>${prescription.medID}</p>
-                <p>${prescription.dosage}</p>
-                <p>${prescription.remainingAmount}</p>
-                <p>${prescription.description}</p>
-            `;
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<p>No prescriptions found.</p>';
+                return;
+            }
 
-            listContainer.appendChild(card);
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('prescription-card');
+                card.innerHTML = `
+                    <p>${item.medID ?? ''}</p>
+                    <p>${item.dosage ?? ''}</p>
+                    <p>${item.remainingAmount ?? ''}</p>
+                    <p>${item.description ?? ''}</p>
+                `;
+                listContainer.appendChild(card);
+            });
+        })
+        .catch(err => {
+            listContainer.innerHTML = '<p>Error loading prescriptions.</p>';
+            console.error('Failed to fetch prescriptions:', err);
         });
-    }).catch(err => {
-        listContainer.innerHTML = `<p>Error loading prescriptions.</p>`;
-        console.error(err);
-    })
-})
+});
