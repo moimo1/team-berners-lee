@@ -20,13 +20,13 @@
     <main class="client-dashboard">
 
         <!-- all header elements will stay here -->
-        <div class="item header">Header</div>
+        <section class="item header">Header</div>
 
         <!-- all sidebar elements stay here -->
-        <div class="item sidebar">Sidebar</div>
+        <section class="item sidebar">Sidebar</div>
         
         <!-- all main content elements stay here -->
-        <div class="item main-content">Content</div>
+        <section class="item main-content">Content</div>
     
     </main>
 
