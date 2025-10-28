@@ -10,6 +10,43 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
+/* Top navigation header */
+.navbar {
+  background: #00897b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.navbar .logo {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.navbar .nav-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar .nav-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar .nav-links a:hover,
+.navbar .nav-links a:focus {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* Main layout */
 .client-dashboard {
   display: grid;
@@ -59,3 +96,5 @@ html, body {
     display: none;
   }
 }
+
+/* Keep dashboard-focused styles here. Page-specific styles moved to per-page CSS. */
