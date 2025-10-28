@@ -18,10 +18,16 @@
 
 <body>
     <main class="client-dashboard">
-        <div class="item">Header</div>
-        <div class="item">Sidebar</div>
-        <div class="item">Content</div>
-        <div class="item">Footer</div>
+
+        <!-- all header elements will stay here -->
+        <div class="item header">Header</div>
+
+        <!-- all sidebar elements stay here -->
+        <div class="item sidebar">Sidebar</div>
+        
+        <!-- all main content elements stay here -->
+        <div class="item main-content">Content</div>
+    
     </main>
 
     <?php include '../../includes/footer.php'; ?>
