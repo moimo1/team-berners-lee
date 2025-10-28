@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     button = document.getElementById('sample');
 
+    // for testing purposes
     button.addEventListener('click', () => {
         let container = document.querySelector('.main-content');
 

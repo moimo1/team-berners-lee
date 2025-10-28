@@ -27,6 +27,9 @@
         <!-- all main content elements stay here -->
         <section class="item main-content">
             <div class="prescription-list"></div>
+
+
+            <!-- for testing purposes -->
             <button id="sample">Click</button>
         </section>
     
