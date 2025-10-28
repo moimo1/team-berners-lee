@@ -1,13 +1,15 @@
 <?php
 class PrescriptionDetails {
-    private $db;
     private $prescID;
     private $medID;
     private $dosage;
     private $description;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($prescID, $medID, $dosage, $description) {
+        $this->prescID = $prescID;
+        $this->medID = $medID;
+        $this->dosage = $dosage;
+        $this->description = $description;
     }
 
     public function getPrescID() {
