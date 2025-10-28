@@ -1,6 +1,5 @@
 <?php
 class Doctor {
-    private $db;
     private $id;
     private $name;
     private $specialty;
@@ -9,8 +8,14 @@ class Doctor {
     private $email;
     private $password;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($id, $name, $specialty, $location, $phoneNum, $email, $password) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->specialty = $specialty;
+        $this->location = $location;
+        $this->phoneNum = $phoneNum;
+        $this->email = $email;
+        $this->password = $password;
     }
 
     public function setId($id) {
