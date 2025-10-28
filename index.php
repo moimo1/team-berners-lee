@@ -7,8 +7,21 @@
 </head>
 <body>
 
-  <?php include 'includes/navbar.php'; ?>
-  <?php include 'includes/footer.php'; ?>
+<form method="POST" action="controllers/login_process.php">
+  <h2>Login</h2>
+  <input type="text" name="username" placeholder="Username" required>
+  <input type="password" name="password" placeholder="Password" required>
+  
+  <select name="role" required>
+    <option value="client">Client</option>
+    <option value="doctor">Doctor</option>
+    <option value="pharma">Pharmacist</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <button type="submit">Login</button>
+</form>
+
 
 </body>
 </html>
