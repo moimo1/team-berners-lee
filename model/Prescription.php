@@ -1,14 +1,17 @@
 <?php
 class Prescription {
-    private $db;
     private $prescID;
     private $doctorID;
     private $clientID;
     private $dateGiven;
     private $dateExpiry;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($prescID, $doctorID, $clientID, $dateGiven, $dateExpiry) {
+        $this->prescID = $prescID;
+        $this->doctorID = $doctorID;
+        $this->clientID = $clientID;
+        $this->dateGiven = $dateGiven;
+        $this->dateExpiry = $dateExpiry;
     }
 
     public function getPrescID() {
