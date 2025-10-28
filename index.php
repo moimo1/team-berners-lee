@@ -7,9 +7,9 @@
 </head>
 <body>
 
-<form method="POST" action="controllers/login.php">
+<form method="POST" action="/controller/login.php">
   <h2>Login</h2>
-  <input type="text" name="username" placeholder="Username" required>
+  <input type="text" name="email" placeholder="Email" required>
   <input type="password" name="password" placeholder="Password" required>
   
   <select name="role" required>

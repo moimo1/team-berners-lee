@@ -2,35 +2,35 @@
 session_start();
 include '../config/db_con.php';
 
-$username = $_POST['username'];
+$email = $_POST['email'];
 $password = $_POST['password'];
 $role = $_POST['role']; 
 
 $table = "";
 switch ($role) {
-  case 'client': $table = 'clients'; break;
-  case 'doctor': $table = 'doctors'; break;
-  case 'pharma': $table = 'pharmacists'; break;
-  case 'admin': $table = 'admins'; break;
+  case 'client': $table = 'client'; break;
+  case 'doctor': $table = 'doctor'; break;
+  case 'pharma': $table = 'pharmacist'; break;
+  case 'admin': $table = 'admin'; break;
   default: die('Invalid role');
 }
 
-$sql = "SELECT * FROM $table WHERE username = ? AND password = ?";
+$sql = "SELECT * FROM $table WHERE email = ? AND password = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $username, $password);
+$stmt->bind_param("ss", $email, $password);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
 
-    $_SESSION['user_id'] = $user['id'];
-    $_SESSION['username'] = $user['username'];
+    $_SESSION['user_id'] = $user['clientID'];
     $_SESSION['role'] = $role;
 
     switch ($role) {
         case 'client':
-            header("Location: ./view/client/dashboard.php");
+            
+            header("Location: ../view/client/dashboard.php");
             break;
         case 'doctor':
             header("Location: ../view/doctor/dashboard.php");

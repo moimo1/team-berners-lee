@@ -2,7 +2,7 @@
 $host = "localhost";      
 $user = "root";           
 $pass = "";               
-$dbname = "your_database"; 
+$dbname = "team-berners-lee"; 
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
