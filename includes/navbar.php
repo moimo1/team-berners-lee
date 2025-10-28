@@ -6,8 +6,6 @@
     <h1 class="logo">MediTrack</h1>
 
     <ul class="nav-links">
-        <li><a href="/view/client/dashboard.php">Home</a></li>
-
         <?php if ($role === 'pharma'): ?>
             <li><a href="<?=$base ?>/view/pharma/dashboard.php">Home</a></li>
             <li><a href="<?=$base ?>/view/pharma/client-list.php">Patients</a></li>

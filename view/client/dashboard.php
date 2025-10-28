@@ -1,15 +1,9 @@
-
-
 <?php
     session_start();
     $role = 'client';
     include '../../includes/navbar.php';
-    include '../../includes/search-bar.php'; 
     
-    ?>
-
-     
-
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +27,7 @@
         <!-- all main content elements stay here -->
         <section class="item main-content">
             <div class="prescription-list"></div>
+            <button id="sample">Click</button>
         </section>
     
     </main>

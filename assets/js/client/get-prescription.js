@@ -1,8 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    button = document.getElementById('sample');
+
+    button.addEventListener('click', () => {
+        let container = document.querySelector('.main-content');
+
+        childContainer = document.createElement('div');
+        childContainer.innerHTML = '<p>Hello world.</p>';
+        container.appendChild(childContainer);
+    });
+
     const listContainer = document.querySelector('.prescription-list');
     if (!listContainer) return;
 
-    fetch('../../../controller/get-prescription.php', { credentials: 'same-origin' })
+    fetch('../../controller/get-prescription.php', { credentials: 'same-origin' })
         .then(async res => {
             if (res.status === 401) {
                 listContainer.innerHTML = '<p>Please log in as a client to view prescriptions.</p>';
