@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<form method="POST" action="controllers/login_process.php">
+<form method="POST" action="controllers/login.php">
   <h2>Login</h2>
   <input type="text" name="username" placeholder="Username" required>
   <input type="password" name="password" placeholder="Password" required>
