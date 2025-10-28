@@ -1,11 +1,18 @@
 <?php
 class Pharmacist {
-    private $db;
     private $id;
     private $name;
     private $location;
     private $email;
     private $password;
+
+    public function __construct($id, $name, $location, $email, $password) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->location = $location;
+        $this->email = $email;
+        $this->password = $password;
+    }
 
     public function getId() {
         return $this->id;
