@@ -18,8 +18,8 @@
             <li><a href="<?=$base ?>/view/doctor/report.php">Reports</a></li>
 
         <?php elseif ($role === 'client'): ?>
-            <li><a href="<?=$base ?>/view/client/dashboard.php">Home</li>
-            <li><a href="<?=$base ?>/view/client/dashboard.php">My Prescriptions</a></li>
+            <li><a href="<?=$base ?>/view/client/dashboard.php">Home</a></li>
+            <li><a href="<?=$base ?>/view/client/prescription-details.php">My Prescriptions</a></li>
             <li><a href="<?=$base ?>/view/client/profile.php">Profile</a></li>
         <?php endif; ?>
 

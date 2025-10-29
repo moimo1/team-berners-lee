@@ -9,10 +9,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Prescription</title>
+    <title>Prescription History</title>
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
-    <link rel="stylesheet" href="../../assets/css/client/prescription-details.css">
-    </head>
+    <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
+</head>
 
 <body>
     <main class="client-dashboard">
@@ -20,39 +20,33 @@
 
         <section class="item main-content">
             <div class="page-title-bar">
-                <h2 class="page-title">My Prescription</h2>
+                <h2 class="page-title">Prescription History</h2>
                 <div class="title-actions">
-                    <a class="btn outline" href="./prescription-history.php">History</a>
+                    <button class="btn" title="Filter">Filter</button>
                 </div>
             </div>
             <div class="card">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Medicine</th>
-                            <th>Dosage</th>
-                            <th>Frequency</th>
-                            <th>Total Amount</th>
-                            <th>Amount Left</th>
+                            <th>Date</th>
                             <th>Expiry Date</th>
+                            <th>Doctor</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Amoxicillin</td>
-                            <td>500mg</td>
-                            <td>2x/day</td>
-                            <td>20 tablets</td>
-                            <td>15 tablets</td>
-                            <td>05/08/2025</td>
+                            <td>Sept 20, 2025</td>
+                            <td>Oct 13, 2025</td>
+                            <td>Dr. Jose Rizal</td>
+                            <td>Completed</td>
                         </tr>
                         <tr>
-                            <td>Paracetamol</td>
-                            <td>500mg</td>
-                            <td>3x/day</td>
-                            <td>10 tablets</td>
-                            <td>0 tablets</td>
-                            <td>05/10/2025</td>
+                            <td>Sept 23, 2025</td>
+                            <td>Oct 15, 2025</td>
+                            <td>Dr. Jose Rizal</td>
+                            <td>Pending</td>
                         </tr>
                     </tbody>
                 </table>
