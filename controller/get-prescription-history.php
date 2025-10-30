@@ -1,20 +1,42 @@
 <?php
 session_start();
-include '../config/db_config.php';
-header('Content-Type: application/json');
+include '../config/db_con.php';
 
-$clientID=$_SESSION['id'];
+// Make sure the user is logged in and has a role
+if (!isset($_SESSION['role']) || !isset($_SESSION['id'])) {
+    echo json_encode(["error" => "Unauthorized"]);
+    exit;
+}
 
-$sql = "SELECT doctor.firstName, doctor.lastName, prescription.dateGiven, prescription.dateExpiry FROM doctor JOIN prescription ON doctor.doctorID = prescription.doctorID WHERE prescription.clientID=?";
+$role = $_SESSION['role'];
+$userID = $_SESSION['id'];
+$data = [];
+
+if ($role === 'client') {
+    $sql = "SELECT CONCAT(d.firstName, ' ', d.lastName) AS doctorName,
+                   p.dateGiven, p.dateExpiry
+            FROM prescription p
+            JOIN doctor d ON p.doctorID = d.doctorID
+            WHERE p.clientID = ?";
+} else if ($role === 'doctor') {
+    $sql = "SELECT CONCAT(c.firstName, ' ', c.lastName) AS clientName,
+                   p.dateGiven, p.dateExpiry
+            FROM prescription p
+            JOIN client c ON p.clientID = c.clientID
+            WHERE p.doctorID = ?";
+} else {
+    echo json_encode([]); 
+    exit;
+}
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $clientID);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
-
-$data =[];
 
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
+
 echo json_encode($data);
 ?>
