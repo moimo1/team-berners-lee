@@ -19,7 +19,7 @@
 
         <?php elseif ($role === 'client'): ?>
             <li><a href="<?=$base ?>/view/client/dashboard.php">Home</a></li>
-            <li><a href="<?=$base ?>/view/client/prescription-details.php">My Prescriptions</a></li>
+            <li><a href="<?=$base ?>/view/client/prescription-history.php">My Prescriptions</a></li>
             <li><a href="<?=$base ?>/view/client/profile.php">Profile</a></li>
         <?php endif; ?>
 
