@@ -240,11 +240,11 @@ CREATE TABLE IF NOT EXISTS `prescriptiondetails` (
 --
 
 INSERT INTO `prescriptiondetails` (`prescID`, `medID`, `dosage`, `remainingAmount`, `description`) VALUES
-('PD001', 'M002', '500mg tablet every 6 hours', 12, 'Take after meals to relieve pain.'),
-('PD002', 'M004', '200mg capsule twice a day', 8, 'Take with water for inflammation and headache.'),
-('PD003', 'M006', '500mg tablet once daily', 20, 'Take with breakfast for blood sugar control.'),
-('PD004', 'M007', '20mg capsule once daily', 15, 'Take before breakfast to reduce acid reflux.'),
-('PD005', 'M010', '1000mg tablet once daily', 30, 'Take with water to boost immune system.');
+('P001', 'M002', '500mg tablet every 6 hours', 12, 'Take after meals to relieve pain.'),
+('P002', 'M004', '200mg capsule twice a day', 8, 'Take with water for inflammation and headache.'),
+('P003', 'M006', '500mg tablet once daily', 20, 'Take with breakfast for blood sugar control.'),
+('P004', 'M007', '20mg capsule once daily', 15, 'Take before breakfast to reduce acid reflux.'),
+('P005', 'M010', '1000mg tablet once daily', 30, 'Take with water to boost immune system.');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
