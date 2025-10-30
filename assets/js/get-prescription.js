@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.querySelector('.prescription-list');
     if (!listContainer) return;
 
-    fetch('../../controller/get-prescription.php', { credentials: 'same-origin' })
+    fetch('../controller/get-prescription.php', { credentials: 'same-origin' })
         .then(async res => {
             if (res.status === 401) {
                 listContainer.innerHTML = '<p>Please log in as a client to view prescriptions.</p>';

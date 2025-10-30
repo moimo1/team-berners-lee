@@ -9,11 +9,6 @@ $clientID = $_SESSION['id'];
 
 $sql = "SELECT * FROM prescription WHERE clientID = ? ORDER BY dateGiven DESC LIMIT 1";
 $stmt = $conn->prepare($sql);
-if ($stmt === false) {
-    http_response_code(500);
-    echo json_encode(["error" => "prepare_failed", "message" => $conn->error]);
-    exit;
-}
 $stmt->bind_param("s", $clientID);
 $ok = $stmt->execute();
 if (!$ok) {

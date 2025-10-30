@@ -1,3 +1,5 @@
+
+
 document.addEventListener('DOMContentLoaded', () => {
     listContainer = document.querySelector('#prescription-history-tbody');
 

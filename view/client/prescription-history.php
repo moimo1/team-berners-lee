@@ -35,8 +35,8 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody id="prescription-history-tbody">
+                        <!-- <tr>
                             <td>Sept 20, 2025</td>
                             <td>Oct 13, 2025</td>
                             <td>Dr. Jose Rizal</td>
@@ -47,7 +47,7 @@
                             <td>Oct 15, 2025</td>
                             <td>Dr. Jose Rizal</td>
                             <td>Pending</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -55,6 +55,8 @@
     </main>
 
     <?php include '../../includes/footer.php'; ?>
+
+    <script src="../../assets/js/client/get-prescription-history.js"></script>
 </body>
 </html>
 
