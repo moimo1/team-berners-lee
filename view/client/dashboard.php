@@ -37,7 +37,7 @@
 
     <?php include '../../includes/footer.php'; ?>
 
-    <script src="../../assets/js/client/get-prescription.js"></script>
+    <script src="../../assets/js/get-prescription.js"></script>
 </body>
 
 </html>

@@ -56,7 +56,7 @@
 
     <?php include '../../includes/footer.php'; ?>
 
-    <script src="../../assets/js/client/get-prescription-history.js"></script>
+    <script src="../../assets/js/get-prescription-history.js"></script>
 </body>
 </html>
 
