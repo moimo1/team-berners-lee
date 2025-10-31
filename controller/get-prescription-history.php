@@ -13,7 +13,6 @@ $userID = $_SESSION['id'];
 $data = [];
 
 if ($role === 'client') {
-    // Return all prescription columns + related doctor info
     $sql = "SELECT p.*, d.doctorID, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
             FROM prescription p
             JOIN doctor d ON p.doctorID = d.doctorID
