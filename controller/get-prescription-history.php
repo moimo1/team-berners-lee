@@ -13,14 +13,14 @@ $userID = $_SESSION['id'];
 $data = [];
 
 if ($role === 'client') {
-    $sql = "SELECT CONCAT(d.firstName, ' ', d.lastName) AS doctorName,
-                   p.dateGiven, p.dateExpiry
+    // Return all prescription columns + related doctor info
+    $sql = "SELECT p.*, d.doctorID, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
             FROM prescription p
             JOIN doctor d ON p.doctorID = d.doctorID
             WHERE p.clientID = ?";
 } else if ($role === 'doctor') {
-    $sql = "SELECT CONCAT(c.firstName, ' ', c.lastName) AS clientName,
-                   p.dateGiven, p.dateExpiry
+    // Return all prescription columns + related client info
+    $sql = "SELECT p.*, c.clientID, c.firstName AS clientFirstName, c.lastName AS clientLastName
             FROM prescription p
             JOIN client c ON p.clientID = c.clientID
             WHERE p.doctorID = ?";
