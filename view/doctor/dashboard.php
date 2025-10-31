@@ -1,42 +1,36 @@
 <?php
-session_start();
-$role = 'doctor';
-include '../../includes/navbar.php';
+  session_start();
+  $role = $_SESSION['role'];
+  include '../../includes/navbar.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor's Dashboard</title>
-    <link rel="stylesheet" href="../../assets/css/doctor/dashboard.css">
-    <link rel="stylesheet" href="../../assets/css/navbar.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor's Dashboard</title>
+  <link rel="stylesheet" href="../../assets/css/doctor/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 <body>
 
-<div class="doctor-dashboard">
-    <!-- Header -->
-    <div class="item header">
-        <h1>Doctor Dashboard</h1>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="item sidebar">
-        <ul>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">My Patients</a></li>
-            <li><a href="#">Reports</a></li>
-        </ul>
-    </div>
-
-    <!-- Main Content -->
+  <div class="doctor-dashboard">
+    <div class="item">Header</div>
+    <div class="item">Sidebar</div>
     <div class="item main-content">
-        <h2>Welcome, Doctor!</h2>
+      <table>
+        <tbody id="prescription-history-tbody"></tbody>
+      </table>
     </div>
-</div>
+    <div class="item">Footer</div>
+  </div>
 
-<?php include '../../includes/footer.php'; ?>
+  <?php include '../../includes/footer.php'; ?>
 
+  <script>
+    const USER_ROLE = '<?php echo $role; ?>';
+  </script>
+  <script src="../../assets/js/get-prescription-history.js"></script>
 </body>
 </html>

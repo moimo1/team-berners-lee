@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $role = 'client';
+    $role = $_SESSION['role'];
     include '../../includes/navbar.php';
 ?>
 
@@ -65,6 +65,9 @@
 
     <?php include '../../includes/footer.php'; ?>
 
+    <script>
+        const USER_ROLE = '<?php echo $role; ?>';
+    </script>
     <script src="../../assets/js/get-prescription-history.js"></script>
 </body>
 </html>
