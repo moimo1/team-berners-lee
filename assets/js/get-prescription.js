@@ -35,17 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.classList.add('prescription-card');
-                card.innerHTML = `
-                    <p>${item.medID ?? ''}</p>
-                    <p>${item.dosage ?? ''}</p>
-                    <p>${item.remainingAmount ?? ''}</p>
-                    <p>${item.description ?? ''}</p>
-                `;
-                listContainer.appendChild(card);
-            });
+            const item = data[0];
+
+            const card = document.createElement('div');
+            card.classList.add('prescription-card');
+            card.innerHTML = `
+                <p>${item.genericName ?? ''}</p>
+                <p>${item.dosage ?? ''}</p>
+                <p>${item.remainingAmount ?? ''}</p>
+                <p>${item.description ?? ''}</p>
+            `;
+            listContainer.appendChild(card);
         })
         .catch(err => {
             listContainer.innerHTML = '<p>Error loading prescriptions.</p>';

@@ -16,10 +16,40 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             row.style.cursor = 'pointer';
-            row.addEventListener('click', () => rowClicked(item.prescriptionID));
+            row.addEventListener('click', () => rowClicked(item.prescID));
             listContainer.appendChild(row);
         });
     }).catch(err => {
         console.error('Failed to fetch prescription history:', err);
     });
 });
+
+function rowClicked(prescID) {
+    console.log('Row clicked for prescriptionID:', prescID);
+    fetch(`../../controller/get-prescription.php?prescID=${prescID}`, { credentials: 'same-origin' })
+    .then(res => res.json())
+    .then(data => {
+        data.forEach(detail => {
+            console.log('Prescription Detail:', detail);
+
+            const detailsBody = document.getElementById('details-body');
+            detailsBody.innerHTML += `
+                <p>Medicine: ${detail.genericName ?? ''}</p>
+                <p>Dosage: ${detail.dosage ?? ''}</p>
+                <p>Remaining Amount: ${detail.remainingAmount ?? ''}</p>
+                <p>Description: ${detail.description ?? ''}</p>
+                <hr>
+            `;
+        });
+
+        const modal = document.getElementById('details-modal');
+        modal.style.display = 'block';
+        const closeBtn = modal.querySelector('.close-btn');
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+            document.getElementById('details-body').innerHTML = '';
+        };
+    }).catch(err => {
+        console.error('Failed to fetch prescription details:', err);
+    })
+}

@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 
 $clientID = $_SESSION['id'];
 
-$sql = "SELECT * FROM prescription WHERE clientID = ? ORDER BY dateGiven DESC LIMIT 1";
+$sql = "SELECT * FROM prescription WHERE clientID = ? ORDER BY dateGiven DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $clientID);
 $ok = $stmt->execute();
@@ -20,7 +20,10 @@ $result = $stmt->get_result();
 $prescription = $result->fetch_assoc();
 
 // Get details for the found prescription
-$sql_prescDetails = "SELECT * FROM prescriptiondetails WHERE prescID = ?";
+$sql_prescDetails = "SELECT pd.*, m.* 
+                    FROM prescriptiondetails pd 
+                    JOIN medicine m ON pd.medID = m.medID
+                    WHERE prescID = ?";
 $stmt_details = $conn->prepare($sql_prescDetails);
 
 $stmt_details->bind_param("s", $prescription["prescID"]);

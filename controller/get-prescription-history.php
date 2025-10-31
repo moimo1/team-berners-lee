@@ -17,12 +17,14 @@ if ($role === 'client') {
     $sql = "SELECT p.*, d.doctorID, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
             FROM prescription p
             JOIN doctor d ON p.doctorID = d.doctorID
+            JOIN prescriptiondetails pd ON p.prescID = pd.prescID
             WHERE p.clientID = ?";
 } else if ($role === 'doctor') {
     // Return all prescription columns + related client info
     $sql = "SELECT p.*, c.clientID, c.firstName AS clientFirstName, c.lastName AS clientLastName
             FROM prescription p
             JOIN client c ON p.clientID = c.clientID
+            JOIN prescriptiondetails pd ON p.prescID = pd.prescID
             WHERE p.doctorID = ?";
 } else {
     echo json_encode([]); 

@@ -50,6 +50,15 @@
                         </tr> -->
                     </tbody>
                 </table>
+                <!-- Prescription Details Modal -->
+                <div id="details-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <h3>Prescription Details</h3>
+                        <div id="details-body"></div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </main>
