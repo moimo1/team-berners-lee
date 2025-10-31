@@ -13,6 +13,7 @@
     <title>Client Dashboard</title>
 
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
+    <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 
 <body>
