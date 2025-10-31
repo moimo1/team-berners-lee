@@ -1,8 +1,7 @@
 <?php
-    session_start();
-    $role = 'doctor';
-    include '../../includes/navbar.php';
-    
+session_start();
+$role = 'doctor';
+include '../../includes/navbar.php';
 ?>
 
 <!DOCTYPE html>
@@ -16,11 +15,25 @@
 </head>
 <body>
 
-<div class="container">
-  <div class="item">Header</div>
-  <div class="item">Sidebar</div>
-  <div class="item">Content</div>
-  <div class="item">Footer</div>
+<div class="doctor-dashboard">
+    <!-- Header -->
+    <div class="item header">
+        <h1>Doctor Dashboard</h1>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="item sidebar">
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">My Patients</a></li>
+            <li><a href="#">Reports</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="item main-content">
+        <h2>Welcome, Doctor!</h2>
+    </div>
 </div>
 
 <?php include '../../includes/footer.php'; ?>

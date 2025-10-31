@@ -1,7 +1,6 @@
 <?php $base = "http://localhost:8000"; ?>
 
 
-<!-- includes/navbar.php -->
 <nav class="navbar">
     <h1 class="logo">MediTrack</h1>
 
