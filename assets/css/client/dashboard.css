@@ -9,14 +9,55 @@ html, body {
   height: 100%;
   font-family: Arial, sans-serif;
 }
-/* Main layout */
+
+/* Hide global navbar on pages with the sidebar */
+.has-sidebar .navbar { display: none; }
+
+/* Top navigation header */
+.navbar {
+  background: #00897b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.navbar .logo {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.navbar .nav-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar .nav-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar .nav-links a:hover,
+.navbar .nav-links a:focus {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Client dashboard layout */
 .client-dashboard {
+  --sidebar-collapsed: 72px;
+  --sidebar-expanded: 240px;
   display: grid;
-  grid-template-areas:
-    "header header"
-    "sidebar main";
-  grid-template-columns: 250px 1fr;
-  grid-template-rows: 60px 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "sidebar main";
   height: 100vh;
   gap: 10px;
   padding: 10px;
@@ -40,23 +81,234 @@ html, body {
   grid-area: sidebar;
 }
 
+.sidebar {
+  grid-area: sidebar;
+  background: #eef2f4;
+  padding: 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  width: var(--sidebar-collapsed);
+  transition: width .25s ease;
+}
+
+.client-dashboard.sidebar-expanded .sidebar {
+  width: var(--sidebar-expanded);
+}
+
+.sidebar-brand {
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.sidebar-footer ul {
+  list-style: none;
+  margin: 12px 0 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.nav-item {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  text-decoration: none;
+  color: #0f172a;
+  border-radius: 8px;
+}
+
+/* Only apply hover color when sidebar is expanded */
+.client-dashboard.sidebar-expanded .nav-item:hover {
+  background: #dde5e9;
+}
+
+/* Keep hover neutral when collapsed */
+.client-dashboard:not(.sidebar-expanded) .nav-item:hover {
+  background: transparent;
+}
+
+.nav-item .icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #c9ced3;
+  display: inline-block;
+}
+
+.nav-item .label {
+  opacity: 1;
+  transition: max-width .25s ease, opacity .15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  max-width: 200px;
+}
+
+.sidebar-toggle {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid #c3c8cc;
+  background: #ffffff;
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.sidebar-toggle::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  margin: 8px auto;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid #7b8792;
+  transition: transform .2s ease;
+}
+
+/* Collapsed: keep icon position, hide label width */
+.client-dashboard:not(.sidebar-expanded) .nav-item .label {
+  max-width: 0;
+  opacity: 0;
+}
+
+/* Expanded: reveal label */
+.client-dashboard.sidebar-expanded .nav-item .label {
+  max-width: 200px;
+  opacity: 1;
+}
+
+.client-dashboard.sidebar-expanded .sidebar-toggle::before {
+  transform: rotate(180deg);
+}
+
 .main-content {
   grid-area: main;
   overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 16px; /* consistent spacing between content cards */
+  padding-right: 8px;
 }
 
 /* Optional: make sidebar narrower on small screens */
 @media (max-width: 768px) {
-  .client-dashboard {
-    grid-template-areas:
-      "header"
-      "main";
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    display: none;
-  }
+  .client-dashboard { grid-template-columns: auto 1fr; }
 }
 
-/* Keep dashboard-focused styles here. Page-specific styles moved to per-page CSS. */
+/* Content cards */
+.card { background: #ffffff; border: 1px solid #d1d5db; border-radius: 12px; padding: 18px; }
+
+/* Info card with button */
+.info-card {
+  position: relative;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 80px;
+}
+
+.info-content p {
+  margin: 0;
+  color: #334155;
+}
+
+.view-prescriptions-btn {
+  align-self: flex-end;
+  margin-top: auto;
+  display: inline-block;
+  padding: 10px 16px;
+  background: #dde5e9;
+  color: #000000;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+}
+
+.view-prescriptions-btn:hover {
+  background: #d1d5db;
+}
+
+/* Recent Prescriptions card */
+.recent-prescriptions-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.prescriptions-list {
+  display: grid;
+  gap: 12px;
+}
+
+.prescription-item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.prescription-date {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.prescription-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.prescription-doctor {
+  font-weight: 500;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.prescription-expiry {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.prescriptions-list .loading,
+.prescriptions-list .error,
+.prescriptions-list .no-data {
+  padding: 12px;
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.prescriptions-list .error {
+  color: #dc2626;
+}
