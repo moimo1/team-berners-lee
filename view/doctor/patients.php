@@ -33,7 +33,6 @@
     <tbody id="prescription-history-tbody"></tbody>
   </table>
 
-  <!-- Modal for Prescription Details -->
   <div id="details-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
@@ -44,7 +43,6 @@
 
 <div id="add-medicine-modal" class="modal">
   <div class="modal-content" id="add-medicine-content">
-<!-- form will be generated here -->
 </div>
 </div>
 

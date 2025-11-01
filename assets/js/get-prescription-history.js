@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
+button = document.getElementById('create-prescription-btn').addEventListener('click', function() {
+    
+});
+
 function renderPrescriptionList(data, container) {
     container.innerHTML = ''; 
     data.forEach(item => {
