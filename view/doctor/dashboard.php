@@ -19,18 +19,11 @@
     <div class="item">Header</div>
     <div class="item">Sidebar</div>
     <div class="item main-content">
-      <table>
-        <tbody id="prescription-history-tbody"></tbody>
-      </table>
+      
     </div>
     <div class="item">Footer</div>
   </div>
 
   <?php include '../../includes/footer.php'; ?>
-
-  <script>
-    const USER_ROLE = '<?php echo $role; ?>';
-  </script>
-  <script src="../../assets/js/get-prescription-history.js"></script>
 </body>
 </html>

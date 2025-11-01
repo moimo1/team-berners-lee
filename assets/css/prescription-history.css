@@ -85,3 +85,30 @@
   color: red;
 }
 
+/* Floating Action Button */
+.floating-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background-color: #2563eb; /* Bright blue */
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  z-index: 1100;
+}
+
+.floating-btn:hover {
+  background-color: #1e40af; /* Darker blue on hover */
+  transform: scale(1.05);
+}
+
+.floating-btn:active {
+  transform: scale(0.95);
+}
