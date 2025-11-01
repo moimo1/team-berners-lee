@@ -10,7 +10,7 @@
         <div class="modal">
             <h2>Create Prescription</h2>
 
-            <form id="create-prescription-form">
+            <form id="create-prescription-form" method="POST" action="../../controller/create-prescription.php">
                 <!-- Client Name -->
                 <label for="client-name">Client Name</label>
                 <input type="text" id="client-name" name="client-name" placeholder="Enter client name" readonly>
@@ -42,5 +42,7 @@
             </form>
         </div>
     </div>
+
+    <script src="../../assets/js/add-prescription.js"></script>
 </body>
 </html>

@@ -55,6 +55,5 @@
     const USER_ROLE = '<?php echo $role; ?>';
   </script>
   <script src ="../../assets/js/get-prescription-history.js"></script>
-  <script src="../../assets/js/add-prescription.js"></script>
 </body>
 </html>
