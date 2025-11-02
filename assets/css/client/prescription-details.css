@@ -1,5 +1,4 @@
 /* Styles specific to My Prescription page */
-.client-dashboard { grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
 
 /* Title bar */
 .page-title-bar { 
@@ -53,5 +52,4 @@
 .table tr + tr td, .table thead + tbody tr:first-child td {
     border-top: 1px solid #d1d5db;
 }
-
 
