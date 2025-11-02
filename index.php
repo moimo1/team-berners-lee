@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="../assets/css/auth/login.css">
+    <link rel="stylesheet" href="assets/css/auth/login.css">
 </head>
 <body>
     <div class="wrapper">
@@ -16,7 +16,7 @@
                 <div class="error"><?php echo htmlspecialchars($_GET['error']); ?></div>
             <?php endif; ?>
 
-            <form method="post" action="../controller/login.php" autocomplete="on">
+            <form method="post" action="controller/login.php" autocomplete="on">
                 <div class="field">
                     <label for="email">Email</label>
                     <input type="text" id="username" name="email" placeholder="Enter email" required />
