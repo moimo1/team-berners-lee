@@ -15,6 +15,12 @@
             <?php if (!empty($_GET['error'])): ?>
                 <div class="error"><?php echo htmlspecialchars($_GET['error']); ?></div>
             <?php endif; ?>
+            
+            <?php if (!empty($_GET['success'])): ?>
+                <div style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; padding: 8px 10px; border-radius: 6px; font-size: 13px; margin-bottom: 12px;">
+                    <?php echo htmlspecialchars($_GET['success']); ?>
+                </div>
+            <?php endif; ?>
 
             <form method="post" action="controller/login.php" autocomplete="on">
                 <div class="field">
@@ -34,7 +40,7 @@
                 
                 <div class="actions">
                     <button type="submit" class="btn btn-primary">Login</button>
-                    <a class="btn btn-secondary" href="#">Sign up</a>
+                    <a class="btn btn-secondary" href="view/SignUp.php">Sign up</a>
                 </div>
                 <div class="muted">Forgot password? <a href="#">Reset</a></div>
             </form>
