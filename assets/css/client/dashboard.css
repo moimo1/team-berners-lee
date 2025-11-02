@@ -148,8 +148,17 @@ html, body {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: #c9ced3;
-  display: inline-block;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-item .icon img {
+  width: 20px;
+  height: 20px;
+  display: block;
 }
 
 .nav-item .label {
