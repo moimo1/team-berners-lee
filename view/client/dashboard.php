@@ -196,7 +196,7 @@
                             // Date parsing failed, leave as null
                         }
                         
-                        var doctorName = (prescription.firstName || '') + ' ' + (prescription.lastName || '');
+                        var doctorName = (prescription.doctorFirstName || '') + ' ' + (prescription.doctorLastName || '');
                         doctorName = doctorName.trim();
                         
                         item.innerHTML = `

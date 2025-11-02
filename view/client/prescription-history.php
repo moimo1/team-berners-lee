@@ -41,18 +41,9 @@
                         </tr>
                     </thead>
                     <tbody id="prescription-history-tbody">
-                        <!-- <tr>
-                            <td>Sept 20, 2025</td>
-                            <td>Oct 13, 2025</td>
-                            <td>Dr. Jose Rizal</td>
-                            <td>Completed</td>
-                        </tr>
                         <tr>
-                            <td>Sept 23, 2025</td>
-                            <td>Oct 15, 2025</td>
-                            <td>Dr. Jose Rizal</td>
-                            <td>Pending</td>
-                        </tr> -->
+                            <td colspan="4" style="text-align: center; padding: 24px; color: #64748b;">Loading prescription history...</td>
+                        </tr>
                     </tbody>
                 </table>
                 <!-- Prescription Details Modal -->
