@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $role = $_SESSION['role'];
+    $role = 'client';
     include '../../includes/navbar.php';
 ?>
 
@@ -9,9 +9,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prescription History</title>
+    <title>Search Drug Info</title>
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
-    <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
+    <link rel="stylesheet" href="../../assets/css/client/search-medicine.css">
+    <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 
 <body class="has-sidebar">
@@ -36,46 +37,40 @@
         </aside>
 
         <section class="item main-content">
-            <div class="page-title-bar">
-                <h2 class="page-title">Prescription History</h2>
-                <div class="title-actions">
-                    <button class="btn" title="Filter">Filter</button>
-                </div>
-            </div>
-            <div class="card">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Expiry Date</th>
-                            <th>Doctor</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="prescription-history-tbody">
-                        <!-- <tr>
-                            <td>Sept 20, 2025</td>
-                            <td>Oct 13, 2025</td>
-                            <td>Dr. Jose Rizal</td>
-                            <td>Completed</td>
-                        </tr>
-                        <tr>
-                            <td>Sept 23, 2025</td>
-                            <td>Oct 15, 2025</td>
-                            <td>Dr. Jose Rizal</td>
-                            <td>Pending</td>
-                        </tr> -->
-                    </tbody>
-                </table>
-                <!-- Prescription Details Modal -->
-                <div id="details-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-btn">&times;</span>
-                        <h3>Prescription Details</h3>
-                        <div id="details-body"></div>
+            <h2 class="page-title">Search Drug Info</h2>
+            
+            <div class="card search-container">
+                <form id="search-form" class="search-form">
+                    <div class="search-input-group">
+                        <select id="search-type" class="search-dropdown" aria-label="Search by">
+                            <option value="genericName">Search by Generic Name</option>
+                            <option value="brand">Search by Brand Name</option>
+                        </select>
+                        <input 
+                            type="text" 
+                            id="drug-name-input" 
+                            name="query" 
+                            placeholder="Enter Drug Name Here" 
+                            class="search-input"
+                            required
+                        />
+                        <button type="submit" class="search-btn" aria-label="Search">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
                     </div>
-                </div>
+                </form>
+            </div>
 
+            <div class="card results-container">
+                <div class="results-header">
+                    <h3>Search Results</h3>
+                </div>
+                <div id="search-results" class="search-results">
+                    <p class="no-results">Enter a drug name and click search to find medicine information.</p>
+                </div>
             </div>
         </section>
     </main>
@@ -96,11 +91,7 @@
 
     <?php include '../../includes/footer.php'; ?>
 
-    <script>
-        const USER_ROLE = '<?php echo $role; ?>';
-    </script>
-    <script src="../../assets/js/get-prescription-history.js"></script>
+    <script src="../../assets/js/search-medicine.js"></script>
 </body>
 </html>
-
 

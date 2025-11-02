@@ -25,7 +25,7 @@
                     <li><a href="/view/client/dashboard.php" class="nav-item" aria-label="Home"><span class="icon" aria-hidden="true"></span><span class="label">Home</span></a></li>
                     <li><a href="/view/client/prescription-details.php" class="nav-item" aria-label="My Prescription"><span class="icon" aria-hidden="true"></span><span class="label">My Prescription</span></a></li>
                     <li><a href="/view/client/prescription-history.php" class="nav-item" aria-label="Prescription History"><span class="icon" aria-hidden="true"></span><span class="label">Prescription History</span></a></li>
-                    <li><a href="#" class="nav-item" aria-label="Search"><span class="icon" aria-hidden="true"></span><span class="label">Search</span></a></li>
+                    <li><a href="/view/client/search-medicine.php" class="nav-item" aria-label="Search"><span class="icon" aria-hidden="true"></span><span class="label">Search</span></a></li>
                 </ul>
             </nav>
             <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="false"></button>
