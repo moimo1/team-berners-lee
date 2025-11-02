@@ -3,6 +3,56 @@
     $role = 'client';
     include '../../includes/navbar.php';
     
+    // Fetch client name and medicine details from database
+    $clientName = 'Client';
+    $medicineDetails = [];
+    if (isset($_SESSION['id'])) {
+        include '../../config/db_con.php';
+        $clientID = $_SESSION['id'];
+        
+        // Get client name
+        $sql = "SELECT firstName, lastName FROM client WHERE clientID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $clientID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $clientName = trim($row['firstName'] . ' ' . $row['lastName']);
+        }
+        $stmt->close();
+        
+        // Get most recent prescription
+        $sql = "SELECT * FROM prescription WHERE clientID = ? ORDER BY dateGiven DESC LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $clientID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $prescription = $result->fetch_assoc();
+        $stmt->close();
+        
+        // Get medicine details from the prescription
+        if ($prescription) {
+            $prescID = trim($prescription["prescID"]);
+            $prescIDForDetails = 'PD' . substr($prescID, 1);
+            
+            $sql_prescDetails = "SELECT pd.*, m.genericName, m.brand, m.description as medDescription
+                                FROM prescriptiondetails pd 
+                                JOIN medicine m ON pd.medID = m.medID
+                                WHERE pd.prescID = ?
+                                LIMIT 5";
+            $stmt_details = $conn->prepare($sql_prescDetails);
+            $stmt_details->bind_param("s", $prescIDForDetails);
+            $stmt_details->execute();
+            $result_details = $stmt_details->get_result();
+            
+            while ($row = $result_details->fetch_assoc()) {
+                $medicineDetails[] = $row;
+            }
+            $stmt_details->close();
+        }
+        
+        $conn->close();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -26,12 +76,36 @@
         ?>
 
         <section class="item main-content">
-            <h2>Welcome, <?php echo isset($_SESSION['client_name']) ? htmlspecialchars($_SESSION['client_name']) : 'Client'; ?>!</h2>
+            <h2>Welcome, <?php echo htmlspecialchars($clientName); ?>!</h2>
 
             <div class="card info-card">
                 <div class="info-content">
-                    <p>View your prescriptions, refill requests, and medication details here.</p>
-                    <a href="./prescription-history.php" class="view-prescriptions-btn">View Your Prescriptions</a>
+                    <?php if (!empty($medicineDetails)): ?>
+                        <h3>Current Medications</h3>
+                        <div class="medicine-list">
+                            <?php foreach ($medicineDetails as $med): ?>
+                                <div class="medicine-item">
+                                    <div class="medicine-name">
+                                        <?php echo htmlspecialchars($med['genericName'] ?? 'N/A'); ?>
+                                        <?php if (!empty($med['brand'])): ?>
+                                            <span class="medicine-brand">(<?php echo htmlspecialchars($med['brand']); ?>)</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="medicine-info">
+                                        <?php if (!empty($med['dosage'])): ?>
+                                            <div class="medicine-dosage"><?php echo htmlspecialchars($med['dosage']); ?></div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($med['remainingAmount'])): ?>
+                                            <div class="medicine-remaining">Remaining: <?php echo htmlspecialchars($med['remainingAmount']); ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="no-data">No current medications found.</p>
+                    <?php endif; ?>
+                    <a href="./prescription-details.php" class="view-prescriptions-btn">View Your Prescriptions</a>
                 </div>
             </div>
 
