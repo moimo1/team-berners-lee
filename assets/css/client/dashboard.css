@@ -144,6 +144,19 @@ html, body {
   background: transparent;
 }
 
+/* Active/highlighted nav item */
+.nav-item.active {
+  background: #dde5e9;
+}
+
+.nav-item.active .icon {
+  background: #c9ced3;
+}
+
+.client-dashboard.sidebar-expanded .nav-item.active {
+  background: #dde5e9;
+}
+
 .nav-item .icon {
   width: 28px;
   height: 28px;
