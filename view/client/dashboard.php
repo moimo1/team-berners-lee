@@ -12,11 +12,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Dashboard</title>
 
+    <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 
 <body class="has-sidebar">
+    <?php include '../../includes/header.php'; ?>
     <main class="client-dashboard" id="clientDashboard">
         <?php 
         $currentPage = 'dashboard';

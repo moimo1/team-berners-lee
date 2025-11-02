@@ -1,15 +1,10 @@
 <?php
-// Reusable sidebar component for client pages
-// Usage: $currentPage should be one of: 'dashboard', 'prescription-details', 'prescription-history', 'search-medicine'
-// Example: include '../../includes/sidebar.php'; $currentPage = 'dashboard';
-
 if (!isset($currentPage)) {
     $currentPage = '';
 }
 ?>
 
 <aside class="sidebar" aria-label="Sidebar navigation">
-    <div class="sidebar-brand">LOGO NAME</div>
     <nav class="sidebar-nav">
         <ul>
             <li><a href="/view/client/dashboard.php" class="nav-item <?php echo $currentPage === 'dashboard' ? 'active' : ''; ?>" aria-label="Home"><span class="icon" aria-hidden="true"><img src="../../assets/icons/home.svg" alt=""></span><span class="label">Home</span></a></li>

@@ -50,6 +50,7 @@ html, body {
   text-underline-offset: 3px;
 }
 
+
 /* Client dashboard layout */
 .client-dashboard {
   --sidebar-collapsed: 72px;
@@ -58,7 +59,7 @@ html, body {
   grid-template-columns: auto 1fr;
   grid-template-rows: 1fr;
   grid-template-areas: "sidebar main";
-  height: 100vh;
+  height: calc(100vh - 76px);
   gap: 10px;
   padding: 10px;
   background-color: #f8f9fa;
@@ -86,7 +87,7 @@ html, body {
   background: #eef2f4;
   padding: 12px;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr auto;
   border-radius: 8px;
   position: relative;
   overflow: hidden;
@@ -96,15 +97,6 @@ html, body {
 
 .client-dashboard.sidebar-expanded .sidebar {
   width: var(--sidebar-expanded);
-}
-
-.sidebar-brand {
-  font-weight: 700;
-  font-size: 13px;
-  padding: 6px 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .sidebar-nav ul {
@@ -139,14 +131,13 @@ html, body {
   background: #dde5e9;
 }
 
-/* Keep hover neutral when collapsed */
 .client-dashboard:not(.sidebar-expanded) .nav-item:hover {
   background: transparent;
 }
 
-/* Active/highlighted nav item */
-.nav-item.active {
+.client-dashboard:not(.sidebar-expanded) .nav-item:hover .icon {
   background: #dde5e9;
+  transition: background-color 0.15s ease;
 }
 
 .nav-item.active .icon {
@@ -155,6 +146,10 @@ html, body {
 
 .client-dashboard.sidebar-expanded .nav-item.active {
   background: #dde5e9;
+}
+
+.client-dashboard.sidebar-expanded .nav-item.active .icon {
+  background: #c9ced3;
 }
 
 .nav-item .icon {
