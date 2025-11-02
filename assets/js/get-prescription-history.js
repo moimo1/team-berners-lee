@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.querySelector('#prescription-history-tbody');
+    if (!listContainer) return;
 
     fetch('../../controller/get-prescription-history.php', { credentials: 'same-origin' })
         .then(res => res.json())
@@ -12,12 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-button = document.getElementById('create-prescription-btn').addEventListener('click', function() {
-    
-});
+const createBtn = document.getElementById('create-prescription-btn');
+if (createBtn) {
+    createBtn.addEventListener('click', function() {
+        // placeholder for future functionality
+    });
+}
 
 function renderPrescriptionList(data, container) {
     container.innerHTML = ''; 
+    if (!data || data.length === 0) {
+        container.innerHTML = `<tr><td colspan="5" style="text-align:center; color:gray;">No prescriptions found</td></tr>`;
+        return;
+    }
+
     data.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = getRowContentByRole(item);
@@ -28,23 +37,39 @@ function renderPrescriptionList(data, container) {
 }
 
 function getRowContentByRole(item) {
-    let base = `
-        <td>${item.dateGiven ?? ''}</td>
-        <td>${item.dateExpiry ?? ''}</td>
-    `;
+    let html = '';
 
     switch (USER_ROLE) {
         case 'client':
-            base += `<td>Dr. ${item.doctorFirstName ?? ''} ${item.doctorLastName ?? ''}</td>`;
+            html = `
+                <td>${item.dateGiven ?? ''}</td>
+                <td>${item.dateExpiry ?? ''}</td>
+                <td>Dr. ${item.doctorFirstName ?? ''} ${item.doctorLastName ?? ''}</td>
+            `;
             break;
+
         case 'doctor':
-            base += `<td>${item.clientFirstName ?? ''} ${item.clientLastName ?? ''}</td>`;
+            html = `
+                <td>${item.dateGiven ?? ''}</td>
+                <td>${item.dateExpiry ?? ''}</td>
+                <td>${item.clientFirstName ?? ''} ${item.clientLastName ?? ''}</td>
+            `;
             break;
+
+        case 'pharmacist': // ✅ Pharmacist view
+            html = `
+                <td>${item.prescID ?? ''}</td>
+                <td>${item.clientFirstName ?? ''} ${item.clientLastName ?? ''}</td>
+                <td>${item.dateGiven ?? ''}</td>
+                <td>${item.status ?? 'Pending'}</td>
+            `;
+            break;
+
         default:
-            base += `<td>N/A</td>`;
+            html = `<td colspan="4">Unknown role or missing data</td>`;
     }
 
-    return base;
+    return html;
 }
 
 function rowClicked(prescID) {
@@ -58,6 +83,8 @@ function rowClicked(prescID) {
 
 function showPrescriptionDetails(data) {
     const detailsBody = document.getElementById('details-body');
+    if (!detailsBody) return;
+
     detailsBody.innerHTML = '';
 
     data.forEach(detail => {
@@ -65,13 +92,17 @@ function showPrescriptionDetails(data) {
     });
 
     const modal = document.getElementById('details-modal');
-    modal.style.display = 'block';
+    if (modal) {
+        modal.style.display = 'block';
 
-    const closeBtn = modal.querySelector('.close-btn');
-    closeBtn.onclick = () => {
-        modal.style.display = 'none';
-        detailsBody.innerHTML = '';
-    };
+        const closeBtn = modal.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+                detailsBody.innerHTML = '';
+            };
+        }
+    }
 }
 
 function getDetailContentByRole(detail) {
@@ -85,6 +116,12 @@ function getDetailContentByRole(detail) {
         html += `<p><strong>Description:</strong> ${detail.description ?? ''}</p>`;
     } else if (USER_ROLE === 'client') {
         html += `<p><strong>Instructions:</strong> ${detail.description ?? ''}</p>`;
+    } else if (USER_ROLE === 'pharmacist') {
+        html += `
+            <p><strong>Description:</strong> ${detail.description ?? ''}</p>
+            <p><strong>Available Stock:</strong> ${detail.availableStock ?? 'N/A'}</p>
+            <p><strong>Last Dispensed:</strong> ${detail.lastDispensed ?? 'Not yet dispensed'}</p>
+        `;
     }
 
     return html;
