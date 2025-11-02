@@ -42,22 +42,9 @@
                             <th>Expiry Date</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="prescription-details-tbody">
                         <tr>
-                            <td>Amoxicillin</td>
-                            <td>500mg</td>
-                            <td>2x/day</td>
-                            <td>20 tablets</td>
-                            <td>15 tablets</td>
-                            <td>05/08/2025</td>
-                        </tr>
-                        <tr>
-                            <td>Paracetamol</td>
-                            <td>500mg</td>
-                            <td>3x/day</td>
-                            <td>10 tablets</td>
-                            <td>0 tablets</td>
-                            <td>05/10/2025</td>
+                            <td colspan="6" style="text-align: center; padding: 24px; color: #64748b;">Loading prescription details...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -67,6 +54,8 @@
 
 
     <?php include '../../includes/footer.php'; ?>
+
+    <script src="../../assets/js/get-prescription.js"></script>
 </body>
 </html>
 
