@@ -26,6 +26,12 @@ html, body {
     letter-spacing: .5px; 
     margin-bottom: 16px; 
 }
+
+.logo img {
+    max-width: 220px;
+    height: auto;
+    display: inline-block;
+}
 .subtitle { 
     text-align: center; 
     color: #6b7280; 

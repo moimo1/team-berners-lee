@@ -16,6 +16,7 @@ $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirmPassword = $_POST['confirmPassword'] ?? '';
 $contacts = trim($_POST['contacts'] ?? '');
+$address = trim($_POST['address'] ?? '');
 
 // Validate required fields
 if (empty($role) || empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
@@ -210,13 +211,14 @@ if ($role === 'doctor') {
     $location = $designation ?? '';
     $stmt->bind_param("ssssss", $newID, $firstName, $lastName, $location, $email, $password);
 } elseif ($role === 'client') {
-    $sql = "INSERT INTO $table ($idColumn, firstName, lastName, email, password) VALUES (?, ?, ?, ?, ?)";
+    // Match current DB schema where the column is named `contact`
+    $sql = "INSERT INTO $table ($idColumn, firstName, lastName, contact, address, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         header("Location: ../view/SignUp.php?role=$role&error=Database error: " . $conn->error);
         exit();
     }
-    $stmt->bind_param("sssss", $newID, $firstName, $lastName, $email, $password);
+    $stmt->bind_param("sssssss", $newID, $firstName, $lastName, $contacts, $address, $email, $password);
 }
 
 if ($stmt && $stmt->execute()) {

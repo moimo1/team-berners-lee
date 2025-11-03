@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `client` (
   `lastName` varchar(50) NOT NULL,
   `birthdate` date DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
+  `phonenum` varchar(20) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`clientID`),
@@ -74,17 +75,17 @@ CREATE TABLE IF NOT EXISTS `client` (
 -- Dumping data for table `client`
 --
 
-INSERT INTO `client` (`clientID`, `firstName`, `lastName`, `birthdate`, `address`, `email`, `password`) VALUES
-('C001', 'John', 'Doe', '1990-05-12', '123 Main St', 'johndoe@email.com', '123'),
-('C002', 'Jane', 'Smith', '1985-07-22', '45 Elm St', 'janesmith@email.com', '123'),
-('C003', 'Alex', 'Johnson', '1993-03-14', '67 Pine St', 'alex@email.com', '123'),
-('C004', 'Sara', 'Brown', '1999-10-10', '89 Oak St', 'sara@email.com', '123'),
-('C005', 'Chris', 'White', '1987-01-02', '23 Maple St', 'chris@email.com', '123'),
-('C006', 'Emily', 'Davis', '1995-11-09', '56 Birch St', 'emily@email.com', '123'),
-('C007', 'David', 'Garcia', '1983-06-06', '12 Cedar St', 'david@email.com', '123'),
-('C008', 'Mia', 'Martinez', '1997-09-18', '34 Willow St', 'mia@email.com', '123'),
-('C009', 'Luke', 'Wilson', '1991-02-27', '78 Cherry St', 'luke@email.com', '123'),
-('C010', 'Olivia', 'Taylor', '1996-12-15', '90 Ash St', 'olivia@email.com', '123');
+INSERT INTO `client` (`clientID`, `firstName`, `lastName`, `birthdate`, `address`, `phonenum`, `email`, `password`) VALUES
+('C001', 'John', 'Doe', '1990-05-12', '123 Main St', '09170000001', 'johndoe@email.com', '123'),
+('C002', 'Jane', 'Smith', '1985-07-22', '45 Elm St', '09170000002', 'janesmith@email.com', '123'),
+('C003', 'Alex', 'Johnson', '1993-03-14', '67 Pine St', '09170000003', 'alex@email.com', '123'),
+('C004', 'Sara', 'Brown', '1999-10-10', '89 Oak St', '09170000004', 'sara@email.com', '123'),
+('C005', 'Chris', 'White', '1987-01-02', '23 Maple St', '09170000005', 'chris@email.com', '123'),
+('C006', 'Emily', 'Davis', '1995-11-09', '56 Birch St', '09170000006', 'emily@email.com', '123'),
+('C007', 'David', 'Garcia', '1983-06-06', '12 Cedar St', '09170000007', 'david@email.com', '123'),
+('C008', 'Mia', 'Martinez', '1997-09-18', '34 Willow St', '09170000008', 'mia@email.com', '123'),
+('C009', 'Luke', 'Wilson', '1991-02-27', '78 Cherry St', '09170000009', 'luke@email.com', '123'),
+('C010', 'Olivia', 'Taylor', '1996-12-15', '90 Ash St', '09170000010', 'olivia@email.com', '123');
 
 -- --------------------------------------------------------
 

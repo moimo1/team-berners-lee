@@ -9,7 +9,9 @@
 <body>
     <div class="wrapper">
         <div class="card">
-            <div class="logo">MediTrack </div>
+            <div class="logo">
+                <img src="assets/logo/meditrack-high-resolution-logo-grayscale-transparent.png" alt="MediTrack" class="logo-img">
+            </div>
             <p class="subtitle">Please sign in to continue</p>
 
             <?php if (!empty($_GET['error'])): ?>

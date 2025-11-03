@@ -137,6 +137,12 @@
                                 </div>
                             </div>
                             
+                            <!-- Address (Client only used in DB) -->
+                            <div class="form-field">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" name="address" placeholder="Enter full address">
+                            </div>
+                            
                             <!-- Account Credentials -->
                             <div class="form-field">
                                 <label for="username">Username</label>
