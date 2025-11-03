@@ -9,10 +9,10 @@
 <body>
     <div class="signup-container">
         <?php
-        // Step 1: Role Selection
+        // Role Selection
         if (!isset($_GET['role'])): 
         ?>
-            <!-- Step 1: Role Selection -->
+            <!-- Role Selection -->
             <div class="signup-card">
                 <h1 class="main-title">SIGN IN ACCOUNT</h1>
                 <h2 class="sub-title">Select User Type</h2>
@@ -185,47 +185,7 @@
         <?php endif; ?>
     </div>
     
-    <script>
-        // Role selection handler
-        document.querySelectorAll('.role-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const role = this.getAttribute('data-role');
-                window.location.href = `SignUp.php?role=${role}`;
-            });
-        });
-        
-        // Profile photo preview
-        const profilePhotoInput = document.getElementById('profilePhoto');
-        const profilePreview = document.getElementById('profilePreview');
-        
-        if (profilePhotoInput && profilePreview) {
-            profilePhotoInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profilePreview.innerHTML = `<img src="${e.target.result}" alt="Profile Preview">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-        
-        // Password confirmation validation
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        
-        if (passwordInput && confirmPasswordInput) {
-            const form = document.querySelector('.signup-form');
-            form.addEventListener('submit', function(e) {
-                if (passwordInput.value !== confirmPasswordInput.value) {
-                    e.preventDefault();
-                    alert('Passwords do not match!');
-                    return false;
-                }
-            });
-        }
-    </script>
+    <script type="module" src="../assets/js/auth/signup.js"></script>
 </body>
 </html>
 
