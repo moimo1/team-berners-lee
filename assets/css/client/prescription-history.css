@@ -28,62 +28,24 @@
 
 .table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: #ffffff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.table thead {
-    background: #37474F;
+    border-collapse: collapse;
+    border: 1px solid #d1d5db;
 }
 
 .table thead th {
-    color: #ffffff;
+    background: #9aa1a6;
+    color: #111;
     text-align: left;
-    padding: 16px 20px;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.table thead th:first-child {
-    border-top-left-radius: 8px;
-}
-
-.table thead th:last-child {
-    border-top-right-radius: 8px;
-}
-
-.table tbody tr {
-    transition: background-color 0.2s ease;
-    cursor: pointer;
-}
-
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.table tbody tr:nth-child(even) {
-    background-color: #fafbfc;
-}
-
-.table tbody tr:nth-child(even):hover {
-    background-color: #f1f3f5;
+    padding: 12px;
 }
 
 .table tbody td {
-    padding: 14px 20px;
-    color: #334155;
-    font-size: 14px;
-    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+    padding: 12px;
 }
 
-.table tbody tr:last-child td {
-    border-bottom: none;
+.table tr + tr td, .table thead + tbody tr:first-child td {
+    border-top: 1px solid #d1d5db;
 }
 
 .modal {
@@ -100,22 +62,12 @@
 
 .modal-content {
   background-color: #fff;
-  margin: 5% auto;
-  padding: 32px;
+  margin: 10% auto;
+  padding: 20px;
   border-radius: 12px;
-  width: 70%;
-  max-width: 700px;
+  width: 60%;
+  max-width: 600px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  position: relative;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-
-.modal-content h3 {
-  margin: 0 0 24px 0;
-  font-size: 20px;
-  color: #0f172a;
-  font-weight: 600;
 }
 
 .close-btn {

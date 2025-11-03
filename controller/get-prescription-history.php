@@ -16,7 +16,7 @@ $data = [];
 
 if ($role === 'client') {
     // Use firstName and lastName to match JavaScript expectations
-    $sql = "SELECT p.prescID, p.dateGiven, p.dateExpiry, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
+    $sql = "SELECT p.prescID, p.dateGiven, p.dateExpiry, d.firstName, d.lastName
             FROM prescription p
             JOIN doctor d ON p.doctorID = d.doctorID
             WHERE p.clientID = ?
@@ -51,15 +51,7 @@ if (!$ok) {
 
 $result = $stmt->get_result();
 
-$today = date('Y-m-d');
 while ($row = $result->fetch_assoc()) {
-    // Calculate status based on expiry date
-    $dateExpiry = $row['dateExpiry'];
-    if ($dateExpiry < $today) {
-        $row['status'] = 'Expired';
-    } else {
-        $row['status'] = 'Active';
-    }
     $data[] = $row;
 }
 

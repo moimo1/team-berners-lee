@@ -333,7 +333,7 @@ html, body {
   color: #dc2626;
 }
 
-.info-card .medicine-item {
+.medicine-item {
   display: grid;
   grid-template-columns: 120px 1fr;
   gap: 16px;
@@ -343,36 +343,36 @@ html, body {
   border: 1px solid #e2e8f0;
 }
 
-.info-card .medicine-name {
+.medicine-name {
   font-weight: 600;
   color: #0f172a;
   font-size: 14px;
 }
 
-.info-card .medicine-brand {
+.medicine-brand {
   font-weight: 400;
   color: #64748b;
   font-size: 14px;
 }
 
-.info-card .medicine-info {
+.medicine-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.info-card .medicine-dosage {
+.medicine-dosage {
   font-weight: 500;
   color: #0f172a;
   font-size: 14px;
 }
 
-.info-card .medicine-remaining {
+.medicine-remaining {
   font-size: 12px;
   color: #64748b;
 }
 
-.info-card .medicine-list .no-data {
+.medicine-list .no-data {
   padding: 12px;
   color: #64748b;
   font-size: 14px;
