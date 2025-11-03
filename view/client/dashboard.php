@@ -33,7 +33,7 @@
                 <div class="info-content">
                     <h3>Current Medications</h3>
                     <div id="medicine-list" class="medicine-list">
-                        <p class="loading">Loading medications...</p>
+                        
                     </div>
                     <a href="./prescription-details.php" class="view-prescriptions-btn">
                         View Your Prescriptions
@@ -54,6 +54,6 @@
     <?php include '../../includes/footer.php'; ?>
 
     <!-- Scripts -->
-    <script src="../../assets/js/get-prescription.js"></script>
+    <script src="../../assets/js/dashboard.js"></script>
 </body>
 </html>
