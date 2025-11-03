@@ -1,9 +1,8 @@
-<form class="search-bar" action="/search.php" method="get">
+<form id="search-form" onsubmit="return false;">
     <input 
         type="text" 
-        name="query" 
+        id="searchbar" 
         placeholder="Search..." 
-        required 
+        autocomplete="off"
     />
-    <button type="submit">Search</button>
 </form>
