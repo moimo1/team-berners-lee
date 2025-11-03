@@ -38,12 +38,13 @@ function renderPrescriptionList(data, container) {
 
 function getRowContentByRole(item) {
     let html = '';
-
+    dateGiven = dateToWords(item.dateGiven);
+    dateExpiry = dateToWords(item.dateExpiry);
     switch (USER_ROLE) {
         case 'client':
             html = `
-                <td>${item.dateGiven ?? ''}</td>
-                <td>${item.dateExpiry ?? ''}</td>
+                <td>${dateGiven}</td>
+                <td>${dateExpiry}</td>
                 <td>Dr. ${item.doctorFirstName ?? ''} ${item.doctorLastName ?? ''}</td>
             `;
             break;
@@ -125,4 +126,10 @@ function getDetailContentByRole(detail) {
     }
 
     return html;
+}
+
+function dateToWords(dateString) {
+  const date = new Date(dateString);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
 }

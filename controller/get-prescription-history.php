@@ -16,7 +16,7 @@ $data = [];
 
 if ($role === 'client') {
     // Use firstName and lastName to match JavaScript expectations
-    $sql = "SELECT p.prescID, p.dateGiven, p.dateExpiry, d.firstName, d.lastName
+    $sql = "SELECT p.prescID, p.dateGiven, p.dateExpiry, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
             FROM prescription p
             JOIN doctor d ON p.doctorID = d.doctorID
             WHERE p.clientID = ?
