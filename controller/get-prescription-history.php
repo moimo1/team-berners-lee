@@ -1,9 +1,11 @@
 <?php
 session_start();
 include '../config/db_con.php';
+header('Content-Type: application/json');
 
 // Make sure the user is logged in and has a role
 if (!isset($_SESSION['role']) || !isset($_SESSION['id'])) {
+    http_response_code(401);
     echo json_encode(["error" => "Unauthorized"]);
     exit;
 }
@@ -13,11 +15,12 @@ $userID = $_SESSION['id'];
 $data = [];
 
 if ($role === 'client') {
-    $sql = "SELECT p.*, d.doctorID, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
+    // Use firstName and lastName to match JavaScript expectations
+    $sql = "SELECT p.prescID, p.dateGiven, p.dateExpiry, d.firstName AS doctorFirstName, d.lastName AS doctorLastName
             FROM prescription p
             JOIN doctor d ON p.doctorID = d.doctorID
-            JOIN prescriptiondetails pd ON p.prescID = pd.prescID
-            WHERE p.clientID = ?";
+            WHERE p.clientID = ?
+            ORDER BY p.dateGiven DESC";
 } else if ($role === 'doctor') {
     // Return all prescription columns + related client info
     $sql = "SELECT p.*, c.clientID, c.firstName AS clientFirstName, c.lastName AS clientLastName
@@ -31,8 +34,21 @@ if ($role === 'client') {
 }
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userID);
-$stmt->execute();
+if ($stmt === false) {
+    http_response_code(500);
+    echo json_encode(["error" => "prepare_failed", "message" => $conn->error]);
+    exit;
+}
+
+// Use "s" for string since clientID and doctorID are char(4)
+$stmt->bind_param("s", $userID);
+$ok = $stmt->execute();
+if (!$ok) {
+    http_response_code(500);
+    echo json_encode(["error" => "execute_failed", "message" => $stmt->error]);
+    exit;
+}
+
 $result = $stmt->get_result();
 
 while ($row = $result->fetch_assoc()) {

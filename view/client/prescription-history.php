@@ -10,13 +10,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription History</title>
+    <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
 </head>
 
-<body>
-    <main class="client-dashboard">
-        
+<body class="has-sidebar">
+    <?php include '../../includes/header.php'; ?>
+    <main class="client-dashboard" id="clientDashboard">
+        <?php 
+        $currentPage = 'prescription-history';
+        include '../../includes/sidebar.php'; 
+        ?>
 
         <section class="item main-content">
             <div class="page-title-bar">
@@ -62,6 +67,7 @@
             </div>
         </section>
     </main>
+
 
     <?php include '../../includes/footer.php'; ?>
 

@@ -1,0 +1,99 @@
+/* Styles specific to My Prescription page */
+
+/* Title bar */
+.page-title-bar { 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    margin-bottom: 14px;
+}
+.page-title { 
+    margin: 6px 0;
+    font-size: 22px;
+}
+.title-actions { 
+    display: flex;
+    gap: 12px;
+}
+
+/* Buttons */
+.btn { 
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.btn.outline {
+    background: #ffffff;
+}
+
+/* Data table */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table thead {
+    background: #37474F;
+}
+
+.table thead th {
+    color: #ffffff;
+    text-align: left;
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.table thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.table tbody tr:nth-child(even):hover {
+    background-color: #f1f3f5;
+}
+
+.table tbody td {
+    padding: 14px 20px;
+    color: #334155;
+    font-size: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody td:first-child {
+    font-weight: 500;
+    color: #1e293b;
+}
+

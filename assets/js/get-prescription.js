@@ -1,23 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    button = document.getElementById('sample');
-
-    // for testing purposes
-    button.addEventListener('click', () => {
-        let container = document.querySelector('.main-content');
-
-        childContainer = document.createElement('div');
-        childContainer.innerHTML = '<p>Hello world.</p>';
-        container.appendChild(childContainer);
-    });
-
-    const listContainer = document.querySelector('.prescription-list');
-    if (!listContainer) return;
+    const tbody = document.getElementById('prescription-details-tbody');
+    if (!tbody) return;
 
     fetch('../../controller/get-prescription.php', { credentials: 'same-origin' })
         .then(async res => {
             if (res.status === 401) {
-                listContainer.innerHTML = '<p>Please log in as a client to view prescriptions.</p>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:24px; color:#dc2626;">
+                            Please log in to view prescriptions.
+                        </td>
+                    </tr>`;
                 return null;
             }
             if (!res.ok) {
@@ -27,28 +20,64 @@ document.addEventListener('DOMContentLoaded', () => {
             return res.json();
         })
         .then(data => {
-            if (data === null) return; 
-            listContainer.innerHTML = '';
+            if (data === null) return;
+            tbody.innerHTML = '';
 
             if (!Array.isArray(data) || data.length === 0) {
-                listContainer.innerHTML = '<p>No prescriptions found.</p>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:24px; color:#64748b;">
+                            No prescription details found.
+                        </td>
+                    </tr>`;
                 return;
             }
 
-            const item = data[0];
+            data.forEach(item => {
+                const row = document.createElement('tr');
 
-            const card = document.createElement('div');
-            card.classList.add('prescription-card');
-            card.innerHTML = `
-                <p>${item.genericName ?? ''}</p>
-                <p>${item.dosage ?? ''}</p>
-                <p>${item.remainingAmount ?? ''}</p>
-                <p>${item.description ?? ''}</p>
-            `;
-            listContainer.appendChild(card);
+                const formatDate = dateStr => {
+                    if (!dateStr) return 'N/A';
+                    const d = new Date(dateStr);
+                    return isNaN(d) ? 'N/A' : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+                };
+
+                const extractFrequency = dosage => {
+                    if (!dosage) return 'N/A';
+                    const lower = dosage.toLowerCase();
+                    if (lower.includes('once')) return '1x/day';
+                    if (lower.includes('twice')) return '2x/day';
+                    if (lower.includes('three')) return '3x/day';
+                    if (lower.includes('every 6')) return '4x/day';
+                    if (lower.includes('every 8')) return '3x/day';
+                    if (lower.includes('every 12')) return '2x/day';
+                    return 'N/A';
+                };
+
+                const escape = str => {
+                    const div = document.createElement('div');
+                    div.textContent = str || '';
+                    return div.innerHTML;
+                };
+
+                row.innerHTML = `
+                    <td>${escape(item.genericName) || 'N/A'}</td>
+                    <td>${escape(item.dosage) || 'N/A'}</td>
+                    <td>${extractFrequency(item.dosage)}</td>
+                    <td>N/A</td>
+                    <td>${item.remainingAmount ?? 'N/A'}</td>
+                    <td>${formatDate(item.dateExpiry)}</td>
+                `;
+                tbody.appendChild(row);
+            });
         })
         .catch(err => {
-            listContainer.innerHTML = '<p>Error loading prescriptions.</p>';
-            console.error('Failed to fetch prescriptions:', err);
+            console.error('Failed to fetch prescription details:', err);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align:center; padding:24px; color:#dc2626;">
+                        Error loading prescription details.
+                    </td>
+                </tr>`;
         });
 });

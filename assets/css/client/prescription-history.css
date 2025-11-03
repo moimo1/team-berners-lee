@@ -1,9 +1,4 @@
 /* Styles specific to Prescription History page */
-.client-dashboard {
-    grid-template-areas: "main";
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-}
 
 .page-title-bar {
     display: flex;
@@ -112,3 +107,4 @@
 .floating-btn:active {
   transform: scale(0.95);
 }
+

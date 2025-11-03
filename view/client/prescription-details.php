@@ -10,13 +10,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Prescription</title>
+    <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/client/prescription-details.css">
     </head>
 
-<body>
-    <main class="client-dashboard">
-        
+<body class="has-sidebar">
+    <?php include '../../includes/header.php'; ?>
+    <main class="client-dashboard" id="clientDashboard">
+        <?php 
+        $currentPage = 'prescription-details';
+        include '../../includes/sidebar.php'; 
+        ?>
 
         <section class="item main-content">
             <div class="page-title-bar">
@@ -37,22 +42,9 @@
                             <th>Expiry Date</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="prescription-details-tbody">
                         <tr>
-                            <td>Amoxicillin</td>
-                            <td>500mg</td>
-                            <td>2x/day</td>
-                            <td>20 tablets</td>
-                            <td>15 tablets</td>
-                            <td>05/08/2025</td>
-                        </tr>
-                        <tr>
-                            <td>Paracetamol</td>
-                            <td>500mg</td>
-                            <td>3x/day</td>
-                            <td>10 tablets</td>
-                            <td>0 tablets</td>
-                            <td>05/10/2025</td>
+                            <td colspan="6" style="text-align: center; padding: 24px; color: #64748b;">Loading prescription details...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -60,7 +52,10 @@
         </section>
     </main>
 
+
     <?php include '../../includes/footer.php'; ?>
+
+    <script src="../../assets/js/get-prescription.js"></script>
 </body>
 </html>
 

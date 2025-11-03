@@ -2,7 +2,6 @@
     session_start();
     $role = 'client';
     include '../../includes/navbar.php';
-    
 ?>
 
 <!DOCTYPE html>
@@ -12,33 +11,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Dashboard</title>
 
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 
-<body>
-    <main class="client-dashboard">
+<body class="has-sidebar">
+    <?php include '../../includes/header.php'; ?>
+    <main class="client-dashboard" id="clientDashboard">
+        <?php 
+            $currentPage = 'dashboard';
+            include '../../includes/sidebar.php'; 
+        ?>
 
-        <!-- all header elements will stay here -->
-        <section class="item header">Header</section>
-
-        <!-- all sidebar elements stay here -->
-        <section class="item sidebar">Sidebar</section>
-        
-        <!-- all main content elements stay here -->
         <section class="item main-content">
-            <div class="prescription-list"></div>
+            <h2 id="client-name">Welcome!</h2>
 
+            <!-- Current Medications -->
+            <div class="card info-card">
+                <div class="info-content">
+                    <h3>Current Medications</h3>
+                    <div id="medicine-list" class="medicine-list">
+                        
+                    </div>
+                    <a href="./prescription-details.php" class="view-prescriptions-btn">
+                        View Your Prescriptions
+                    </a>
+                </div>
+            </div>
 
-            <!-- for testing purposes -->
-            <button id="sample">Click</button>
+            <!-- Recent Prescriptions -->
+            <div class="card recent-prescriptions-card">
+                <h3>Recent Prescriptions</h3>
+                <div id="recent-prescriptions-list" class="prescriptions-list">
+                    <p class="loading">Loading prescriptions...</p>
+                </div>
+            </div>
         </section>
-    
     </main>
 
     <?php include '../../includes/footer.php'; ?>
 
-    <script src="../../assets/js/get-prescription.js"></script>
+    <!-- Scripts -->
+    <script src="../../assets/js/dashboard.js"></script>
 </body>
-
 </html>
