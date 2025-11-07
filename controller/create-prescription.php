@@ -5,29 +5,33 @@ header('Content-Type: application/json');
 
 $doctorID = $_SESSION['id'];
 $name = $_POST['client-name'];
+$date = $_POST['date-given'];
 $expiry = $_POST['expiry-date'];
-$_status = $_POST['status'];
+$status = $_POST['status'];
 
 // Get Client ID for provided name
-$sql_find_client = "
-    SELECT id WHERE CONCAT(firstName, ' ', lastName) = ? FROM client";
+$sql_find_client = "SELECT clientID FROM client WHERE CONCAT(firstName,' ',lastName) = ?";
 
 $stmt_find_client = $conn->prepare($sql_find_client);
-$$stmt_find_client->bind_param("s", $name);
-$$stmt_find_client->execute();
-$clientID = $$stmt_find_client->get_result();
+$stmt_find_client->bind_param("s", $name);
+$stmt_find_client->execute();
+$clientIDResult = $stmt_find_client->get_result();
+
+// Check if name matches any client
+if ($clientIDRow = $clientIDResult->fetch_assoc()) {
+    $clientID = $clientIDRow['clientID'];
+} else {
+    echo "No client with such name found.";
+}
 
 // Get new Prescription ID
-$sql_new_prescID = "
-    SELECT prescID FROM prescription WHERE prescID LIKE 'P%'
-    ORDER BY prescID DESC LIMIT 1";
-
-$result = $conn->query($sql);
+$sql_new_prescID = "SELECT prescID FROM prescription WHERE prescID LIKE 'P%' ORDER BY prescID DESC LIMIT 1";
+$result = $conn->query($sql_new_prescID);
 
 if ($result && $row = $result->fetch_assoc()) {
     // Extract numeric part
-    $last_id = $row[$id_column];
-    $number = (int)substr($last_id, strlen($prefix));
+    $last_id = $row["prescID"];
+    $number = (int)substr($last_id, strlen("P"));
 } else {
     // If no existing IDs, start at 0
     $number = 0;
@@ -35,14 +39,11 @@ if ($result && $row = $result->fetch_assoc()) {
 
 // --- Increment and format new ID ---
 $next_number = $number + 1;
-$prescID = $prefix . str_pad($next_number, $padding, "0", STR_PAD_LEFT);
+$prescID = "P" . str_pad($next_number, 3, "0", STR_PAD_LEFT);
 
-$sql_new_prescription = "
-    INSERT INTO prescriptions (prescID, doctorID, dateGiven, dateExpiry)
-    VALUES (?, ?, ?, ?)
-";
+$sql_new_prescription = "INSERT INTO prescription (prescID, doctorID, clientID, dateGiven, dateExpiry) VALUES (?, ?, ?, ?, ?)";
 
 $stmt_new_prescription = $conn->prepare($sql_new_prescription);
-$stmt_new_prescription->bind_param("ssss", $prescID, $doctorID, "0-0-0000", $expiry);
+$stmt_new_prescription->bind_param("sssss", $prescID, $doctorID, $clientID, $date, $expiry);
 $stmt_new_prescription->execute();
 ?>

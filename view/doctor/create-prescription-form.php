@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Prescription</title>
-    <link rel="stylesheet" href="assets/css/create-prescription-form.css">
+    <link rel="stylesheet" href="../../assets/css/doctor/create-prescription-form.css">
 </head>
 <body>
     <div class="modal-container">
@@ -12,34 +12,53 @@
 
             <form id="create-prescription-form" method="POST" action="../../controller/create-prescription.php">
                 <!-- Client Name -->
-                <label for="client-name">Client Name</label>
-                <input type="text" id="client-name" name="client-name" placeholder="Enter client name" readonly>
-                <span class="info-icon">Not Editable</span>
+                <div class="form-group">
+                    <label for="client-name">Client Name</label>
+                    <input type="text" id="client-name" name="client-name" placeholder="Enter client name">
+                </div>
 
                 <!-- Medicine List -->
-                <label for="medicine-list">Medicine List</label>
-                <div class="medicine-container">
-                    <input type="text" id="medicine-list" name="medicine" placeholder="Medicine name">
-                    <button type="button" id="add-medicine-btn">+ Add medicine</button>
+                <div class="form-group">
+                    <label for="medicine">Select Medicine</label>
+                    <select id="medicine" name="medicine" required>
+                        <option value="">-- Select Medicine --</option>
+                        <option value="Paracetamol">Paracetamol</option>
+                        <option value="Ibuprofen">Ibuprofen</option>
+                        <option value="Amoxicillin">Amoxicillin</option>
+                        <option value="Cough Syrup">Cough Syrup</option>
+                    </select>
+                    <button type="button" id="add-medicine-btn">+ Add Another</button>
+                    <div id="additional-medicines"></div>
+                </div>
+
+                <!-- Date Given -->
+                <div class="form-group">
+                    <label for="date-given">Date Given</label>
+                    <input type="date" id="date-given" name="date-given" required>
                 </div>
 
                 <!-- Expiry Date -->
-                <label for="expiry-date">Expiry Date</label>
-                <input type="date" id="expiry-date" name="expiry-date">
+                <div class="form-group">
+                    <label for="expiry-date">Expiry Date</label>
+                    <input type="date" id="expiry-date" name="expiry-date" required>
+                </div>
 
                 <!-- Status -->
-                <label for="status">Status</label>
-                <select id="status" name="status">
-                    <option value="Active">Active</option>
-                    <option value="Expired">Expired</option>
-                </select>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="Active">Active</option>
+                        <option value="Expired">Expired</option>
+                    </select>
+                </div>
 
                 <!-- Buttons -->
                 <div class="form-actions">
-                    <button type="submit" class="save-btn">Save</button>
-                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">💾 Save</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back()">✖ Cancel</button>
                 </div>
             </form>
+
         </div>
     </div>
 
