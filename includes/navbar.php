@@ -6,9 +6,9 @@
 
     <ul class="nav-links">
         <?php if ($role === 'pharma'): ?>
-            <li><a href="<?=$base ?>/view/pharma/dashboard.php">Home</a></li>
-            <li><a href="<?=$base ?>/view/pharma/client-list.php">Patients</a></li>
-            <li><a href="<?=$base ?>/view/pharma/inventory.php">Inventory</a></li>
+            <li><a href="<?=$base ?>/view/pharmacist/dashboard.php">Home</a></li>
+            <li><a href="<?=$base ?>/view/pharmacist/client-list.php">Patients</a></li>
+            <li><a href="<?=$base ?>/view/pharmacist/inventory.php">Inventory</a></li>
         
 
         <?php elseif ($role === 'doctor'): ?>

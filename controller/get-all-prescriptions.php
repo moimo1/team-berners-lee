@@ -7,6 +7,7 @@ header('Content-Type: application/json');
 $query = "
     SELECT 
         p.prescID, 
+        p.clientID,
         c.firstName AS clientFirstName, 
         c.lastName AS clientLastName, 
         p.dateGiven, 
