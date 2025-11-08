@@ -14,7 +14,7 @@ $base = "http://localhost:8000";
             <?php if ($role === 'pharma'): ?>
                 <li><a href="<?php echo $base; ?>/view/pharmacist/dashboard.php" class="nav-item <?php echo $currentPage === 'dashboard' ? 'active' : ''; ?>" aria-label="Home"><span class="icon" aria-hidden="true"><img src="../../assets/icons/home.svg" alt=""></span><span class="label">Home</span></a></li>
                 <li><a href="<?php echo $base; ?>/view/pharmacist/client-list.php" class="nav-item <?php echo $currentPage === 'clients' ? 'active' : ''; ?>" aria-label="Clients"><span class="icon" aria-hidden="true"><img src="../../assets/icons/profile.svg" alt=""></span><span class="label">Clients</span></a></li>
-                <li><a href="<?php echo $base; ?>/view/pharmacist/inventory.php" class="nav-item <?php echo $currentPage === 'inventory' ? 'active' : ''; ?>" aria-label="Inventory"><span class="icon" aria-hidden="true"><img src="../../assets/icons/search.svg" alt=""></span><span class="label">Inventory</span></a></li>
+                <li><a href="<?php echo $base; ?>/view/pharmacist/inventory.php" class="nav-item <?php echo $currentPage === 'inventory' ? 'active' : ''; ?>" aria-label="Inventory"><span class="icon" aria-hidden="true"><img src="../../assets/icons/history.svg" alt=""></span><span class="label">Inventory</span></a></li>
                 <li><a href="<?php echo $base; ?>/view/pharmacist/prescription-details.php" class="nav-item <?php echo $currentPage === 'prescriptions' ? 'active' : ''; ?>" aria-label="Prescriptions"><span class="icon" aria-hidden="true"><img src="../../assets/icons/prescription.svg" alt=""></span><span class="label">Prescriptions</span></a></li>
             <?php else: ?>
                 <li><a href="/view/client/dashboard.php" class="nav-item <?php echo $currentPage === 'dashboard' ? 'active' : ''; ?>" aria-label="Home"><span class="icon" aria-hidden="true"><img src="../../assets/icons/home.svg" alt=""></span><span class="label">Home</span></a></li>
@@ -35,15 +35,32 @@ $base = "http://localhost:8000";
 
 <script>
 (function(){
-    var dashboardId = '<?php echo $role === 'pharma' ? 'pharmacistDashboard' : 'clientDashboard'; ?>';
-    var dashboard = document.getElementById(dashboardId);
-    var toggle = document.getElementById('sidebarToggle');
-    if (dashboard && toggle) {
-        toggle.addEventListener('click', function(){
-            dashboard.classList.toggle('sidebar-expanded');
-            var expanded = dashboard.classList.contains('sidebar-expanded');
-            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        });
+    // Wait for DOM to be ready
+    function initSidebarToggle() {
+        var dashboardId = '<?php echo $role === 'pharma' ? 'pharmacistDashboard' : 'clientDashboard'; ?>';
+        var dashboard = document.getElementById(dashboardId);
+        var toggle = document.getElementById('sidebarToggle');
+        if (dashboard && toggle) {
+            // Remove any existing listeners by cloning the element
+            var newToggle = toggle.cloneNode(true);
+            toggle.parentNode.replaceChild(newToggle, toggle);
+            
+            // Add click event listener
+            newToggle.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                dashboard.classList.toggle('sidebar-expanded');
+                var expanded = dashboard.classList.contains('sidebar-expanded');
+                newToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            });
+        }
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSidebarToggle);
+    } else {
+        initSidebarToggle();
     }
 })();
 </script>

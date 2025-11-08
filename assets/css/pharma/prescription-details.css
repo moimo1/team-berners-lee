@@ -111,6 +111,13 @@
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show,
+.modal[style*="flex"] {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   animation: fadeIn 0.2s ease;
 }
 
@@ -121,12 +128,6 @@
   to {
     opacity: 1;
   }
-}
-
-.modal.show {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .modal-content {

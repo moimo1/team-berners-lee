@@ -1,14 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize sidebar toggle
-    const dashboard = document.getElementById('pharmacistDashboard');
-    const toggle = document.getElementById('sidebarToggle');
-    if (dashboard && toggle) {
-        toggle.addEventListener('click', function(){
-            dashboard.classList.toggle('sidebar-expanded');
-            const expanded = dashboard.classList.contains('sidebar-expanded');
-            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        });
-    }
+    // Sidebar toggle is handled in sidebar.php script
+    // No need to duplicate the initialization here
 
     // Load inventory
     loadInventory();
@@ -80,6 +72,7 @@ function setupModals() {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        modal.style.display = 'flex';
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
     }
@@ -89,6 +82,7 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('show');
+        modal.style.display = 'none';
         document.body.style.overflow = '';
         
         // Reset form if it's the add medicine modal

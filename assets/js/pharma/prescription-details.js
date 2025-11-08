@@ -1,14 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize sidebar toggle
-    const dashboard = document.getElementById('pharmacistDashboard');
-    const toggle = document.getElementById('sidebarToggle');
-    if (dashboard && toggle) {
-        toggle.addEventListener('click', function(){
-            dashboard.classList.toggle('sidebar-expanded');
-            const expanded = dashboard.classList.contains('sidebar-expanded');
-            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        });
-    }
+    // Sidebar toggle is handled in sidebar.php script
+    // No need to duplicate the initialization here
 
     // Load active prescriptions
     loadActivePrescriptions();
@@ -52,17 +44,23 @@ function setupModals() {
 }
 
 function openModal(modalId) {
+    console.log('Opening modal:', modalId);
     const modal = document.getElementById(modalId);
     if (modal) {
+        modal.style.display = 'flex';
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
+    } else {
+        console.error('Modal not found:', modalId);
     }
 }
 
 function closeModal(modalId) {
+    console.log('Closing modal:', modalId);
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('show');
+        modal.style.display = 'none';
         document.body.style.overflow = '';
     }
 }
@@ -166,6 +164,8 @@ function viewPrescriptionDetails(prescID) {
 }
 
 function openUpdatePrescriptionModal(prescID) {
+    console.log('Opening update modal for prescription:', prescID);
+    
     // Fetch prescription details to populate the form
     fetch(`../../controller/get-prescription-details.php?prescID=${prescID}`, {
         credentials: 'same-origin'
@@ -182,13 +182,48 @@ function openUpdatePrescriptionModal(prescID) {
 
         // Use the first medicine for the update form
         const detail = data[0];
-        document.getElementById('update-prescription-id').value = prescID;
-        document.getElementById('update-prescription-detail-id').value = detail.prescID;
-        document.getElementById('update-medicine-name-presc').value = detail.genericName || detail.name || '';
-        document.getElementById('update-amount').value = detail.remainingAmount || 0;
-        document.getElementById('update-status').value = 'Active'; // Default status
+        const prescriptionIdField = document.getElementById('update-prescription-id');
+        const prescriptionDetailIdField = document.getElementById('update-prescription-detail-id');
+        const medicineNameField = document.getElementById('update-medicine-name-presc');
+        const amountField = document.getElementById('update-amount');
+        const statusField = document.getElementById('update-status');
+
+        if (prescriptionIdField) prescriptionIdField.value = prescID;
+        if (prescriptionDetailIdField) prescriptionDetailIdField.value = detail.prescID || prescID;
+        if (medicineNameField) medicineNameField.value = detail.genericName || detail.name || '';
+        if (amountField) amountField.value = detail.remainingAmount || 0;
         
-        openModal('updatePrescriptionModal');
+        // Set status based on expiry date
+        if (statusField) {
+            // Check if prescription is expired
+            fetch('../../controller/get-all-prescriptions.php', {
+                credentials: 'same-origin'
+            })
+            .then(res => res.json())
+            .then(prescriptions => {
+                const prescription = prescriptions.find(p => p.prescID === prescID);
+                if (prescription) {
+                    const expiryDate = new Date(prescription.dateExpiry);
+                    const now = new Date();
+                    if (expiryDate < now) {
+                        statusField.value = 'Expired';
+                    } else {
+                        statusField.value = 'Active';
+                    }
+                }
+                // Open modal after setting status
+                openModal('updatePrescriptionModal');
+            })
+            .catch(err => {
+                console.error('Error fetching prescription status:', err);
+                // Still open modal with default status
+                if (statusField) statusField.value = 'Active';
+                openModal('updatePrescriptionModal');
+            });
+        } else {
+            // If status field doesn't exist, just open modal
+            openModal('updatePrescriptionModal');
+        }
     })
     .catch(err => {
         console.error('Error loading prescription details:', err);

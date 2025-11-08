@@ -1,14 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize sidebar toggle
-    const dashboard = document.getElementById('pharmacistDashboard');
-    const toggle = document.getElementById('sidebarToggle');
-    if (dashboard && toggle) {
-        toggle.addEventListener('click', function(){
-            dashboard.classList.toggle('sidebar-expanded');
-            const expanded = dashboard.classList.contains('sidebar-expanded');
-            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        });
-    }
+    // Sidebar toggle is handled in sidebar.php script
+    // No need to duplicate the initialization here
 
     // Load clients
     loadClients();
