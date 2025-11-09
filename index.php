@@ -14,10 +14,6 @@
             </div>
             <p class="subtitle">Please sign in to continue</p>
 
-            <?php if (!empty($_GET['error'])): ?>
-                <div class="error"><?php echo htmlspecialchars($_GET['error']); ?></div>
-            <?php endif; ?>
-            
             <?php if (!empty($_GET['success'])): ?>
                 <div style="background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; padding: 8px 10px; border-radius: 6px; font-size: 13px; margin-bottom: 12px;">
                     <?php echo htmlspecialchars($_GET['success']); ?>
@@ -53,6 +49,19 @@
 
         </div>
     </div>
+    <script>
+        // Check for error parameter and show alert
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'invalid_credentials') {
+                alert('Invalid Username or Password');
+                // Remove error parameter from URL without reloading
+                urlParams.delete('error');
+                const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        });
+    </script>
 </body>
 </html>
 
