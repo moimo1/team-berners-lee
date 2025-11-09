@@ -1,55 +1,87 @@
-form#create-prescription-form {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #f9fafc;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    font-family: Arial, sans-serif;
+/* Prescription Form Card */
+.prescription-form-card {
+    max-width: 100%;
 }
-h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #333;
+
+form#create-prescription-form {
+    max-width: 100%;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 .form-group {
     margin-bottom: 15px;
 }
 label {
     display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0f172a;
+    font-size: 14px;
 }
 input[type="text"],
 input[type="date"],
-select {
+select,
+textarea {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #0f172a;
+    background: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-sizing: border-box;
+}
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #00897b;
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
 }
 .info-text {
     font-size: 0.8em;
     color: #888;
 }
 .form-actions {
-    text-align: center;
-    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
 }
 .save-btn, .cancel-btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: background-color 0.15s ease, transform 0.1s ease;
 }
 .save-btn {
-    background-color: #007bff;
+    background-color: #00897b;
     color: white;
 }
+.save-btn:hover {
+    background-color: #007066;
+    transform: translateY(-1px);
+}
+.save-btn:active {
+    transform: translateY(0);
+}
 .cancel-btn {
-    background-color: #ccc;
-    color: #333;
-    margin-left: 10px;
+    background-color: #e2e8f0;
+    color: #0f172a;
+}
+.cancel-btn:hover {
+    background-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+.cancel-btn:active {
+    transform: translateY(0);
 }
 
 /* Medicine Search Styles */
@@ -58,16 +90,16 @@ select {
     width: 100%;
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     background: white;
 }
 
 #medicine-search {
     flex: 1;
-    padding: 8px 40px 8px 8px;
+    padding: 10px 120px 10px 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     box-sizing: border-box;
     background: transparent;
     cursor: pointer;
@@ -80,18 +112,20 @@ select {
 .add-medicine-btn-inside {
     position: absolute;
     right: 4px;
-    padding: 6px 12px;
-    background: #28a745;
+    padding: 8px 16px;
+    background: #00897b;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 500;
     z-index: 10;
+    transition: background-color 0.15s ease;
 }
 
 .add-medicine-btn-inside:hover {
-    background: #218838;
+    background: #007066;
 }
 
 .medicine-search-container-modal {
@@ -112,13 +146,13 @@ select {
     left: 0;
     right: 0;
     background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-top: 2px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-top: 4px;
 }
 
 .medicine-dropdown {
@@ -128,13 +162,13 @@ select {
     left: 0;
     right: 0;
     background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-top: 2px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-top: 4px;
 }
 
 /* Modal dropdown needs higher z-index */
@@ -144,9 +178,9 @@ select {
 
 #modal-medicine-search {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     box-sizing: border-box;
 }
 
@@ -200,9 +234,9 @@ select {
     background: #dc2626;
     color: white;
     border: none;
-    border-radius: 4px;
-    width: 24px;
-    height: 24px;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
     cursor: pointer;
     font-size: 18px;
     line-height: 1;
@@ -210,6 +244,7 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.15s ease;
 }
 
 .remove-medicine-btn:hover {
@@ -219,19 +254,21 @@ select {
 .medicine-group {
     margin-top: 15px;
     padding: 15px;
-    background: #f8f9fa;
-    border-radius: 4px;
+    background: #f8fafc;
+    border-radius: 8px;
     border: 1px solid #e2e8f0;
 }
 
 .remove-medicine-group-btn {
     margin-top: 10px;
-    padding: 5px 10px;
+    padding: 8px 16px;
     background: #dc2626;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.15s ease;
 }
 
 .remove-medicine-group-btn:hover {
@@ -284,9 +321,9 @@ select {
 
 .medicine-modal-content textarea {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     font-family: Arial, sans-serif;
     resize: vertical;
     box-sizing: border-box;
@@ -330,9 +367,9 @@ select {
     align-items: flex-start;
     justify-content: space-between;
     padding: 12px;
-    background: #f8f9fa;
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
+    border-radius: 8px;
     gap: 12px;
 }
 
