@@ -13,7 +13,7 @@
             <form id="create-prescription-form" method="POST" action="../../controller/create-prescription.php">
                 <!-- Client Name -->
                 <div class="form-group">
-                    <label for="client-name">Client Name</label>
+                    <label for="client-name">Client Name<span class="required">*</span></label>
                     <div class="client-search-container">
                         <input type="text" id="client-name" name="client-name" placeholder="Type to search client name..." autocomplete="off" list="" required>
                         <input type="hidden" id="client-id" name="client-id">
@@ -23,7 +23,7 @@
 
                 <!-- Medicine List -->
                 <div class="form-group">
-                    <label>Medicines</label>
+                    <label>Medicines<span class="required">*</span></label>
                     <div class="medicine-search-container">
                         <input type="text" id="medicine-search" name="medicine-search" placeholder="Click the button to add medicine..." autocomplete="off" list="" readonly>
                         <button type="button" id="add-medicine-btn" class="add-medicine-btn-inside">+ Add Medicine</button>
@@ -33,13 +33,13 @@
 
                 <!-- Date Given -->
                 <div class="form-group">
-                    <label for="date-given">Date Given</label>
+                    <label for="date-given">Date Given<span class="required">*</span></label>
                     <input type="date" id="date-given" name="date-given" required>
                 </div>
 
                 <!-- Expiry Date -->
                 <div class="form-group">
-                    <label for="expiry-date">Expiry Date</label>
+                    <label for="expiry-date">Expiry Date<span class="required">*</span></label>
                     <input type="date" id="expiry-date" name="expiry-date" required>
                 </div>
 
@@ -69,22 +69,22 @@
             <h3>Add Medicine</h3>
             <div id="medicine-modal-body">
                 <div class="form-group">
-                    <label for="modal-medicine-search">Medicine Name</label>
+                    <label for="modal-medicine-search">Medicine Name<span class="required">*</span></label>
                     <div class="medicine-search-container-modal">
                         <input type="text" id="modal-medicine-search" name="modal-medicine-search" placeholder="Type to search medicines..." autocomplete="off" list="">
                         <div id="modal-medicine-dropdown" class="medicine-dropdown"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="medicine-dosage">Dosage</label>
+                    <label for="medicine-dosage">Dosage<span class="required">*</span></label>
                     <input type="text" id="medicine-dosage" name="medicine-dosage" placeholder="e.g., 500mg tablet every 6 hours" required>
                 </div>
                 <div class="form-group">
-                    <label for="medicine-amount">Amount</label>
+                    <label for="medicine-amount">Amount<span class="required">*</span></label>
                     <input type="number" id="medicine-amount" name="medicine-amount" placeholder="e.g., 30" min="1" required>
                 </div>
                 <div class="form-group">
-                    <label for="medicine-description">Description</label>
+                    <label for="medicine-description">Description<span class="required">*</span></label>
                     <textarea id="medicine-description" name="medicine-description" placeholder="e.g., Take after meals to relieve pain." rows="3" required></textarea>
                 </div>
                 <div class="form-actions">
