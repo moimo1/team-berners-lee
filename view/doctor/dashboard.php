@@ -59,7 +59,7 @@
             <a href="./create-prescription-form.php" class="view-prescriptions-btn" style="text-align: center;">
               Create New Prescription
             </a>
-            <a href="./patients.php" class="view-prescriptions-btn" style="text-align: center;">
+            <a href="./prescriptions.php" class="view-prescriptions-btn" style="text-align: center;">
               View My Patients
             </a>
           </div>
