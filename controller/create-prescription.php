@@ -4,24 +4,15 @@ include '../config/db_con.php';
 header('Content-Type: application/json');
 
 $doctorID = $_SESSION['id'];
-$name = $_POST['client-name'];
+$clientID = $_POST['client-id'] ?? null;
 $date = $_POST['date-given'];
 $expiry = $_POST['expiry-date'];
 $status = $_POST['status'];
 
-// Get Client ID for provided name
-$sql_find_client = "SELECT clientID FROM client WHERE CONCAT(firstName,' ',lastName) = ?";
-
-$stmt_find_client = $conn->prepare($sql_find_client);
-$stmt_find_client->bind_param("s", $name);
-$stmt_find_client->execute();
-$clientIDResult = $stmt_find_client->get_result();
-
-// Check if name matches any client
-if ($clientIDRow = $clientIDResult->fetch_assoc()) {
-    $clientID = $clientIDRow['clientID'];
-} else {
-    echo "No client with such name found.";
+// Validate client ID
+if (!$clientID) {
+    echo json_encode(['error' => 'Client ID is required']);
+    exit();
 }
 
 // Get new Prescription ID
@@ -45,5 +36,58 @@ $sql_new_prescription = "INSERT INTO prescription (prescID, doctorID, clientID, 
 
 $stmt_new_prescription = $conn->prepare($sql_new_prescription);
 $stmt_new_prescription->bind_param("sssss", $prescID, $doctorID, $clientID, $date, $expiry);
-$stmt_new_prescription->execute();
+
+if ($stmt_new_prescription->execute()) {
+    // Get all medicine data from POST
+    $medicineIndex = 0;
+    $medicinesAdded = 0;
+    
+    while (isset($_POST["medicine-{$medicineIndex}-id"])) {
+        $medID = $_POST["medicine-{$medicineIndex}-id"];
+        $dosage = $_POST["medicine-{$medicineIndex}-dosage"] ?? '';
+        $amount = $_POST["medicine-{$medicineIndex}-amount"] ?? null;
+        $description = $_POST["medicine-{$medicineIndex}-description"] ?? '';
+        
+        // Validate amount
+        $remainingAmount = null;
+        if ($amount !== null && $amount !== '') {
+            $amountInt = (int)$amount;
+            if ($amountInt >= 1) {
+                $remainingAmount = $amountInt;
+            }
+        }
+        
+        // Insert into prescriptiondetails
+        // remainingAmount is set to the prescribed amount initially
+        if ($remainingAmount !== null) {
+            $sql_details = "INSERT INTO prescriptiondetails (prescID, medID, dosage, description, remainingAmount) VALUES (?, ?, ?, ?, ?)";
+            $stmt_details = $conn->prepare($sql_details);
+            $stmt_details->bind_param("ssssi", $prescID, $medID, $dosage, $description, $remainingAmount);
+        } else {
+            // If amount is invalid or not provided, insert with NULL
+            $sql_details = "INSERT INTO prescriptiondetails (prescID, medID, dosage, description, remainingAmount) VALUES (?, ?, ?, ?, NULL)";
+            $stmt_details = $conn->prepare($sql_details);
+            $stmt_details->bind_param("ssss", $prescID, $medID, $dosage, $description);
+        }
+        
+        if ($stmt_details->execute()) {
+            $medicinesAdded++;
+        }
+        $stmt_details->close();
+        
+        $medicineIndex++;
+    }
+    
+    if ($medicinesAdded > 0) {
+        echo json_encode(['success' => true, 'prescID' => $prescID, 'medicinesAdded' => $medicinesAdded]);
+    } else {
+        echo json_encode(['error' => 'Prescription created but no medicines were added']);
+    }
+    
+    $stmt_new_prescription->close();
+} else {
+    echo json_encode(['error' => 'Failed to create prescription: ' . $stmt_new_prescription->error]);
+}
+
+$conn->close();
 ?>

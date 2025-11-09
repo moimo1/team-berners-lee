@@ -51,15 +51,287 @@ select {
     color: #333;
     margin-left: 10px;
 }
-#add-medicine-btn {
-    margin-top: 8px;
-    padding: 5px 10px;
+
+/* Medicine Search Styles */
+.medicine-search-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+}
+
+#medicine-search {
+    flex: 1;
+    padding: 8px 40px 8px 8px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: transparent;
+    cursor: pointer;
+}
+
+#medicine-search:focus {
+    outline: none;
+}
+
+.add-medicine-btn-inside {
+    position: absolute;
+    right: 4px;
+    padding: 6px 12px;
     background: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 14px;
+    z-index: 10;
 }
-#add-medicine-btn:hover {
+
+.add-medicine-btn-inside:hover {
     background: #218838;
+}
+
+.medicine-search-container-modal {
+    position: relative;
+    width: 100%;
+}
+
+/* Client Search Styles */
+.client-search-container {
+    position: relative;
+    width: 100%;
+}
+
+.client-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 2px;
+}
+
+.medicine-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 2px;
+}
+
+/* Modal dropdown needs higher z-index */
+.medicine-modal .medicine-dropdown {
+    z-index: 2100;
+}
+
+#modal-medicine-search {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.dropdown-item .brand-name {
+    display: block;
+    color: #64748b;
+    font-size: 0.9em;
+}
+
+.dropdown-item.no-results {
+    color: #64748b;
+    font-style: italic;
+    cursor: default;
+}
+
+.dropdown-item.no-results:hover {
+    background-color: transparent;
+}
+
+.selected-medicines,
+.selected-medicines-additional {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.remove-medicine-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-medicine-btn:hover {
+    background: #b91c1c;
+}
+
+.medicine-group {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+}
+
+.remove-medicine-group-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.remove-medicine-group-btn:hover {
+    background: #b91c1c;
+}
+
+/* Medicine Details Modal */
+.medicine-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.medicine-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.medicine-modal-content h3 {
+    margin: 0 0 20px 0;
+    color: #0f172a;
+    font-size: 24px;
+}
+
+.medicine-modal-close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #64748b;
+    line-height: 20px;
+    transition: color 0.2s ease;
+}
+
+.medicine-modal-close:hover {
+    color: #dc2626;
+}
+
+.medicine-modal-content textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+/* Selected Medicine Display */
+.medicine-info {
+    flex: 1;
+}
+
+.medicine-name {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.medicine-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.medicine-dosage-display,
+.medicine-amount-display,
+.medicine-description-display {
+    font-size: 14px;
+    color: #475569;
+}
+
+.medicine-dosage-display strong,
+.medicine-amount-display strong,
+.medicine-description-display strong {
+    color: #0f172a;
+    margin-right: 4px;
+}
+
+.selected-medicine-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    gap: 12px;
 }
