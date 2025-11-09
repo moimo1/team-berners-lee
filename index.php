@@ -26,19 +26,23 @@
 
             <form method="post" action="controller/login.php" autocomplete="on">
                 <div class="field">
-                    <label for="email">Email</label>
+                    <label for="email">Email <span class="required">*</span></label>
                     <input type="text" id="username" name="email" placeholder="Enter email" required />
                 </div>
                 <div class="field">
-                    <label for="password">Password</label>
+                    <label for="password">Password <span class="required">*</span></label>
                     <input type="password" id="password" name="password" placeholder="Enter password" required />
                 </div>
 
-                <select name="role" required>
-                  <option value="client">Client</option>
-                  <option value="doctor">Doctor</option>
-                  <option value="pharma">Pharmacist</option>
-                </select>
+                <div class="field">
+                    <label for="role">Role <span class="required">*</span></label>
+                    <select id="role" name="role" required>
+                        <option value="">-- Select Role --</option>
+                        <option value="client">Client</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="pharma">Pharmacist</option>
+                    </select>
+                </div>
                 
                 <div class="actions">
                     <button type="submit" class="btn btn-primary">Login</button>
@@ -46,6 +50,7 @@
                 </div>
                 <div class="muted">Forgot password? <a href="#">Reset</a></div>
             </form>
+
         </div>
     </div>
 </body>

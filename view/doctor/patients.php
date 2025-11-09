@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prescription History</title>
-  <link rel="stylesheet" href="../../assets/css/prescription-history.css">
+  <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
 </head>
 <body class="client-dashboard">
 

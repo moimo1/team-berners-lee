@@ -104,3 +104,6 @@ input[type="text"]:focus, input[type="password"]:focus {
      margin-bottom: 12px; 
 }
  
+.required {
+    color: red;
+}
