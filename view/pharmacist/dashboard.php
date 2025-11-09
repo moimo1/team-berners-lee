@@ -59,9 +59,6 @@
             <a href="./client-list.php" class="view-prescriptions-btn" style="text-align: center;">
               View All Prescriptions
             </a>
-            <a href="./inventory.php" class="view-prescriptions-btn" style="text-align: center;">
-              Manage Inventory
-            </a>
           </div>
         </div>
       </div>
