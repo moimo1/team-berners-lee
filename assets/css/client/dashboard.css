@@ -335,46 +335,100 @@ html, body {
 
 .medicine-item {
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 1fr auto;
   gap: 16px;
-  padding: 12px;
-  background: #f8fafc;
-  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 10px;
   border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.medicine-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
 }
 
 .medicine-name {
   font-weight: 600;
   color: #0f172a;
-  font-size: 14px;
-}
-
-.medicine-brand {
-  font-weight: 400;
-  color: #64748b;
-  font-size: 14px;
+  font-size: 16px;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .medicine-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  align-items: flex-end;
 }
 
 .medicine-dosage {
   font-weight: 500;
-  color: #0f172a;
+  color: #475569;
   font-size: 14px;
+  text-align: right;
 }
 
 .medicine-remaining {
-  font-size: 12px;
-  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+  min-width: 100px;
 }
 
-.medicine-list .no-data {
-  padding: 12px;
+.remaining-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.remaining-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.remaining-high .remaining-value {
+  color: #059669;
+}
+
+.remaining-medium .remaining-value {
+  color: #d97706;
+}
+
+.remaining-low .remaining-value {
+  color: #dc2626;
+}
+
+.medicine-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.medicine-list .no-medications,
+.medicine-list .error-message {
+  padding: 24px;
   color: #64748b;
   font-size: 14px;
   text-align: center;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #e2e8f0;
+}
+
+.medicine-list .error-message {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
 }
