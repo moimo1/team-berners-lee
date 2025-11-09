@@ -1,0 +1,202 @@
+/* Sidebar Styles - Consistent across all user roles */
+
+/* Hide global navbar on pages with the sidebar */
+.has-sidebar .navbar { 
+    display: none; 
+}
+
+/* Sidebar Container */
+.sidebar {
+    grid-area: sidebar;
+    background: #eef2f4;
+    padding: 12px;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    width: var(--sidebar-collapsed, 72px);
+    transition: width .25s ease;
+}
+
+.client-dashboard,
+.doctor-dashboard,
+.pharmacist-dashboard {
+    --sidebar-collapsed: 72px;
+    --sidebar-expanded: 240px;
+}
+
+.client-dashboard.sidebar-expanded .sidebar,
+.doctor-dashboard.sidebar-expanded .sidebar,
+.pharmacist-dashboard.sidebar-expanded .sidebar {
+    width: var(--sidebar-expanded);
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    margin: 16px 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    color: #0f172a;
+}
+
+.sidebar-footer ul {
+    list-style: none;
+    margin: 12px 0 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    color: #0f172a;
+}
+
+li a {
+    color: #0f172a;
+    list-style: none;
+    text-decoration: none;
+    color: #0f172a;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Navigation Items */
+.nav-item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #0f172a;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+}
+
+/* Hover states - only when sidebar is expanded */
+.client-dashboard.sidebar-expanded .nav-item:hover,
+.doctor-dashboard.sidebar-expanded .nav-item:hover,
+.pharmacist-dashboard.sidebar-expanded .nav-item:hover {
+    background: #dde5e9;
+}
+
+.client-dashboard:not(.sidebar-expanded) .nav-item:hover,
+.doctor-dashboard:not(.sidebar-expanded) .nav-item:hover,
+.pharmacist-dashboard:not(.sidebar-expanded) .nav-item:hover {
+    background: transparent;
+}
+
+.client-dashboard:not(.sidebar-expanded) .nav-item:hover .icon,
+.doctor-dashboard:not(.sidebar-expanded) .nav-item:hover .icon,
+.pharmacist-dashboard:not(.sidebar-expanded) .nav-item:hover .icon {
+    background: #dde5e9;
+    transition: background-color 0.15s ease;
+}
+
+/* Active state */
+.nav-item.active .icon {
+    background: #c9ced3;
+}
+
+.client-dashboard.sidebar-expanded .nav-item.active,
+.doctor-dashboard.sidebar-expanded .nav-item.active,
+.pharmacist-dashboard.sidebar-expanded .nav-item.active {
+    background: #dde5e9;
+}
+
+.client-dashboard.sidebar-expanded .nav-item.active .icon,
+.doctor-dashboard.sidebar-expanded .nav-item.active .icon,
+.pharmacist-dashboard.sidebar-expanded .nav-item.active .icon {
+    background: #c9ced3;
+}
+
+/* Icon styling */
+.nav-item .icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.nav-item .icon img {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+/* Label styling */
+.nav-item .label {
+    opacity: 1;
+    transition: max-width .25s ease, opacity .15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 200px;
+}
+
+/* Collapsed: hide label */
+.client-dashboard:not(.sidebar-expanded) .nav-item .label,
+.doctor-dashboard:not(.sidebar-expanded) .nav-item .label,
+.pharmacist-dashboard:not(.sidebar-expanded) .nav-item .label {
+    max-width: 0;
+    opacity: 0;
+}
+
+/* Expanded: show label */
+.client-dashboard.sidebar-expanded .nav-item .label,
+.doctor-dashboard.sidebar-expanded .nav-item .label,
+.pharmacist-dashboard.sidebar-expanded .nav-item .label {
+    max-width: 200px;
+    opacity: 1;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid #c3c8cc;
+    background: #ffffff;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    cursor: pointer;
+    z-index: 10;
+}
+
+.sidebar-toggle::before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    margin: 8px auto;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid #7b8792;
+    transition: transform .2s ease;
+}
+
+/* Toggle arrow rotation when expanded */
+.client-dashboard.sidebar-expanded .sidebar-toggle::before,
+.doctor-dashboard.sidebar-expanded .sidebar-toggle::before,
+.pharmacist-dashboard.sidebar-expanded .sidebar-toggle::before {
+    transform: rotate(180deg);
+}
+
+/* Responsive - hide sidebar on small screens */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}
+

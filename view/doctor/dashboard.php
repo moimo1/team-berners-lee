@@ -26,6 +26,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="../../assets/css/header.css">
   <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/doctor/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 <body class="has-sidebar">
@@ -77,9 +78,6 @@
   </div>
 
   <?php include '../../includes/footer.php'; ?>
-
-  <!-- Styles for modal -->
-  <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
 
   <!-- Scripts -->
   <script src="../../assets/js/doctor-dashboard.js"></script>

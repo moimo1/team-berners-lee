@@ -5,6 +5,9 @@ if (!isset($currentPage)) {
 $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'client';
 ?>
 
+<!-- Sidebar CSS -->
+<link rel="stylesheet" href="../../assets/css/sidebar.css">
+
 <aside class="sidebar" aria-label="Sidebar navigation">
     <nav class="sidebar-nav">
         <ul>
