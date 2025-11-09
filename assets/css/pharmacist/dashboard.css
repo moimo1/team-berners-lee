@@ -1,0 +1,254 @@
+/* Pharmacist Dashboard Specific Styles */
+/* Base styles are inherited from client/dashboard.css */
+
+/* Modal Styles - consistent with doctor dashboard */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.modal-content h3 {
+    margin: 0 0 20px 0;
+    color: #0f172a;
+    font-size: 24px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.close-btn {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #64748b;
+    line-height: 20px;
+    transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+    color: #dc2626;
+}
+
+.prescription-details-section {
+    margin-bottom: 30px;
+}
+
+.prescription-details-section h4 {
+    color: #0f172a;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.prescription-details-section p {
+    margin: 8px 0;
+    color: #475569;
+    font-size: 14px;
+}
+
+.prescription-details-section strong {
+    color: #0f172a;
+    margin-right: 8px;
+}
+
+.medications-section {
+    margin-top: 30px;
+}
+
+.medications-section h4 {
+    color: #0f172a;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.medications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.medicine-card {
+    background: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
+    transition: box-shadow 0.2s ease;
+}
+
+.medicine-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.medicine-card .medicine-name {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.medicine-card p {
+    margin: 6px 0;
+    color: #475569;
+    font-size: 14px;
+}
+
+.medicine-card strong {
+    color: #0f172a;
+    margin-right: 6px;
+}
+
+.no-medications {
+    color: #64748b;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+.error {
+    color: #dc2626;
+    margin: 10px 0;
+}
+
+/* Search Bar Styles */
+#search-form {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+#searchbar {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #0f172a;
+    box-sizing: border-box;
+}
+
+#searchbar:focus {
+    outline: none;
+    border-color: #00897b;
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
+}
+
+#searchbar::placeholder {
+    color: #94a3b8;
+}
+
+/* Purchase Modal Styles */
+.clickable-medicine {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clickable-medicine:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #00897b;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #0f172a;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #0f172a;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #00897b;
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
+}
+
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.error-message {
+    display: block;
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #00897b;
+    color: white;
+    border-color: #00897b;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #00695c;
+    border-color: #00695c;
+}
+
+.btn-primary:disabled {
+    background-color: #94a3b8;
+    border-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: #0f172a;
+    border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+    background-color: #f8f9fa;
+}
+

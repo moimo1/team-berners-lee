@@ -28,11 +28,26 @@
         var item = document.createElement('div');
         item.className = 'medicine-item';
         
+        var brandHtml = '';
+        if (medicine.brand && medicine.brand.trim()) {
+            brandHtml = '<p class="medicine-brand">Brand: ' + escapeHtml(medicine.brand) + '</p>';
+        }
+        
+        var descriptionHtml = '';
+        if (medicine.description && medicine.description.trim()) {
+            descriptionHtml = `
+                <div class="medicine-description">
+                    <div class="medicine-description-label">Description</div>
+                    <p class="medicine-description-text">${escapeHtml(medicine.description)}</p>
+                </div>
+            `;
+        }
+        
         item.innerHTML = `
             <div class="medicine-header">
                 <div>
-                    <h4 class="medicine-name">${escapeHtml(medicine.genericName || 'Unknown')}</h4>
-                    ${medicine.brand ? '<p class="medicine-brand">Brand: ' + escapeHtml(medicine.brand) + '</p>' : ''}
+                    <h4 class="medicine-name">${escapeHtml(medicine.genericName || 'Unknown Medicine')}</h4>
+                    ${brandHtml}
                 </div>
                 <span class="medicine-id">ID: ${escapeHtml(medicine.medID || 'N/A')}</span>
             </div>
@@ -46,12 +61,7 @@
                     <span class="medicine-detail-value">${formatDate(medicine.expiryDate)}</span>
                 </div>
             </div>
-            ${medicine.description ? `
-                <div class="medicine-description">
-                    <div class="medicine-description-label">Description</div>
-                    <p class="medicine-description-text">${escapeHtml(medicine.description)}</p>
-                </div>
-            ` : ''}
+            ${descriptionHtml}
         `;
         
         return item;
@@ -89,18 +99,18 @@
         }
     }
 
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
+    function performSearch() {
         var query = searchInput.value.trim();
+        var searchTypeValue = searchType.value;
+        
+        // If query is empty, show placeholder message
         if (!query) {
+            searchResults.innerHTML = '<p class="no-results">Enter a drug name to search for medicine information.</p>';
             return;
         }
 
         setLoading(true);
-        searchResults.innerHTML = '';
 
-        var searchTypeValue = searchType.value;
         var url = '../../controller/search-medicine.php?query=' + encodeURIComponent(query) + '&type=' + encodeURIComponent(searchTypeValue);
 
         fetch(url, {
@@ -136,6 +146,34 @@
             setLoading(false);
             displayError(err.message || 'An error occurred while searching. Please try again.');
         });
+    }
+
+    // Debounce function to limit API calls while typing
+    var searchTimeout;
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            performSearch();
+        }, 300); // Wait 300ms after user stops typing
+    }
+
+    // Real-time search as user types
+    searchInput.addEventListener('input', function() {
+        debounceSearch();
+    });
+
+    // Also listen for search type changes
+    searchType.addEventListener('change', function() {
+        if (searchInput.value.trim()) {
+            debounceSearch();
+        }
+    });
+
+    // Keep form submission for manual search (optional, but good for accessibility)
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearTimeout(searchTimeout); // Cancel any pending debounced search
+        performSearch();
     });
 })();
 

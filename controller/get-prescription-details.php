@@ -33,6 +33,8 @@ if (!$prescription) {
 // ✅ Get medicine details for that prescription
 $sql_details = "
     SELECT 
+        pd.medID,
+        pd.prescID,
         m.genericName AS medicineName,
         pd.dosage, 
         pd.remainingAmount AS amountRemaining

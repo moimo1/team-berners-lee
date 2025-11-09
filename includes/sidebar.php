@@ -21,6 +21,9 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'client';
                 <li><a href="/view/doctor/prescriptions.php" class="nav-item <?php echo $currentPage === 'prescriptions' ? 'active' : ''; ?>" aria-label="Prescriptions"><span class="icon" aria-hidden="true"><img src="../../assets/icons/prescription.svg" alt=""></span><span class="label">Prescriptions</span></a></li>
                 <li><a href="/view/doctor/patients.php" class="nav-item <?php echo $currentPage === 'patients' ? 'active' : ''; ?>" aria-label="Patients"><span class="icon" aria-hidden="true"><img src="../../assets/icons/profile.svg" alt=""></span><span class="label">Patients</span></a></li>
                 <li><a href="/view/doctor/create-prescription-form.php" class="nav-item <?php echo $currentPage === 'create-prescription' ? 'active' : ''; ?>" aria-label="Create Prescription"><span class="icon" aria-hidden="true"><img src="../../assets/icons/prescription.svg" alt=""></span><span class="label">Create Prescription</span></a></li>
+            <?php elseif ($role === 'pharma'): ?>
+                <li><a href="/view/pharmacist/dashboard.php" class="nav-item <?php echo $currentPage === 'dashboard' ? 'active' : ''; ?>" aria-label="Dashboard"><span class="icon" aria-hidden="true"><img src="../../assets/icons/home.svg" alt=""></span><span class="label">Dashboard</span></a></li>
+                <li><a href="/view/pharmacist/client-list.php" class="nav-item <?php echo $currentPage === 'client-list' ? 'active' : ''; ?>" aria-label="Prescriptions"><span class="icon" aria-hidden="true"><img src="../../assets/icons/prescription.svg" alt=""></span><span class="label">Prescriptions</span></a></li>
             <?php endif; ?>
         </ul>
     </nav>

@@ -1,71 +1,85 @@
 <?php
   session_start();
   $role = $_SESSION['role'];
+  
+  // Get pharmacist's name from database
+  include '../../config/db_con.php';
+  $pharmacistID = $_SESSION['id'];
+  $sql = "SELECT firstName, lastName FROM pharmacist WHERE pharmaID = ?";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("s", $pharmacistID);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $pharmacist = $result->fetch_assoc();
+  $pharmacistName = ($pharmacist ? $pharmacist['firstName'] . ' ' . $pharmacist['lastName'] : 'Pharmacist');
+  
   include '../../includes/navbar.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pharmacist Dashboard</title>
-    <link rel="stylesheet" href="../../assets/css/pharma/dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacist Dashboard</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../../assets/css/header.css">
+  <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pharmacist/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
-<body>
+<body class="has-sidebar">
+  <?php include '../../includes/header.php'; ?>
+  <main class="client-dashboard" id="clientDashboard">
+    <?php 
+      $currentPage = 'dashboard';
+      include '../../includes/sidebar.php'; 
+    ?>
 
-    <?php include '../../includes/search-bar.php'; ?>
+    <section class="item main-content">
+      <h2 id="pharmacist-name">Welcome, <?php echo htmlspecialchars($pharmacistName); ?>!</h2>
 
-    <main>
-        <section class="recent-prescriptions">
-            <h2>Most Recent Prescriptions</h2>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Prescription ID</th>
-                        <th>Client Name</th>
-                        <th>Date Issued</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="prescription-table-body">
-                    <!-- JS will inject prescription rows here -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-
-    <!-- PRESCRIPTION DETAILS MODAL -->
-    <div id="prescriptionModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Prescription Details</h2>
-                <span id="closeModal" class="close-btn">&times;</span>
-            </div>
-
-            <p><strong>Client Name:</strong> <span id="client-name">N/A</span></p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Medicine Name</th>
-                        <th>Dosage</th>
-                        <th>Amount Remaining</th>
-                    </tr>
-                </thead>
-                <tbody id="details-body">
-                    <!-- JS will inject medicine details here -->
-                </tbody>
-            </table>
+      <!-- Recent Prescriptions -->
+      <div class="card recent-prescriptions-card">
+        <h3>Recent Prescriptions</h3>
+        <div id="recent-prescriptions-list" class="prescriptions-list">
+          <p class="loading">Loading prescriptions...</p>
         </div>
+        <a href="./client-list.php" class="view-prescriptions-btn">
+          View All Prescriptions
+        </a>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card info-card">
+        <div class="info-content">
+          <h3>Quick Actions</h3>
+          <div style="display: grid; gap: 12px; margin-top: 12px;">
+            <a href="./client-list.php" class="view-prescriptions-btn" style="text-align: center;">
+              View All Prescriptions
+            </a>
+            <a href="./inventory.php" class="view-prescriptions-btn" style="text-align: center;">
+              Manage Inventory
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Prescription Details Modal -->
+  <div id="prescription-details-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Prescription Details</h3>
+      <div id="prescription-details-body"></div>
     </div>
+  </div>
 
-    <?php include '../../includes/footer.php'; ?>
+  <?php include '../../includes/footer.php'; ?>
 
-    <script>
-        const role = "<?php echo $role; ?>";
-    </script>
-    <script src="../../assets/js/get-all-prescriptions.js"></script>
+  <!-- Scripts -->
+  <script src="../../assets/js/pharmacist-dashboard.js"></script>
 </body>
 </html>

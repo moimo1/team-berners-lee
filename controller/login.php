@@ -23,28 +23,30 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
-
-    // Set a consistent session id across roles, handling varying PK column names
-    $_SESSION['id'] = $user['clientID'] ?? $user['id'] ?? $user['doctorID'] ?? $user['pharmacistID'] ?? $user['adminID'] ?? null;
     $_SESSION['role'] = $role;
 
     switch ($role) {
         case 'client':
-            
+            $_SESSION['id'] = $user['clientID'];
             header("Location: ../view/client/dashboard.php");
             break;
+
         case 'doctor':
+            $_SESSION['id'] = $user['doctorID'];
             header("Location: ../view/doctor/dashboard.php");
             break;
+
         case 'pharma':
+            $_SESSION['id'] = $user['pharmaID']; // << IMPORTANT
             header("Location: ../view/pharmacist/dashboard.php");
             break;
+
         case 'admin':
+            $_SESSION['id'] = $user['adminID'];
             header("Location: ../view/admin/dashboard.php");
             break;
     }
     exit();
-} else {
-    echo "Invalid credentials.";
 }
+
 ?>

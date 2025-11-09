@@ -15,9 +15,9 @@ include '../config/db_con.php';
 $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 $searchType = isset($_GET['type']) ? $_GET['type'] : 'genericName';
 
+// Allow empty query for real-time search (return empty results)
 if (empty($query)) {
-    http_response_code(400);
-    echo json_encode(["error" => "Bad Request", "message" => "Search query is required."]);
+    echo json_encode([]);
     exit;
 }
 
@@ -27,10 +27,8 @@ if (!in_array($searchType, $validSearchTypes)) {
     $searchType = 'genericName';
 }
 
-// Sanitize search type field name (whitelist approach)
 $searchField = $searchType === 'brand' ? 'brand' : 'genericName';
 
-// Prepare SQL query based on search type
 $sql = "SELECT medID, genericName, brand, manufactureDate, expiryDate, description 
         FROM medicine 
         WHERE " . $searchField . " LIKE ? 

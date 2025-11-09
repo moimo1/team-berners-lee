@@ -38,9 +38,9 @@
                             type="text" 
                             id="drug-name-input" 
                             name="query" 
-                            placeholder="Enter Drug Name Here" 
+                            placeholder="Type to search medicines..." 
                             class="search-input"
-                            required
+                            autocomplete="off"
                         />
                         <button type="submit" class="search-btn" aria-label="Search">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +57,7 @@
                     <h3>Search Results</h3>
                 </div>
                 <div id="search-results" class="search-results">
-                    <p class="no-results">Enter a drug name and click search to find medicine information.</p>
+                    <p class="no-results">Type a drug name above to search for medicine information.</p>
                 </div>
             </div>
         </section>
