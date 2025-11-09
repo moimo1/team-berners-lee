@@ -23,50 +23,84 @@
     padding: 8px 12px;
     border-radius: 6px;
     border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.btn.outline {
     background: #ffffff;
 }
 
 .table {
     width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #d1d5db;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table thead {
+    background: #37474F;
 }
 
 .table thead th {
-    background: #9aa1a6;
-    color: #111;
+    color: #ffffff;
     text-align: left;
-    padding: 12px;
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.table tbody td {
-    background: #ffffff;
-    padding: 12px;
-    color: #0f172a;
-    text-decoration: none;
+.table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.table thead th:last-child {
+    border-top-right-radius: 8px;
 }
 
 .table tbody tr {
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.2s ease;
 }
 
 .table tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: #f8f9fa;
 }
 
-.table tbody tr:hover td {
-    background-color: #f8fafc;
+.table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
 }
 
-.table tr + tr td, .table thead + tbody tr:first-child td {
-    border-top: 1px solid #d1d5db;
+.table tbody tr:nth-child(even):hover {
+    background-color: #f1f3f5;
+}
+
+.table tbody td {
+    padding: 14px 20px;
+    color: #334155;
+    font-size: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody td:first-child {
+    font-weight: 500;
+    color: #1e293b;
 }
 
 .modal {
-  display: none; /* Hidden initially */
+  display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 2000;
   left: 0;
   top: 0;
   width: 100%;
@@ -77,22 +111,56 @@
 
 .modal-content {
   background-color: #fff;
-  margin: 10% auto;
-  padding: 20px;
+  margin: 5% auto;
+  padding: 30px;
   border-radius: 12px;
-  width: 60%;
-  max-width: 600px;
+  width: 90%;
+  max-width: 800px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  color: #0f172a;
+  font-size: 24px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 10px;
 }
 
 .close-btn {
   float: right;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+  color: #64748b;
+  line-height: 20px;
+  transition: color 0.2s ease;
 }
+
 .close-btn:hover {
-  color: red;
+  color: #dc2626;
+}
+
+#details-body {
+  margin-top: 20px;
+}
+
+#details-body p {
+  margin: 12px 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+#details-body p strong {
+  color: #0f172a;
+  margin-right: 8px;
+}
+
+#details-body hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 20px 0;
 }
 
 /* Floating Action Button */

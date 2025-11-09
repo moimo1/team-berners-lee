@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
+    <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>
 
 <body class="has-sidebar">
@@ -27,7 +28,7 @@
             <div class="page-title-bar">
                 <h2 class="page-title">Prescription History</h2>
                 <div class="title-actions">
-                    <button class="btn" title="Filter">Filter</button>
+                    <a class="btn outline" href="./prescription-details.php">My Prescription</a>
                 </div>
             </div>
             <div class="card">
@@ -37,22 +38,12 @@
                             <th>Date</th>
                             <th>Expiry Date</th>
                             <th>Doctor</th>
-                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="prescription-history-tbody">
-                        <!-- <tr>
-                            <td>Sept 20, 2025</td>
-                            <td>Oct 13, 2025</td>
-                            <td>Dr. Jose Rizal</td>
-                            <td>Completed</td>
-                        </tr>
                         <tr>
-                            <td>Sept 23, 2025</td>
-                            <td>Oct 15, 2025</td>
-                            <td>Dr. Jose Rizal</td>
-                            <td>Pending</td>
-                        </tr> -->
+                            <td colspan="3" style="text-align: center; padding: 24px; color: #64748b;">Loading prescription history...</td>
+                        </tr>
                     </tbody>
                 </table>
                 <!-- Prescription Details Modal -->

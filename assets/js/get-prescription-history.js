@@ -23,7 +23,8 @@ if (createBtn) {
 function renderPrescriptionList(data, container) {
     container.innerHTML = ''; 
     if (!data || data.length === 0) {
-        container.innerHTML = `<tr><td colspan="5" style="text-align:center; color:gray;">No prescriptions found</td></tr>`;
+        const colspan = USER_ROLE === 'client' ? 3 : USER_ROLE === 'doctor' ? 3 : 4;
+        container.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; padding:24px; color:#64748b;">No prescriptions found</td></tr>`;
         return;
     }
 
@@ -88,9 +89,15 @@ function showPrescriptionDetails(data) {
 
     detailsBody.innerHTML = '';
 
-    data.forEach(detail => {
-        detailsBody.innerHTML += getDetailContentByRole(detail) + '<hr>';
-    });
+    if (!Array.isArray(data) || data.length === 0) {
+        detailsBody.innerHTML = '<p style="color: #64748b;">No prescription details found.</p>';
+    } else {
+        data.forEach(detail => {
+            detailsBody.innerHTML += getDetailContentByRole(detail) + '<hr>';
+        });
+        // Remove last hr
+        detailsBody.innerHTML = detailsBody.innerHTML.replace(/<hr>$/, '');
+    }
 
     const modal = document.getElementById('details-modal');
     if (modal) {
@@ -103,6 +110,14 @@ function showPrescriptionDetails(data) {
                 detailsBody.innerHTML = '';
             };
         }
+        
+        // Close modal when clicking outside
+        modal.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                detailsBody.innerHTML = '';
+            }
+        };
     }
 }
 
