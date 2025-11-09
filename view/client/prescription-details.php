@@ -37,14 +37,13 @@
                             <th>Medicine</th>
                             <th>Dosage</th>
                             <th>Frequency</th>
-                            <th>Total Amount</th>
                             <th>Amount Left</th>
                             <th>Expiry Date</th>
                         </tr>
                     </thead>
                     <tbody id="prescription-details-tbody">
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 24px; color: #64748b;">Loading prescription details...</td>
+                            <td colspan="5" style="text-align: center; padding: 24px; color: #64748b;">Loading prescription details...</td>
                         </tr>
                     </tbody>
                 </table>

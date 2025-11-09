@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.status === 401) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align:center; padding:24px; color:#dc2626;">
+                        <td colspan="5" style="text-align:center; padding:24px; color:#dc2626;">
                             Please log in to view prescriptions.
                         </td>
                     </tr>`;
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!Array.isArray(data) || data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align:center; padding:24px; color:#64748b;">
+                        <td colspan="5" style="text-align:center; padding:24px; color:#64748b;">
                             No prescription details found.
                         </td>
                     </tr>`;
@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${escape(item.genericName) || 'N/A'}</td>
                     <td>${escape(item.dosage) || 'N/A'}</td>
                     <td>${extractFrequency(item.dosage)}</td>
-                    <td>N/A</td>
                     <td>${item.remainingAmount ?? 'N/A'}</td>
                     <td>${formatDate(item.dateExpiry)}</td>
                 `;
@@ -75,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to fetch prescription details:', err);
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" style="text-align:center; padding:24px; color:#dc2626;">
+                    <td colspan="5" style="text-align:center; padding:24px; color:#dc2626;">
                         Error loading prescription details.
                     </td>
                 </tr>`;
