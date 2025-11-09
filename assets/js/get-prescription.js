@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.status === 401) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align:center; padding:24px; color:#dc2626;">
+                        <td colspan="4" style="text-align:center; padding:24px; color:#dc2626;">
                             Please log in to view prescriptions.
                         </td>
                     </tr>`;
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!Array.isArray(data) || data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align:center; padding:24px; color:#64748b;">
+                        <td colspan="4" style="text-align:center; padding:24px; color:#64748b;">
                             No prescription details found.
                         </td>
                     </tr>`;
@@ -42,18 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return isNaN(d) ? 'N/A' : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
                 };
 
-                const extractFrequency = dosage => {
-                    if (!dosage) return 'N/A';
-                    const lower = dosage.toLowerCase();
-                    if (lower.includes('once')) return '1x/day';
-                    if (lower.includes('twice')) return '2x/day';
-                    if (lower.includes('three')) return '3x/day';
-                    if (lower.includes('every 6')) return '4x/day';
-                    if (lower.includes('every 8')) return '3x/day';
-                    if (lower.includes('every 12')) return '2x/day';
-                    return 'N/A';
-                };
-
                 const escape = str => {
                     const div = document.createElement('div');
                     div.textContent = str || '';
@@ -63,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 row.innerHTML = `
                     <td>${escape(item.genericName) || 'N/A'}</td>
                     <td>${escape(item.dosage) || 'N/A'}</td>
-                    <td>${extractFrequency(item.dosage)}</td>
                     <td>${item.remainingAmount ?? 'N/A'}</td>
                     <td>${formatDate(item.dateExpiry)}</td>
                 `;
@@ -74,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to fetch prescription details:', err);
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="5" style="text-align:center; padding:24px; color:#dc2626;">
+                    <td colspan="4" style="text-align:center; padding:24px; color:#dc2626;">
                         Error loading prescription details.
                     </td>
                 </tr>`;

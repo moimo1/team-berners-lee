@@ -51,7 +51,12 @@ if (!$ok) {
 
 $result = $stmt->get_result();
 
+// Derive status for each prescription (Active/Expired) based on dateExpiry
+$today = date('Y-m-d');
 while ($row = $result->fetch_assoc()) {
+    if (isset($row['dateExpiry'])) {
+        $row['status'] = ($row['dateExpiry'] < $today) ? 'Expired' : 'Active';
+    }
     $data[] = $row;
 }
 

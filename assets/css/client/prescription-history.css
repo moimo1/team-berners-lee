@@ -24,102 +24,217 @@
     border-radius: 6px;
     border: 1px solid #cbd5e1;
     background: #ffffff;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #d1d5db;
-}
-
-.table thead th {
-    background: #9aa1a6;
-    color: #111;
-    text-align: left;
-    padding: 12px;
-}
-
-.table tbody td {
-    background: #ffffff;
-    padding: 12px;
     color: #0f172a;
     text-decoration: none;
 }
 
-.table tbody tr {
-    cursor: pointer;
-    transition: background-color 0.15s ease;
+.btn.outline {
+    background: #ffffff;
 }
 
-.table tbody tr:hover {
-    background-color: #f8fafc;
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.table tbody tr:hover td {
-    background-color: #f8fafc;
+.table thead { 
+    background: #37474F; 
 }
 
-.table tr + tr td, .table thead + tbody tr:first-child td {
-    border-top: 1px solid #d1d5db;
+.table thead th {
+    color: #ffffff;
+    text-align: left;
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+.table thead th:first-child { 
+    border-top-left-radius: 8px; 
+}
+
+.table thead th:last-child { 
+    border-top-right-radius: 8px; 
+}
+
+.table tbody tr { 
+    transition: background-color 0.2s ease; 
+}
+
+.table tbody tr:hover { 
+    background-color: #f8f9fa; 
+}
+
+.table tbody tr:nth-child(even) { 
+    background-color: #fafbfc; 
+}
+
+.table tbody tr:nth-child(even):hover { 
+    background-color: #f1f3f5; 
+}
+
+.table tbody td {
+    padding: 14px 20px;
+    color: #334155;
+    font-size: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table tbody tr:last-child td { 
+    border-bottom: none; 
+}
+
+.table tbody td:first-child { 
+    font-weight: 500; 
+    color: #1e293b; 
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+
+.status-badge.is-active { 
+    background: #ecfdf5; 
+    color: #065f46; 
+    border-color: #a7f3d0; 
+}
+
+.status-badge.is-expired { 
+    background: #fef2f2; 
+    color: #991b1b; 
+    border-color: #fecaca; 
+}
+
+.status-badge.is-pending { 
+    background: #fffbeb; 
+    color: #92400e; 
+    border-color: #fde68a; 
+}
+
+/* Modal details */
 .modal {
-  display: none; /* Hidden initially */
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+    display: none; /* Hidden initially */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 12px;
-  width: 60%;
-  max-width: 600px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 60%;
+    max-width: 640px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
 }
 
 .close-btn {
-  float: right;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
+    float: right;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
 }
+
 .close-btn:hover {
-  color: red;
+    color: #333;
+}
+
+.details-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-card {
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.detail-card + .detail-card {
+    margin-top: 12px;
+}
+
+.detail-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    margin: 4px 0;
+    color: #374151;
+}
+
+.detail-desc {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e5e7eb;
+    color: #374151;
+}
+
+.details-sep {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 12px 0;
 }
 
 /* Floating Action Button */
 .floating-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  background-color: #2563eb; /* Bright blue */
-  color: white;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  transition: background-color 0.2s ease, transform 0.2s ease;
-  z-index: 1100;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background-color: #2563eb;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    z-index: 1100;
 }
 
 .floating-btn:hover {
-  background-color: #1e40af; /* Darker blue on hover */
-  transform: scale(1.05);
+    background-color: #1e40af;
+    transform: scale(1.05);
 }
 
 .floating-btn:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
-

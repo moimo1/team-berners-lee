@@ -30,7 +30,7 @@
         
         var brandHtml = '';
         if (medicine.brand && medicine.brand.trim()) {
-            brandHtml = '<p class="medicine-brand">Brand: ' + escapeHtml(medicine.brand) + '</p>';
+            brandHtml = '<p class="medicine-brand">' + escapeHtml(medicine.brand) + '</p>';
         }
         
         var descriptionHtml = '';

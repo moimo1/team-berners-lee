@@ -333,7 +333,8 @@ html, body {
   color: #dc2626;
 }
 
-.medicine-item {
+/* Scoped to info-card to prevent conflicts with search-medicine.css */
+.info-card .medicine-item {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 16px;
@@ -341,17 +342,9 @@ html, body {
   background: #ffffff;
   border-radius: 10px;
   border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.medicine-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e1;
-  transform: translateY(-2px);
-}
-
-.medicine-name {
+.info-card .medicine-name {
   font-weight: 600;
   color: #0f172a;
   font-size: 16px;
@@ -359,21 +352,28 @@ html, body {
   line-height: 1.4;
 }
 
-.medicine-info {
+.info-card .medicine-brand {
+  font-weight: 400;
+  color: #64748b;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.info-card .medicine-info {
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: flex-end;
 }
 
-.medicine-dosage {
+.info-card .medicine-dosage {
   font-weight: 500;
   color: #475569;
   font-size: 14px;
   text-align: right;
 }
 
-.medicine-remaining {
+.info-card .medicine-remaining {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -384,7 +384,7 @@ html, body {
   min-width: 100px;
 }
 
-.remaining-label {
+.info-card .remaining-label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -392,32 +392,33 @@ html, body {
   font-weight: 600;
 }
 
-.remaining-value {
+.info-card .remaining-value {
   font-size: 16px;
   font-weight: 700;
   color: #0f172a;
 }
 
-.remaining-high .remaining-value {
+.info-card .remaining-high .remaining-value {
   color: #059669;
 }
 
-.remaining-medium .remaining-value {
+.info-card .remaining-medium .remaining-value {
   color: #d97706;
 }
 
-.remaining-low .remaining-value {
+.info-card .remaining-low .remaining-value {
   color: #dc2626;
 }
 
-.medicine-list {
+.info-card .medicine-list {
   display: grid;
   gap: 12px;
   margin-bottom: 16px;
 }
 
-.medicine-list .no-medications,
-.medicine-list .error-message {
+.info-card .medicine-list .no-data,
+.info-card .medicine-list .no-medications,
+.info-card .medicine-list .error-message {
   padding: 24px;
   color: #64748b;
   font-size: 14px;
@@ -427,7 +428,7 @@ html, body {
   border: 1px dashed #e2e8f0;
 }
 
-.medicine-list .error-message {
+.info-card .medicine-list .error-message {
   color: #dc2626;
   background: #fef2f2;
   border-color: #fecaca;

@@ -2,14 +2,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.querySelector('#prescription-history-tbody');
     if (!listContainer) return;
 
+    // Initial loading message
+    listContainer.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:16px; color:#64748b;">Loading prescription history...</td></tr>`;
+
     fetch('../../controller/get-prescription-history.php', { credentials: 'same-origin' })
-        .then(res => res.json())
+        .then(async res => {
+            if (res.status === 401) {
+                listContainer.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px; color:#dc2626;">Please log in to view prescriptions.</td></tr>';
+                return null;
+            }
+            if (!res.ok) {
+                const text = await res.text().catch(() => '');
+                throw new Error(`Request failed (${res.status}): ${text}`);
+            }
+            return res.json();
+        })
         .then(data => {
-            console.log('Fetched data:', data);
-            renderPrescriptionList(data, listContainer);
+            if (data === null) return;
+            renderPrescriptionList(Array.isArray(data) ? data : [], listContainer);
         })
         .catch(err => {
             console.error('Failed to fetch prescription history:', err);
+            listContainer.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px; color:#dc2626;">Error loading prescription history. Please try again later.</td></tr>';
         });
 });
 
@@ -21,9 +35,9 @@ if (createBtn) {
 }
 
 function renderPrescriptionList(data, container) {
-    container.innerHTML = ''; 
-    if (!data || data.length === 0) {
-        container.innerHTML = `<tr><td colspan="5" style="text-align:center; color:gray;">No prescriptions found</td></tr>`;
+    container.innerHTML = '';
+    if (!Array.isArray(data) || data.length === 0) {
+        container.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:16px; color:#64748b;">No prescriptions found</td></tr>`;
         return;
     }
 
@@ -37,49 +51,74 @@ function renderPrescriptionList(data, container) {
 }
 
 function getRowContentByRole(item) {
+    const dateGiven = formatDate(item.dateGiven);
+    const dateExpiry = formatDate(item.dateExpiry);
+    const status = item.status || 'Active'; // Default to 'Active' if status is not set
+
+    // Escape HTML for doctor names
+    const doctorName = escapeHtml((item.doctorFirstName || '') + ' ' + (item.doctorLastName || ''));
+
     let html = '';
-    dateGiven = dateToWords(item.dateGiven);
-    dateExpiry = dateToWords(item.dateExpiry);
     switch (USER_ROLE) {
         case 'client':
             html = `
                 <td>${dateGiven}</td>
                 <td>${dateExpiry}</td>
-                <td>Dr. ${item.doctorFirstName ?? ''} ${item.doctorLastName ?? ''}</td>
+                <td>Dr. ${doctorName}</td>
+                <td><span class="status-badge ${getStatusClass(status)}">${status}</span></td>
             `;
             break;
-
         case 'doctor':
+            // Assuming doctor view needs client names
+            const clientName = escapeHtml((item.clientFirstName || '') + ' ' + (item.clientLastName || ''));
             html = `
-                <td>${item.dateGiven ?? ''}</td>
-                <td>${item.dateExpiry ?? ''}</td>
-                <td>${item.clientFirstName ?? ''} ${item.clientLastName ?? ''}</td>
+                <td>${dateGiven}</td>
+                <td>${dateExpiry}</td>
+                <td>${clientName}</td>
+                <td><span class="status-badge ${getStatusClass(status)}">${status}</span></td>
             `;
             break;
-
-        case 'pharmacist': // ✅ Pharmacist view
+        case 'pharmacist':
+            // Assuming pharmacist view needs client names and prescID
+            const pharmaClientName = escapeHtml((item.clientFirstName || '') + ' ' + (item.clientLastName || ''));
             html = `
-                <td>${item.prescID ?? ''}</td>
-                <td>${item.clientFirstName ?? ''} ${item.clientLastName ?? ''}</td>
-                <td>${item.dateGiven ?? ''}</td>
-                <td>${item.status ?? 'Pending'}</td>
+                <td>${escapeHtml(item.prescID || 'N/A')}</td>
+                <td>${pharmaClientName}</td>
+                <td>${dateGiven}</td>
+                <td><span class="status-badge ${getStatusClass(status)}">${status}</span></td>
             `;
             break;
-
         default:
             html = `<td colspan="4">Unknown role or missing data</td>`;
     }
-
     return html;
 }
 
 function rowClicked(prescID) {
-    console.log('Row clicked for prescriptionID:', prescID);
-
-    fetch(`../../controller/get-prescription.php?prescID=${prescID}`, { credentials: 'same-origin' })
-        .then(res => res.json())
-        .then(data => showPrescriptionDetails(data))
-        .catch(err => console.error('Failed to fetch prescription details:', err));
+    if (!prescID) return;
+    fetch(`../../controller/get-prescription.php?prescID=${encodeURIComponent(prescID)}`, { credentials: 'same-origin' })
+        .then(async res => {
+            if (res.status === 401) {
+                throw new Error('Please log in to view prescription details.');
+            }
+            if (!res.ok) {
+                const text = await res.text().catch(() => '');
+                throw new Error(`Request failed (${res.status}): ${text}`);
+            }
+            return res.json();
+        })
+        .then(data => showPrescriptionDetails(Array.isArray(data) ? data : []))
+        .catch(err => {
+            console.error('Failed to fetch prescription details:', err);
+            const detailsBody = document.getElementById('details-body');
+            if (detailsBody) {
+                detailsBody.innerHTML = '<p style="text-align: center; color: #dc2626; padding: 24px;">Error loading prescription details. Please try again later.</p>';
+                const modal = document.getElementById('details-modal');
+                if (modal) {
+                    modal.style.display = 'block';
+                }
+            }
+        });
 }
 
 function showPrescriptionDetails(data) {
@@ -88,9 +127,26 @@ function showPrescriptionDetails(data) {
 
     detailsBody.innerHTML = '';
 
-    data.forEach(detail => {
-        detailsBody.innerHTML += getDetailContentByRole(detail) + '<hr>';
-    });
+    if (!Array.isArray(data) || data.length === 0) {
+        detailsBody.innerHTML = '<p style="text-align:center; color:#64748b; padding: 16px;">No prescription details found.</p>';
+    } else {
+        const first = data[0];
+        const header = `
+            <div class="details-header">
+                <div><strong>Prescription ID:</strong> ${escapeHtml(first.prescID || 'N/A')}</div>
+                <div><strong>Date Given:</strong> ${formatDate(first.dateGiven)}</div>
+                <div><strong>Expiry Date:</strong> ${formatDate(first.dateExpiry)}</div>
+            </div>
+        `;
+        detailsBody.innerHTML = header;
+
+        data.forEach((detail, idx) => {
+            detailsBody.innerHTML += getDetailContentByRole(detail);
+            if (idx < data.length - 1) {
+                detailsBody.innerHTML += '<hr class="details-sep">';
+            }
+        });
+    }
 
     const modal = document.getElementById('details-modal');
     if (modal) {
@@ -98,38 +154,61 @@ function showPrescriptionDetails(data) {
 
         const closeBtn = modal.querySelector('.close-btn');
         if (closeBtn) {
-            closeBtn.onclick = () => {
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
                 modal.style.display = 'none';
                 detailsBody.innerHTML = '';
             };
         }
+
+        // Close modal when clicking outside
+        modal.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                detailsBody.innerHTML = '';
+            }
+        };
     }
 }
 
 function getDetailContentByRole(detail) {
-    let html = `
-        <p><strong>Medicine:</strong> ${detail.genericName ?? ''}</p>
-        <p><strong>Dosage:</strong> ${detail.dosage ?? ''}</p>
-        <p><strong>Amount Remaining:</strong> ${detail.remainingAmount ?? ''}</p>
+    const name = escapeHtml(detail.genericName || 'N/A');
+    const dosage = escapeHtml(detail.dosage || 'N/A');
+    const remaining = (detail.remainingAmount !== null && detail.remainingAmount !== undefined) ? String(detail.remainingAmount) : 'N/A';
+    const desc = escapeHtml(detail.description || '');
+
+    return `
+        <div class="detail-card">
+            <div class="detail-main">
+                <div class="detail-row"><strong>Medicine:</strong> ${name}</div>
+                <div class="detail-row"><strong>Dosage:</strong> ${dosage}</div>
+                <div class="detail-row"><strong>Amount Remaining:</strong> ${remaining}</div>
+            </div>
+            ${desc ? `<div class="detail-desc"><strong>Instructions:</strong> ${desc}</div>` : ''}
+        </div>
     `;
-
-    if (USER_ROLE === 'doctor') {
-        html += `<p><strong>Description:</strong> ${detail.description ?? ''}</p>`;
-    } else if (USER_ROLE === 'client') {
-        html += `<p><strong>Instructions:</strong> ${detail.description ?? ''}</p>`;
-    } else if (USER_ROLE === 'pharmacist') {
-        html += `
-            <p><strong>Description:</strong> ${detail.description ?? ''}</p>
-            <p><strong>Available Stock:</strong> ${detail.availableStock ?? 'N/A'}</p>
-            <p><strong>Last Dispensed:</strong> ${detail.lastDispensed ?? 'Not yet dispensed'}</p>
-        `;
-    }
-
-    return html;
 }
 
-function dateToWords(dateString) {
-  const date = new Date(dateString);
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    try {
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch (e) {
+        return 'N/A';
+    }
+}
+
+function getStatusClass(status) {
+    const s = (status || '').toLowerCase();
+    if (s === 'expired') return 'is-expired';
+    if (s === 'pending') return 'is-pending';
+    return 'is-active';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
 }
