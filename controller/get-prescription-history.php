@@ -23,11 +23,11 @@ if ($role === 'client') {
             ORDER BY p.dateGiven DESC";
 } else if ($role === 'doctor') {
     // Return all prescription columns + related client info
-    $sql = "SELECT p.*, c.clientID, c.firstName AS clientFirstName, c.lastName AS clientLastName
+    $sql = "SELECT DISTINCT p.*, c.clientID, c.firstName AS clientFirstName, c.lastName AS clientLastName
             FROM prescription p
             JOIN client c ON p.clientID = c.clientID
-            JOIN prescriptiondetails pd ON p.prescID = pd.prescID
-            WHERE p.doctorID = ?";
+            WHERE p.doctorID = ?
+            ORDER BY p.dateGiven DESC";
 } else {
     echo json_encode([]); 
     exit;
