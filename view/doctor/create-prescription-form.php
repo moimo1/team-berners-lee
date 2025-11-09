@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="../../assets/css/header.css">
   <link rel="stylesheet" href="../../assets/css/client/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/doctor/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/client/prescription-history.css">
   <link rel="stylesheet" href="../../assets/css/doctor/create-prescription-form.css">
   <link rel="stylesheet" href="../../assets/css/navbar.css">
 </head>

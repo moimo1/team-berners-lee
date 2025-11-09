@@ -60,7 +60,7 @@
               Create New Prescription
             </a>
             <a href="./prescriptions.php" class="view-prescriptions-btn" style="text-align: center;">
-              View My Patients
+              View Prescriptions
             </a>
           </div>
         </div>
