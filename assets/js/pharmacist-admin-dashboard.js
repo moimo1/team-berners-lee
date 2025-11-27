@@ -1,4 +1,4 @@
-const DASHBOARD_ENDPOINT = '/api/pharma-admin/dashboard';
+const DASHBOARD_ENDPOINT = 'http://localhost:3000/api/pharma-admin/dashboard';
 const STATUS_TONES = {
   'Fulfilled': 'status-success',
   'Collected': 'status-success',
