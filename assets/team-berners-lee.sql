@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 27, 2025 at 08:12 AM
+-- Generation Time: Nov 27, 2025 at 10:19 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -77,27 +77,25 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `admin`;
 CREATE TABLE IF NOT EXISTS `admin` (
-  `adminID` char(4) NOT NULL,
-  `username` varchar(50) NOT NULL,
+  `id` varchar(10) NOT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`adminID`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`adminID`, `username`, `password`) VALUES
-('A001', 'admin1', 'admin1'),
-('A002', 'admin2', 'admin2'),
-('A003', 'admin3', 'admin3'),
-('A004', 'admin4', 'admin4'),
-('A005', 'admin5', 'admin5'),
-('A006', 'admin6', 'admin6'),
-('A007', 'admin7', 'admin7'),
-('A008', 'admin8', 'admin8'),
-('A009', 'admin9', 'admin9'),
-('A010', 'admin10', 'admin10');
+INSERT INTO `admin` (`id`, `firstname`, `lastname`, `email`, `password`) VALUES
+('PHA001', 'Jane', 'Doe', 'jdoe@pharma.admin', '123'),
+('PHA002', 'Michael', 'Smith', 'msmith@pharma.admin', '123'),
+('PHA003', 'Anna', 'Lopez', 'alopez@pharma.admin', '123'),
+('PHA004', 'Robert', 'Cruz', 'rcruz@pharma.admin', '123'),
+('PHA005', 'Emily', 'Tan', 'etan@pharma.admin', '123');
 
 -- --------------------------------------------------------
 
@@ -133,6 +131,59 @@ INSERT INTO `client` (`clientID`, `firstName`, `lastName`, `birthdate`, `address
 ('C008', 'Mia', 'Martinez', '1997-09-18', '34 Willow St', 'mia@email.com', '123'),
 ('C009', 'Luke', 'Wilson', '1991-02-27', '78 Cherry St', 'luke@email.com', '123'),
 ('C010', 'Olivia', 'Taylor', '1996-12-15', '90 Ash St', 'olivia@email.com', '123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dispense`
+--
+
+DROP TABLE IF EXISTS `dispense`;
+CREATE TABLE IF NOT EXISTS `dispense` (
+  `dispenseID` int NOT NULL AUTO_INCREMENT,
+  `prescID` char(4) NOT NULL,
+  `pharmaID` char(5) NOT NULL,
+  `dateDispensed` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`dispenseID`),
+  KEY `prescID` (`prescID`),
+  KEY `pharmaID` (`pharmaID`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `dispense`
+--
+
+INSERT INTO `dispense` (`dispenseID`, `prescID`, `pharmaID`, `dateDispensed`) VALUES
+(1, 'P001', 'PH001', '2025-10-02 09:30:00'),
+(2, 'P002', 'PH002', '2025-10-03 14:15:00'),
+(3, 'P005', 'PH001', '2025-10-21 10:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dispense_items`
+--
+
+DROP TABLE IF EXISTS `dispense_items`;
+CREATE TABLE IF NOT EXISTS `dispense_items` (
+  `itemID` int NOT NULL AUTO_INCREMENT,
+  `dispenseID` int NOT NULL,
+  `medID` char(4) NOT NULL,
+  `quantitySold` int NOT NULL,
+  `priceAtSale` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`itemID`),
+  KEY `dispenseID` (`dispenseID`),
+  KEY `medID` (`medID`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `dispense_items`
+--
+
+INSERT INTO `dispense_items` (`itemID`, `dispenseID`, `medID`, `quantitySold`, `priceAtSale`) VALUES
+(1, 1, 'M002', 12, 15.50),
+(2, 2, 'M004', 8, 8.25),
+(3, 3, 'M010', 30, 5.00);
 
 -- --------------------------------------------------------
 
@@ -295,34 +346,6 @@ INSERT INTO `pharmacist` (`pharmaID`, `firstName`, `lastName`, `location`, `emai
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pharma_admin`
---
-
-DROP TABLE IF EXISTS `pharma_admin`;
-CREATE TABLE IF NOT EXISTS `pharma_admin` (
-  `id` varchar(10) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `pharma_admin`
---
-
-INSERT INTO `pharma_admin` (`id`, `firstname`, `lastname`, `email`, `password`) VALUES
-('PHA001', 'Jane', 'Doe', 'jdoe@pharma.admin', '123'),
-('PHA002', 'Michael', 'Smith', 'msmith@pharma.admin', '123'),
-('PHA003', 'Anna', 'Lopez', 'alopez@pharma.admin', '123'),
-('PHA004', 'Robert', 'Cruz', 'rcruz@pharma.admin', '123'),
-('PHA005', 'Emily', 'Tan', 'etan@pharma.admin', '123');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `prescription`
 --
 
@@ -383,6 +406,36 @@ INSERT INTO `prescriptiondetails` (`prescID`, `medID`, `dosage`, `remainingAmoun
 ('P006', 'M011', '500mg tablet every 6 hours', 20, 'Take after meals to relieve pain'),
 ('P007', 'M003', '500mg tablet every 6 hours', 12, 'Take after meals to relieve pain'),
 ('P008', 'M003', '500 mg every 10 hours', 10, 'Take after meals to relieve pain');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `temp`
+--
+
+DROP TABLE IF EXISTS `temp`;
+CREATE TABLE IF NOT EXISTS `temp` (
+  `adminID` char(4) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`adminID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `temp`
+--
+
+INSERT INTO `temp` (`adminID`, `username`, `password`) VALUES
+('A001', 'admin1', 'admin1'),
+('A002', 'admin2', 'admin2'),
+('A003', 'admin3', 'admin3'),
+('A004', 'admin4', 'admin4'),
+('A005', 'admin5', 'admin5'),
+('A006', 'admin6', 'admin6'),
+('A007', 'admin7', 'admin7'),
+('A008', 'admin8', 'admin8'),
+('A009', 'admin9', 'admin9'),
+('A010', 'admin10', 'admin10');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
