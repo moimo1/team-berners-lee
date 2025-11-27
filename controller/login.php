@@ -48,7 +48,7 @@ if ($result->num_rows === 1) {
             break;
         case 'pharma-admin':
             $_SESSION['id'] = $user['pharmaAdminID'];
-            header("Location: ../view/pharmacist/admin/dashboard.php");
+            header("Location: ../view/admin/dashboard.php");
             break;
     }
     exit();

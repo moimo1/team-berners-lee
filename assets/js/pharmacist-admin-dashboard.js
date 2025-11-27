@@ -71,22 +71,20 @@ function renderPharmacistOverview(pharmacists = []) {
   if (!tbody) return;
 
   if (!Array.isArray(pharmacists) || pharmacists.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5">No pharmacists found.</td></tr>';
+    // Adjusted colspan to 3 (Pharmacist, Handled, Shift)
+    tbody.innerHTML = '<tr><td colspan="3">No pharmacists found.</td></tr>';
     return;
   }
 
   tbody.innerHTML = '';
   pharmacists.forEach((pharmacist) => {
-    const pending = pharmacist.pendingIssues ?? 0;
-    const pendingLabel = pending === 0 ? '0 pending' : `${pending} flagged`;
-    const pendingTone = pending === 0 ? 'status-success' : pending > 3 ? 'status-delayed' : 'status-pending';
-    const errorRate = pharmacist.errorRate ?? (pharmacist.escalationCount ? `${pharmacist.escalationCount} escalations` : '—');
+    // [REMOVED] All pending/flagged logic
+
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${formatName(pharmacist)}</td>
       <td>${pharmacist.handled ?? 0} prescriptions</td>
-      <td><span class="${pendingTone}">${pendingLabel}</span></td>
-      <td>${errorRate}</td>
+      <!-- [REMOVED] The <td> for Pending -->
       <td>${pharmacist.shift ?? pharmacist.location ?? '—'}</td>
     `;
     tbody.appendChild(row);

@@ -1,9 +1,9 @@
-import * as Dashboard from "../models/dashboard.model.js";
+import * as DashboardModel from "../models/dashboard.model.js";
 
 export async function getDashboardData() {
-  const stats = await Dashboard.getStats();
-  const pharmacists = await Dashboard.getPharmacists();
-  const recentPrescriptions = await Dashboard.getRecentPrescriptions();
+  const stats = await DashboardModel.getStats();
+  const pharmacists = await DashboardModel.getPharmacists();
+  const recentPrescriptions = await DashboardModel.getRecentPrescriptions();
 
   return {
     stats,

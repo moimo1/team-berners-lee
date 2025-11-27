@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pharmacist Admin | Dashboard</title>
-  <link rel="stylesheet" href="../../../assets/css/pharmacist/admin.css">
+  <link rel="stylesheet" href="../../assets/css/pharmacist/admin.css">
 </head>
 <body>
   <header>
@@ -36,15 +36,10 @@
           <tr>
             <th>Pharmacist</th>
             <th>Handled</th>
-            <th>Pending</th>
-            <th>Error Rate</th>
             <th>Shift</th>
           </tr>
         </thead>
         <tbody id="pharmacist-overview-body">
-          <tr>
-            <td colspan="5">Crunching roster metrics…</td>
-          </tr>
         </tbody>
       </table>
       <div class="legend">
@@ -75,7 +70,7 @@
     </section>
   </main>
 
-  <script src="../../../assets/js/pharmacist-admin-dashboard.js"></script>
+  <script src="../../assets/js/pharmacist-admin-dashboard.js"></script>
 </body>
 </html>
 

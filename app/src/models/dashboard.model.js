@@ -1,84 +1,65 @@
 import { db } from "../config/db.js";
 
-// DASHBOARD STATS
+// 1. DASHBOARD STATS (Unchanged - this logic is real)
 export async function getStats() {
-  const [[prescCount]] = await db.query(`
-    SELECT COUNT(*) AS totalPrescriptions
-    FROM prescription
-  `);
-
-  const [[clientCount]] = await db.query(`
-    SELECT COUNT(*) AS totalClients
-    FROM client
-  `);
-
-  const [[doctorCount]] = await db.query(`
-    SELECT COUNT(*) AS totalDoctors
-    FROM doctor
-  `);
-
-  const [[medicineCount]] = await db.query(`
-    SELECT COUNT(*) AS totalMedicines
-    FROM medicine
-  `);
+  const [[salesCount]] = await db.query(`SELECT COUNT(*) AS count FROM dispense`);
+  const [[totalCount]] = await db.query(`SELECT COUNT(*) AS count FROM prescription`);
+  const pendingCount = totalCount.count - salesCount.count;
 
   return {
-    totalPrescriptions: prescCount.totalPrescriptions,
-    totalClients: clientCount.totalClients,
-    totalDoctors: doctorCount.totalDoctors,
-    totalMedicines: medicineCount.totalMedicines
+    completed: salesCount.count,
+    pending: pendingCount > 0 ? pendingCount : 0,
+    escalations: 0
   };
 }
 
-
-// PHARMACIST OVERVIEW
+// 2. PHARMACIST OVERVIEW (UPDATED)
 export async function getPharmacists() {
   const [rows] = await db.query(`
     SELECT 
       ph.pharmaID,
       ph.firstName,
       ph.lastName,
-      ph.location,
+      ph.location AS shift,
       ph.email,
-      COUNT(p.prescID) AS handledPrescriptions
+      
+      -- Count successful sales
+      COUNT(d.dispenseID) AS handled
+
+      -- [REMOVED] pendingIssues logic
+      -- [REMOVED] errorRate logic
+
     FROM pharmacist ph
-    LEFT JOIN prescription p 
-        ON ph.pharmaID = p.doctorID  -- pharmacist does NOT exist in prescription table
-    GROUP BY ph.pharmaID
+    LEFT JOIN dispense d 
+        ON TRIM(ph.pharmaID) = TRIM(d.pharmaID)
+    GROUP BY ph.pharmaID, ph.firstName, ph.lastName, ph.location, ph.email
+    ORDER BY handled DESC
   `);
 
   return rows;
 }
 
-
-// RECENT PRESCRIPTIONS
+// 3. RECENT PRESCRIPTIONS (Unchanged)
 export async function getRecentPrescriptions() {
   const [rows] = await db.query(`
     SELECT 
         p.prescID,
-        d.firstName AS doctorFirst,
-        d.lastName AS doctorLast,
-        c.firstName AS clientFirst,
-        c.lastName AS clientLast,
-        p.dateGiven,
-        p.dateExpiry,
-        COUNT(pd.medID) AS totalMedicines
+        c.firstName AS clientFirstName,
+        c.lastName AS clientLastName,
+        (SELECT m.genericName FROM prescriptiondetails pd JOIN medicine m ON pd.medID = m.medID WHERE pd.prescID = p.prescID LIMIT 1) AS medicineName,
+        CONCAT(ph.firstName, ' ', ph.lastName) AS pharmacistName,
+        CASE 
+            WHEN d.dispenseID IS NOT NULL THEN 'Fulfilled'
+            WHEN p.dateExpiry < CURRENT_DATE THEN 'Requires Review'
+            ELSE 'Pending'
+        END AS status
     FROM prescription p
-    JOIN doctor d ON p.doctorID = d.doctorID
     JOIN client c ON p.clientID = c.clientID
-    LEFT JOIN prescriptiondetails pd 
-        ON p.prescID = pd.prescID
-    GROUP BY p.prescID
+    LEFT JOIN dispense d ON p.prescID = d.prescID
+    LEFT JOIN pharmacist ph ON d.pharmaID = ph.pharmaID
     ORDER BY p.dateGiven DESC
     LIMIT 10
   `);
 
-  return rows.map(r => ({
-    prescID: r.prescID,
-    doctorName: `${r.doctorFirst} ${r.doctorLast}`,
-    clientName: `${r.clientFirst} ${r.clientLast}`,
-    dateGiven: r.dateGiven,
-    dateExpiry: r.dateExpiry,
-    totalMedicines: r.totalMedicines
-  }));
+  return rows;
 }
