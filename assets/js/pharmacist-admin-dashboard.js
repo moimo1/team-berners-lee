@@ -71,14 +71,12 @@ function renderPharmacistOverview(pharmacists = []) {
   if (!tbody) return;
 
   if (!Array.isArray(pharmacists) || pharmacists.length === 0) {
-    // Adjusted colspan to 3 (Pharmacist, Handled, Shift)
     tbody.innerHTML = '<tr><td colspan="3">No pharmacists found.</td></tr>';
     return;
   }
 
   tbody.innerHTML = '';
   pharmacists.forEach((pharmacist) => {
-    // [REMOVED] All pending/flagged logic
 
     const row = document.createElement('tr');
     row.innerHTML = `
