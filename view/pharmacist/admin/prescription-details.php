@@ -13,41 +13,51 @@
       <span>Pharmacist oversight cockpit</span>
     </div>
     <nav class="nav-links">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./prescription-search.html">Search</a>
-      <a href="./prescription-details.html" class="active">Prescription View</a>
-      <a href="./pharmacist-history.html">History</a>
+      <a href="./dashboard.php">Dashboard</a>
+      <a href="./prescription-search.php">Search</a>
+      <a href="./prescription-details.php" class="active">Prescription View</a>
+      <a href="./pharmacist-history.php">History</a>
     </nav>
   </header>
 
   <main>
     <section class="card">
-      <h2>Prescription RX-48213</h2>
+      <h2>Prescription Overview</h2>
       <p class="help-text">All fulfillment checkpoints captured for audit and compliance.</p>
-      <div class="details-grid">
+      <div class="filter-bar">
+        <div>
+          <label for="details-pharmacist-filter">Pharmacist</label>
+          <select id="details-pharmacist-filter"></select>
+        </div>
+        <div>
+          <label for="details-prescription-select">Prescription</label>
+          <select id="details-prescription-select"></select>
+        </div>
+      </div>
+      <div class="details-grid" id="details-grid">
         <div class="detail-card">
           <span>Medicine</span>
-          <strong>Metformin 500 mg</strong>
+          <strong id="details-medicine">—</strong>
         </div>
         <div class="detail-card">
           <span>Quantity</span>
-          <strong>60 tablets</strong>
+          <strong id="details-quantity">—</strong>
         </div>
         <div class="detail-card">
           <span>Client</span>
-          <strong>Julia Howard</strong>
+          <strong id="details-client">—</strong>
         </div>
         <div class="detail-card">
           <span>Pharmacist</span>
-          <strong>Amelia Cruz</strong>
+          <strong id="details-pharmacist">—</strong>
         </div>
         <div class="detail-card">
           <span>Status</span>
-          <strong class="status-success">Fulfilled</strong>
+          <strong id="details-status">—</strong>
         </div>
         <div class="detail-card">
           <span>Pickup Window</span>
-          <strong>Nov 25 · 4‑6 PM</strong>
+          <strong id="details-pickup-window">—</strong>
         </div>
       </div>
     </section>
@@ -63,30 +73,9 @@
             <th>Notes</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="verification-table-body">
           <tr>
-            <td>Prescription Intake</td>
-            <td>Daniel Li</td>
-            <td>09:12 AM</td>
-            <td>Insurance validated</td>
-          </tr>
-          <tr>
-            <td>Dispensing</td>
-            <td>Amelia Cruz</td>
-            <td>10:03 AM</td>
-            <td>Lot #MC-23304</td>
-          </tr>
-          <tr>
-            <td>Quality Check</td>
-            <td>Marcus Lee</td>
-            <td>10:21 AM</td>
-            <td>Dual verification complete</td>
-          </tr>
-          <tr>
-            <td>Pickup Confirmation</td>
-            <td>Front Desk</td>
-            <td>Awaiting client</td>
-            <td class="status-pending">Reminder sent</td>
+            <td colspan="4">Select a prescription to load checklist steps.</td>
           </tr>
         </tbody>
       </table>
@@ -94,10 +83,12 @@
 
     <section class="card">
       <h3>Compliance Notes</h3>
-      <textarea rows="4" placeholder="Add manager remarks, counseling notes, or follow-up tasks."></textarea>
-      <div class="help-text">Notes are immutable once the client collects the medication.</div>
+      <textarea rows="4" id="compliance-notes" placeholder="Add manager remarks, counseling notes, or follow-up tasks."></textarea>
+      <div class="help-text" id="notes-meta">Notes are immutable once the client collects the medication.</div>
     </section>
   </main>
+
+  <script src="../../assets/js/pharmacist-admin-details.js"></script>
 </body>
 </html>
 

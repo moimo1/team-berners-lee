@@ -13,10 +13,10 @@
       <span>Pharmacist oversight cockpit</span>
     </div>
     <nav class="nav-links">
-      <a href="./dashboard.html" class="active">Dashboard</a>
-      <a href="./prescription-search.html">Search</a>
-      <a href="./prescription-details.html">Prescription View</a>
-      <a href="./pharmacist-history.html">History</a>
+      <a href="./dashboard.php" class="active">Dashboard</a>
+      <a href="./prescription-search.php">Search</a>
+      <a href="./prescription-details.php">Prescription View</a>
+      <a href="./pharmacist-history.php">History</a>
     </nav>
   </header>
 
@@ -24,22 +24,8 @@
     <section class="card">
       <h2>Team Pulse</h2>
       <p class="help-text">Snapshot of today’s fulfillment workload per pharmacist.</p>
-      <div class="grid grid-3">
-        <div class="stat-card">
-          <h4>Prescriptions Completed</h4>
-          <div class="stat-value">148</div>
-          <div class="badge">+8% vs yesterday</div>
-        </div>
-        <div class="stat-card">
-          <h4>Pending Approvals</h4>
-          <div class="stat-value">27</div>
-          <div class="badge">12 require review</div>
-        </div>
-        <div class="stat-card">
-          <h4>Escalations</h4>
-          <div class="stat-value">3</div>
-          <div class="badge">All resolved within SLA</div>
-        </div>
+      <div class="grid grid-3" id="team-pulse-cards" aria-live="polite">
+        <p class="help-text">Loading metrics...</p>
       </div>
     </section>
 
@@ -55,34 +41,9 @@
             <th>Shift</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="pharmacist-overview-body">
           <tr>
-            <td>Amelia Cruz</td>
-            <td>56 prescriptions</td>
-            <td><span class="pill">4 waiting pickup</span></td>
-            <td>0.8%</td>
-            <td>Morning</td>
-          </tr>
-          <tr>
-            <td>Daniel Li</td>
-            <td>41 prescriptions</td>
-            <td>2 QA checks</td>
-            <td>0.0%</td>
-            <td>Midday</td>
-          </tr>
-          <tr>
-            <td>Sophie Patel</td>
-            <td>51 prescriptions</td>
-            <td class="status-pending">6 insurance holds</td>
-            <td>1.1%</td>
-            <td>Evening</td>
-          </tr>
-          <tr>
-            <td>Marcus Lee</td>
-            <td>32 prescriptions</td>
-            <td>0 pending</td>
-            <td>0.0%</td>
-            <td>Support</td>
+            <td colspan="5">Crunching roster metrics…</td>
           </tr>
         </tbody>
       </table>
@@ -105,39 +66,16 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="recent-prescriptions-body">
           <tr>
-            <td>RX-48213</td>
-            <td>Metformin 500 mg</td>
-            <td>J. Howard</td>
-            <td>Amelia Cruz</td>
-            <td class="status-success">Fulfilled</td>
-          </tr>
-          <tr>
-            <td>RX-48208</td>
-            <td>Lisinopril 10 mg</td>
-            <td>C. Miller</td>
-            <td>Daniel Li</td>
-            <td class="status-success">Collected</td>
-          </tr>
-          <tr>
-            <td>RX-48197</td>
-            <td>Warfarin 5 mg</td>
-            <td>L. Singh</td>
-            <td>Sophie Patel</td>
-            <td class="status-pending">Insurance Hold</td>
-          </tr>
-          <tr>
-            <td>RX-48192</td>
-            <td>Amoxicillin 250 mg</td>
-            <td>A. Carter</td>
-            <td>Marcus Lee</td>
-            <td class="status-success">Ready for Pickup</td>
+            <td colspan="5">Fetching recent prescriptions…</td>
           </tr>
         </tbody>
       </table>
     </section>
   </main>
+
+  <script src="../../assets/js/pharmacist-admin-dashboard.js"></script>
 </body>
 </html>
 

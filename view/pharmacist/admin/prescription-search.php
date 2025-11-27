@@ -13,10 +13,10 @@
       <span>Pharmacist oversight cockpit</span>
     </div>
     <nav class="nav-links">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./prescription-search.html" class="active">Search</a>
-      <a href="./prescription-details.html">Prescription View</a>
-      <a href="./pharmacist-history.html">History</a>
+      <a href="./dashboard.php">Dashboard</a>
+      <a href="./prescription-search.php" class="active">Search</a>
+      <a href="./prescription-details.php">Prescription View</a>
+      <a href="./pharmacist-history.php">History</a>
     </nav>
   </header>
 
@@ -55,6 +55,7 @@
         </div>
       </div>
       <p class="help-text">Live results refresh with every filter change.</p>
+      <p class="help-text status-pending" id="search-last-updated"></p>
     </section>
 
     <section class="card">
@@ -69,44 +70,17 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="search-results-body">
           <tr>
-            <td>RX-48213</td>
-            <td>Amelia Cruz</td>
-            <td>Metformin 500 mg</td>
-            <td>J. Howard</td>
-            <td class="status-success">Fulfilled</td>
-          </tr>
-          <tr>
-            <td>RX-48197</td>
-            <td>Sophie Patel</td>
-            <td>Warfarin 5 mg</td>
-            <td>L. Singh</td>
-            <td class="status-pending">Insurance Hold</td>
-          </tr>
-          <tr>
-            <td>RX-48182</td>
-            <td>Marcus Lee</td>
-            <td>Prednisone 10 mg</td>
-            <td>D. Myers</td>
-            <td class="status-success">Ready for Pickup</td>
-          </tr>
-          <tr>
-            <td>RX-48179</td>
-            <td>Daniel Li</td>
-            <td>Levothyroxine 100 mcg</td>
-            <td>P. Green</td>
-            <td class="status-delayed">Requires Review</td>
+            <td colspan="5">Apply your first filter to see matches.</td>
           </tr>
         </tbody>
       </table>
-      <div class="chips">
-        <span class="chip">4 matches</span>
-        <span class="chip">Sorted by last update</span>
-        <span class="chip">Auto-refresh enabled</span>
-      </div>
+      <div class="chips" id="search-meta-chips"></div>
     </section>
   </main>
+
+  <script src="../../assets/js/pharmacist-admin-search.js"></script>
 </body>
 </html>
 
