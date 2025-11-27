@@ -44,6 +44,7 @@
                         <option value="client">Client</option>
                         <option value="doctor">Doctor</option>
                         <option value="pharma">Pharmacist</option>
+                        <option value="pharma-admin">Pharmacist Admin</option>
                     </select>
                 </div>
                 
