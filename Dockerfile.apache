@@ -1,0 +1,26 @@
+# Use official Apache with PHP runtime as base image
+FROM php:8.2-apache
+
+# Set working directory in container
+WORKDIR /var/www/html
+
+# Install PHP MySQL extension
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+
+# Copy PHP application files
+COPY *.php ./
+COPY config/ ./config/
+COPY controller/ ./controller/
+COPY model/ ./model/
+COPY view/ ./view/
+COPY includes/ ./includes/
+COPY assets/ ./assets/
+
+# Enable Apache mod_rewrite if needed
+RUN a2enmod rewrite
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose Apache port
+EXPOSE 80
