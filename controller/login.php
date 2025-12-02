@@ -38,12 +38,12 @@ if ($result->num_rows === 1) {
             break;
 
         case 'pharma':
-            $_SESSION['id'] = $user['pharmaID']; // << IMPORTANT
+            $_SESSION['id'] = $user['pharmaID']; 
             header("Location: ../view/pharmacist/dashboard.php");
             break;
 
         case 'admin':
-            $_SESSION['id'] = $user['adminID'];
+            $_SESSION['id'] = $user['id'];
             header("Location: ../view/admin/dashboard.php");
             break;
         case 'pharma-admin':
