@@ -5,6 +5,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql-db
+    restart: unless-stopped 
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_PASSWORD: ""
@@ -27,6 +28,7 @@ services:
       context: .
       dockerfile: Dockerfile.nodejs
     container_name: nodejs-app
+    restart: unless-stopped  
     ports:
       - "3000:3000"
     volumes:
@@ -50,6 +52,7 @@ services:
       context: .
       dockerfile: Dockerfile.apache
     container_name: apache-php-app
+    restart: unless-stopped  
     ports:
       - "8080:80"
     volumes:
@@ -71,4 +74,3 @@ networks:
 
 volumes:
   mysql_data:
-

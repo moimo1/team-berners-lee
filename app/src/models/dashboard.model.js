@@ -1,6 +1,6 @@
 import { db } from "../config/db.js";
 
-// 1. DASHBOARD STATS (Unchanged - this logic is real)
+// 1. DASHBOARD STATS 
 export async function getStats() {
   const [[salesCount]] = await db.query(`SELECT COUNT(*) AS count FROM dispense`);
   const [[totalCount]] = await db.query(`SELECT COUNT(*) AS count FROM prescription`);
@@ -13,7 +13,7 @@ export async function getStats() {
   };
 }
 
-// 2. PHARMACIST OVERVIEW (UPDATED)
+// 2. PHARMACIST OVERVIEW 
 export async function getPharmacists() {
   const [rows] = await db.query(`
     SELECT 
@@ -23,11 +23,7 @@ export async function getPharmacists() {
       ph.location AS shift,
       ph.email,
       
-      -- Count successful sales
       COUNT(d.dispenseID) AS handled
-
-      -- [REMOVED] pendingIssues logic
-      -- [REMOVED] errorRate logic
 
     FROM pharmacist ph
     LEFT JOIN dispense d 
@@ -39,7 +35,7 @@ export async function getPharmacists() {
   return rows;
 }
 
-// 3. RECENT PRESCRIPTIONS (Unchanged)
+// 3. RECENT PRESCRIPTIONS
 export async function getRecentPrescriptions() {
   const [rows] = await db.query(`
     SELECT 
