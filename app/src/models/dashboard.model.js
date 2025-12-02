@@ -1,6 +1,6 @@
 import { db } from "../config/db.js";
 
-// 1. DASHBOARD STATS 
+// DASHBOARD STATS 
 export async function getStats() {
   const [[salesCount]] = await db.query(`SELECT COUNT(*) AS count FROM dispense`);
   const [[totalCount]] = await db.query(`SELECT COUNT(*) AS count FROM prescription`);
@@ -13,7 +13,7 @@ export async function getStats() {
   };
 }
 
-// 2. PHARMACIST OVERVIEW 
+// PHARMACIST OVERVIEW 
 export async function getPharmacists() {
   const [rows] = await db.query(`
     SELECT 
@@ -35,7 +35,7 @@ export async function getPharmacists() {
   return rows;
 }
 
-// 3. RECENT PRESCRIPTIONS
+// RECENT PRESCRIPTIONS
 export async function getRecentPrescriptions() {
   const [rows] = await db.query(`
     SELECT 
