@@ -1,5 +1,14 @@
 import * as generalAdminService from '../services/general-admin.service.js';
 
+export async function getDashboard(req, res) {
+  try {
+    const dashboard = await generalAdminService.getDashboard();
+    res.json({ success: true, data: dashboard });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching dashboard', error: error.message });
+  }
+}
+
 export async function getPharmacistAdmins(req, res) {
   try {
     const admins = await generalAdminService.getPharmacistAdmins();
@@ -16,5 +25,15 @@ export async function getAdminPerformance(req, res) {
     res.json({ success: true, data: performance });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching admin performance', error: error.message });
+  }
+}
+
+export async function getAdminTeam(req, res) {
+  try {
+    const team = await generalAdminService.getAdminTeam(req.params.adminId);
+    if (!team) return res.status(404).json({ success: false, message: 'Admin not found' });
+    res.json({ success: true, data: team });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching admin team', error: error.message });
   }
 }
