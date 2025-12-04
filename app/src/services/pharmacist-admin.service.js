@@ -1,9 +1,17 @@
-import * as prescriptionModel from '../models/prescription.model.js';
+import * as pharmacistAdminModel from '../models/pharmacist-admin.model.js';
 
-export async function searchPrescriptions(filters) {
-  return prescriptionModel.searchPrescriptions(filters);
+export async function getDashboard() {
+  return await pharmacistAdminModel.getDashboard();
 }
 
-export async function getPrescriptionDetails(id) {
-  return prescriptionModel.getPrescriptionById(id);
+export async function getPharmacists() {
+  return await pharmacistAdminModel.getPharmacists();
+}
+
+export async function getPharmacistPerformance(pharmacistId) {
+  return await pharmacistAdminModel.getPharmacistPerformance(pharmacistId);
+}
+
+export async function getPrescriptions(filters) {
+  return await pharmacistAdminModel.getPrescriptions(filters);
 }
