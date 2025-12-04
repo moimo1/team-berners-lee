@@ -1,19 +1,16 @@
 import express from 'express';
-import cors from 'cors';
+import generalAdminRoutes from './src/routes/general-admin.routes.js';
+import pharmacistAdminRoutes from './src/routes/pharmacist-admin.routes.js';
 import dashboardRoutes from './src/routes/dashboard.routes.js';
-import prescriptionRoutes from './src/routes/prescription.routes.js';
 
 const app = express();
 
-app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-app.use('/api/pharma-admin/dashboard', dashboardRoutes);
-app.use('/api/pharma-admin/prescriptions', prescriptionRoutes);
+// Routes
+app.use('/api/general-admin', generalAdminRoutes);
+app.use('/api/pharmacist-admin', pharmacistAdminRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => console.log(`Server running on ${PORT}`));
-}
-
-export default app;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
