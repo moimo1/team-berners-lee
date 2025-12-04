@@ -1,9 +1,9 @@
-const express = require('express');
-const prescriptionController = require('../controllers/prescription.controller');
+import express from 'express';
+import { searchPrescriptions, getPrescriptionDetails } from '../controllers/prescription.controller.js';
 
 const router = express.Router();
 
-router.get('/search', prescriptionController.searchPrescriptions);
-router.get('/:id', prescriptionController.getPrescriptionDetails);
+router.get('/search', searchPrescriptions);
+router.get('/:id', getPrescriptionDetails);
 
-module.exports = router;
+export default router;

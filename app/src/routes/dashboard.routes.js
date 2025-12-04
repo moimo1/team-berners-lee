@@ -1,10 +1,7 @@
-import express from "express";
-import { getDashboard } from "../controllers/dashboard.controller.js";
-import prescriptionRoutes from "./prescription.routes";
+import express from 'express';
+import { getDashboard } from '../controllers/dashboard.controller.js';
 
 const router = express.Router();
-
-router.get("/dashboard", getDashboard);
-router.use('/prescriptions', prescriptionRoutes);
+router.get('/', getDashboard);
 
 export default router;

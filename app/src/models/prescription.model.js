@@ -1,6 +1,6 @@
-const db = require('../config/db');
+import { getConnection } from '../config/db.js';
 
-const searchPrescriptions = async (filters = {}) => {
+export async function searchPrescriptions(filters = {}) {
   let query = 'SELECT * FROM prescriptions WHERE 1=1';
   const params = [];
 
@@ -36,27 +36,20 @@ const searchPrescriptions = async (filters = {}) => {
     query += ' ORDER BY created_at DESC';
   }
 
-  const limit = parseInt(filters.limit) || 10;
-  const offset = parseInt(filters.offset) || 0;
+  const limit = parseInt(filters.limit, 10) || 10;
+  const offset = parseInt(filters.offset, 10) || 0;
   query += ' LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
-  const connection = await db.getConnection();
+  const connection = await getConnection();
   const [rows] = await connection.execute(query, params);
   connection.release();
-
   return rows;
-};
+}
 
-const getPrescriptionById = async (id) => {
-  const connection = await db.getConnection();
+export async function getPrescriptionById(id) {
+  const connection = await getConnection();
   const [rows] = await connection.execute('SELECT * FROM prescriptions WHERE id = ?', [id]);
   connection.release();
-
   return rows[0] || null;
-};
-
-module.exports = {
-  searchPrescriptions,
-  getPrescriptionById,
-};
+}

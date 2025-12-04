@@ -1,16 +1,9 @@
-const prescriptionModel = require('../models/prescription.model');
+import * as prescriptionModel from '../models/prescription.model.js';
 
-const searchPrescriptions = async (filters) => {
-  const prescriptions = await prescriptionModel.searchPrescriptions(filters);
-  return prescriptions;
-};
+export async function searchPrescriptions(filters) {
+  return prescriptionModel.searchPrescriptions(filters);
+}
 
-const getPrescriptionDetails = async (id) => {
-  const prescription = await prescriptionModel.getPrescriptionById(id);
-  return prescription;
-};
-
-module.exports = {
-  searchPrescriptions,
-  getPrescriptionDetails,
-};
+export async function getPrescriptionDetails(id) {
+  return prescriptionModel.getPrescriptionById(id);
+}
