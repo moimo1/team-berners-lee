@@ -1,4 +1,5 @@
 const DASHBOARD_ENDPOINT = 'http://localhost:3000/api/pharma-admin/dashboard';
+
 const STATUS_TONES = {
   'Fulfilled': 'status-success',
   'Collected': 'status-success',
@@ -10,19 +11,39 @@ const STATUS_TONES = {
 
 document.addEventListener('DOMContentLoaded', () => {
   hydrateDashboard();
+
+  const refreshBtn = document.getElementById('refresh-dashboard');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', hydrateDashboard);
+  }
 });
 
 async function hydrateDashboard() {
+  const pulseContainer = document.getElementById('team-pulse-cards');
+  const pharmaContainer = document.getElementById('pharmacist-overview-body');
+  const prescContainer = document.getElementById('recent-prescriptions-body');
+
+  // Set visual loading state
+  if (pulseContainer) pulseContainer.innerHTML = '<p class="help-text">Loading metrics...</p>';
+  if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="3">Loading data...</td></tr>';
+  if (prescContainer) prescContainer.innerHTML = '<tr><td colspan="5">Loading data...</td></tr>';
+
   try {
-    const payload = await fetchJson(DASHBOARD_ENDPOINT);
-    renderPulse(payload?.stats);
-    renderPharmacistOverview(payload?.pharmacists);
-    renderRecentPrescriptions(payload?.recentPrescriptions);
+    const response = await fetchJson(DASHBOARD_ENDPOINT);
+    
+    // IMPORTANT: Your controller sends { success: true, data: { ... } }
+    // We must extract .data to access stats/pharmacists
+    const payload = response.data;
+
+    renderPulse(payload.stats);
+    renderPharmacistOverview(payload.pharmacists);
+    renderRecentPrescriptions(payload.recentPrescriptions);
+
   } catch (error) {
     console.error('Failed to load dashboard data:', error);
-    renderPulse();
-    renderPharmacistOverview();
-    renderRecentPrescriptions();
+    if (pulseContainer) pulseContainer.innerHTML = '<p class="error-text">Unable to connect to server.</p>';
+    if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="3">Connection failed.</td></tr>';
+    if (prescContainer) prescContainer.innerHTML = '<tr><td colspan="5">Connection failed.</td></tr>';
   }
 }
 
@@ -30,37 +51,40 @@ function renderPulse(stats) {
   const container = document.getElementById('team-pulse-cards');
   if (!container) return;
 
+  if (!stats) {
+    container.innerHTML = '<p class="help-text">No stats available.</p>';
+    return;
+  }
+
   const cards = [
     {
       label: 'Prescriptions Completed',
-      value: stats?.completed ?? '—',
-      badge: 'Live count of fulfilled and collected orders'
+      value: stats.completed ?? 0,
+      badge: 'Fulfilled orders'
     },
     {
       label: 'Pending Approvals',
-      value: stats?.pending ?? '—',
-      badge: 'Awaiting pharmacist action'
+      value: stats.pending ?? 0,
+      badge: 'Awaiting action'
     },
     {
       label: 'Escalations',
-      value: stats?.escalations ?? '—',
-      badge: 'Items needing manager review'
+      value: stats.escalations ?? 0,
+      badge: 'Needs manager review'
     }
   ];
-
-  if (!stats) {
-    container.innerHTML = '<p class="help-text">Unable to load live metrics.</p>';
-    return;
-  }
 
   container.innerHTML = '';
   cards.forEach((metric) => {
     const card = document.createElement('div');
+    // Using inline styles to ensure visibility even if CSS is missing
     card.className = 'stat-card';
     card.innerHTML = `
-      <h4>${metric.label}</h4>
-      <div class="stat-value">${metric.value}</div>
-      <div class="badge">${metric.badge}</div>
+      <div style="background:#fff; padding:1.5rem; border:1px solid #ddd; border-radius:8px;">
+        <h4 style="margin:0; font-size:0.85rem; color:#666; text-transform:uppercase;">${metric.label}</h4>
+        <div style="font-size:2rem; font-weight:bold; margin:0.5rem 0;">${metric.value}</div>
+        <div style="font-size:0.85rem; color:#888;">${metric.badge}</div>
+      </div>
     `;
     container.appendChild(card);
   });
@@ -77,13 +101,18 @@ function renderPharmacistOverview(pharmacists = []) {
 
   tbody.innerHTML = '';
   pharmacists.forEach((pharmacist) => {
-
+    // Determine status class based on 'handled' count or a status field if added later
+    // Defaulting to 'on-track' (green) for now
+    const statusClass = 'on-track'; 
+    
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${formatName(pharmacist)}</td>
+      <td><strong>${formatName(pharmacist)}</strong></td>
       <td>${pharmacist.handled ?? 0} prescriptions</td>
-      <!-- [REMOVED] The <td> for Pending -->
-      <td>${pharmacist.shift ?? pharmacist.location ?? '—'}</td>
+      <td>
+        <span class="status-indicator ${statusClass}" style="display:inline-block; width:8px; height:8px; background:green; border-radius:50%; margin-right:5px;"></span>
+        ${pharmacist.location ?? 'Unassigned'}
+      </td>
     `;
     tbody.appendChild(row);
   });
@@ -102,6 +131,7 @@ function renderRecentPrescriptions(prescriptions = []) {
   prescriptions.forEach((prescription) => {
     const client = `${prescription.clientFirstName ?? ''} ${prescription.clientLastName ?? ''}`.trim() || '—';
     const statusTone = STATUS_TONES[prescription.status] || '';
+    
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${prescription.prescID}</td>
@@ -116,7 +146,6 @@ function renderRecentPrescriptions(prescriptions = []) {
 
 async function fetchJson(url, options = {}) {
   const response = await fetch(url, {
-    credentials: 'include',
     headers: { 'Accept': 'application/json' },
     ...options
   });
@@ -128,7 +157,6 @@ async function fetchJson(url, options = {}) {
 
 function formatName(person) {
   if (!person) return '—';
-  if (person.name) return person.name;
   const name = `${person.firstName ?? ''} ${person.lastName ?? ''}`.trim();
   return name || '—';
 }

@@ -12,7 +12,7 @@ switch ($role) {
   case 'doctor': $table = 'doctor'; break;
   case 'pharma': $table = 'pharmacist'; break;
   case 'admin': $table = 'admin'; break;
-  case 'pharma-admin': $table = 'pharma_admin'; break;
+  case 'pharma_admin': $table = 'pharma_admin'; break;
   default: die('Invalid role');
 }
 
@@ -46,9 +46,9 @@ if ($result->num_rows === 1) {
             $_SESSION['id'] = $user['id'];
             header("Location: ../view/admin/dashboard.php");
             break;
-        case 'pharma-admin':
-            $_SESSION['id'] = $user['pharmaAdminID'];
-            header("Location: ../view/admin/dashboard.php");
+        case 'pharma_admin':
+            $_SESSION['id'] = $user['id'];
+            header("Location: ../view/pharmacist/admin/dashboard.php");
             break;
     }
     exit();

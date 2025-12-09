@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 27, 2025 at 10:19 AM
+-- Generation Time: Dec 09, 2025 at 02:48 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -68,34 +68,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CreatePrescription` (IN `p_doctorID
 END$$
 
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `admin`
---
-
-DROP TABLE IF EXISTS `admin`;
-CREATE TABLE IF NOT EXISTS `admin` (
-  `id` varchar(10) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `admin`
---
-
-INSERT INTO `admin` (`id`, `firstname`, `lastname`, `email`, `password`) VALUES
-('PHA001', 'Jane', 'Doe', 'jdoe@pharma.admin', '123'),
-('PHA002', 'Michael', 'Smith', 'msmith@pharma.admin', '123'),
-('PHA003', 'Anna', 'Lopez', 'alopez@pharma.admin', '123'),
-('PHA004', 'Robert', 'Cruz', 'rcruz@pharma.admin', '123'),
-('PHA005', 'Emily', 'Tan', 'etan@pharma.admin', '123');
 
 -- --------------------------------------------------------
 
@@ -342,6 +314,34 @@ INSERT INTO `pharmacist` (`pharmaID`, `firstName`, `lastName`, `location`, `emai
 ('PH008', 'Ian', 'Gomez', 'MedCenter', 'ian.g@pharma.com', 'pharma123'),
 ('PH009', 'Zoe', 'Navarro', 'WellMed', 'zoe.n@pharma.com', 'pharma123'),
 ('PH010', 'Liam', 'Torres', 'QuickMeds', 'liam.t@pharma.com', 'pharma123');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pharma_admin`
+--
+
+DROP TABLE IF EXISTS `pharma_admin`;
+CREATE TABLE IF NOT EXISTS `pharma_admin` (
+  `id` varchar(10) NOT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `pharma_admin`
+--
+
+INSERT INTO `pharma_admin` (`id`, `firstname`, `lastname`, `email`, `password`) VALUES
+('PHA001', 'Jane', 'Doe', 'jdoe@pharma.admin', '123'),
+('PHA002', 'Michael', 'Smith', 'msmith@pharma.admin', '123'),
+('PHA003', 'Anna', 'Lopez', 'alopez@pharma.admin', '123'),
+('PHA004', 'Robert', 'Cruz', 'rcruz@pharma.admin', '123'),
+('PHA005', 'Emily', 'Tan', 'etan@pharma.admin', '123');
 
 -- --------------------------------------------------------
 
