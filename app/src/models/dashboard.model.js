@@ -6,9 +6,9 @@ export async function getStats() {
     const [[{ total }]] = await conn.query('SELECT COUNT(*) AS total FROM prescription');
     const [[{ fulfilled }]] = await conn.query('SELECT COUNT(*) AS fulfilled FROM dispense');
     
-    // Calculate pending (Total Prescriptions - Total Dispensed)
+    // Calculate pending 
     const pending = Math.max(total - fulfilled, 0);
-    const escalations = 0; // Placeholder logic as requested
+    const escalations = 0; 
 
     return [
       { status: 'completed', count: fulfilled },
@@ -23,7 +23,6 @@ export async function getStats() {
 export async function getPharmacists() {
   const conn = await getConnection();
   try {
-    // Counts how many dispenses each pharmacist has handled
     const [rows] = await conn.query(
       `SELECT p.pharmaID AS id,
               p.firstName,
@@ -44,7 +43,6 @@ export async function getPharmacists() {
 export async function getRecentPrescriptions() {
   const conn = await getConnection();
   try {
-    // Joins tables to get readable names instead of IDs
     const [rows] = await conn.query(
       `SELECT pr.prescID,
               m.genericName AS medicineName,

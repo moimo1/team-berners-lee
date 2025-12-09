@@ -121,7 +121,6 @@
 
   <?php include '../../../includes/footer.php'; ?>
 
-  <!-- Scripts -->
   <script src="/assets/js/pharmacist-admin-dashboard.js"></script>
   <script>
     const refreshButton = document.getElementById('refresh-dashboard');

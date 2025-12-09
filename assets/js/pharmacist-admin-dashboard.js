@@ -23,7 +23,6 @@ async function hydrateDashboard() {
   const pharmaContainer = document.getElementById('pharmacist-overview-body');
   const prescContainer = document.getElementById('recent-prescriptions-body');
 
-  // Set visual loading state
   if (pulseContainer) pulseContainer.innerHTML = '<p class="help-text">Loading metrics...</p>';
   if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="3">Loading data...</td></tr>';
   if (prescContainer) prescContainer.innerHTML = '<tr><td colspan="5">Loading data...</td></tr>';
@@ -31,8 +30,6 @@ async function hydrateDashboard() {
   try {
     const response = await fetchJson(DASHBOARD_ENDPOINT);
     
-    // IMPORTANT: Your controller sends { success: true, data: { ... } }
-    // We must extract .data to access stats/pharmacists
     const payload = response.data;
 
     renderPulse(payload.stats);
@@ -77,7 +74,6 @@ function renderPulse(stats) {
   container.innerHTML = '';
   cards.forEach((metric) => {
     const card = document.createElement('div');
-    // Using inline styles to ensure visibility even if CSS is missing
     card.className = 'stat-card';
     card.innerHTML = `
       <div style="background:#fff; padding:1.5rem; border:1px solid #ddd; border-radius:8px;">
@@ -101,8 +97,6 @@ function renderPharmacistOverview(pharmacists = []) {
 
   tbody.innerHTML = '';
   pharmacists.forEach((pharmacist) => {
-    // Determine status class based on 'handled' count or a status field if added later
-    // Defaulting to 'on-track' (green) for now
     const statusClass = 'on-track'; 
     
     const row = document.createElement('tr');
