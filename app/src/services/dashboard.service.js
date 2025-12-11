@@ -9,13 +9,13 @@ import { createPrescription } from '../models/Prescription.js';
  */
 
 // Get dashboard data with business logic applied
-export async function getDashboardData() {
+export async function getDashboardData(filters = {}) {
   // Step 1: Get raw data from database (repository layer)
   const [total, fulfilled, pharmacistsData, recentData] = await Promise.all([
-    dashboardRepo.getTotalPrescriptions(),
-    dashboardRepo.getFulfilledPrescriptions(),
-    dashboardRepo.getPharmacists(),
-    dashboardRepo.getRecentPrescriptions(10)
+    dashboardRepo.getTotalPrescriptions(filters),
+    dashboardRepo.getFulfilledPrescriptions(filters),
+    dashboardRepo.getPharmacists(filters),
+    dashboardRepo.getRecentPrescriptions({ ...filters, limit: 10 })
   ]);
 
   // Step 2: Apply business logic - calculate pending prescriptions
@@ -36,8 +36,18 @@ export async function getDashboardData() {
   // Transform each prescription data into a prescription model
   const recentPrescriptions = recentData.map(data => {
     // Business logic: Determine status based on dispenseId
+    // There is no "status" field in the database
+    // Instead, we check if a record exists in the "dispense" table:
+    // - If dispenseId exists (not null) = prescription was fulfilled/dispensed
+    // - If dispenseId is null = prescription is still pending
+    //
+    // NOTE: Currently, dispense records are NOT automatically created when
+    // remainingAmount reaches 0. A dispense record must be manually created
+    // (or through a separate process) to mark a prescription as fulfilled.
+    // The update-prescription-amount.php only updates remainingAmount but
+    // does not create dispense records.
     const status = data.dispenseId ? 'Fulfilled' : 'Pending';
-    
+
     // Build pharmacist name from first and last name
     const pharmacistName = data.pharmacistFirstName && data.pharmacistLastName
       ? `${data.pharmacistFirstName} ${data.pharmacistLastName}`

@@ -14,15 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- Core Data Loading Functions ---
+const getAdminLocation = () => {
+  const tag = document.querySelector('meta[name="admin-location"]');
+  return tag ? tag.content : '';
+}
 
 async function loadPharmacistsDropdown() {
   const select = document.getElementById('pharmacist-filter');
   if (!select) return;
 
   try {
-    // Assuming you have an endpoint that lists pharmacists
-    // If not, it will just keep the default option
-    const result = await fetchJson(`${API_BASE}/dashboard`); // Reusing dashboard endpoint for simplicity to get list
+    const adminLocation = getAdminLocation();
+    const url = adminLocation
+      ? `${API_BASE}/dashboard?location=${encodeURIComponent(adminLocation)}`
+      : `${API_BASE}/dashboard`;
+
+    const result = await fetchJson(url); // Reusing dashboard endpoint for simplicity to get list
     const pharmacists = result.data?.pharmacists || [];
 
     // Keep the first "All pharmacists" option
@@ -42,11 +49,12 @@ async function loadPharmacistsDropdown() {
 async function loadPrescriptions() {
   const tbody = document.getElementById('prescription-table-body');
   const countBadge = document.getElementById('prescription-count');
-  
+
   if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1rem;">Loading...</td></tr>';
 
   // 1. Gather Filter Values
   const filters = {
+    location: getAdminLocation(),
     pharmacistId: document.getElementById('pharmacist-filter')?.value,
     status: document.getElementById('status-filter')?.value,
     from: document.getElementById('from-date')?.value,
@@ -65,7 +73,7 @@ async function loadPrescriptions() {
     // Note: You will need to implement this specific route in your Node backend
     // For now, we simulate the fetch or use the existing dashboard/recent if specific search isn't built
     const url = `${API_BASE}/prescriptions?${params.toString()}`;
-    
+
     // Fallback: If the search endpoint doesn't exist yet, we catch the error 
     // and just use the dashboard's "recent" list for demonstration.
     let prescriptions = [];
@@ -102,7 +110,7 @@ function renderTable(list) {
   list.forEach(item => {
     const row = document.createElement('tr');
     row.style.cursor = 'pointer'; // Make it look clickable
-    
+
     // Status color mapping
     const statusClass = getStatusClass(item.status);
 
@@ -118,7 +126,7 @@ function renderTable(list) {
 
     // Click handler for the whole row
     row.addEventListener('click', () => selectPrescription(item));
-    
+
     tbody.appendChild(row);
   });
 }
@@ -147,6 +155,14 @@ function selectPrescription(item) {
         <div>${item.medicineName || 'See prescription details'}</div>
       </div>
       <div class="detail-group">
+        <label>Amount</label>
+        <div>${item.amount || '—'}</div>
+      </div>
+      <div class="detail-group">
+        <label>Dosage</label>
+        <div>${item.dosage || '—'}</div>
+      </div>
+      <div class="detail-group">
         <label>Date Given</label>
         <div>${formatDate(item.dateGiven)}</div>
       </div>
@@ -156,38 +172,48 @@ function selectPrescription(item) {
   // 2. Update History Section Header
   const historyLabel = document.getElementById('history-pharmacist-label');
   if (historyLabel) {
-    historyLabel.textContent = item.pharmacistName 
-      ? `History for ${item.pharmacistName}` 
+    historyLabel.textContent = item.pharmacistName
+      ? `History for ${item.pharmacistName}`
       : 'Unassigned Prescription';
   }
 
-  // 3. Populate History List (Mocking logic here, or fetch specific API)
-  loadPharmacistHistory(item.pharmacistName, item.prescID);
+  // 3. Populate History List
+  loadPharmacistHistory(item.pharmacistName, item.pharmacistId);
 }
 
-function loadPharmacistHistory(pharmacistName, prescId) {
+async function loadPharmacistHistory(pharmacistName, pharmacistId) {
   const list = document.getElementById('pharmacist-history-list');
   if (!list) return;
 
-  if (!pharmacistName) {
+  if (!pharmacistName || !pharmacistId) {
     list.innerHTML = '<li><strong>Unassigned</strong><span class="muted">This prescription has not been claimed by a pharmacist yet.</span></li>';
     return;
   }
 
-  // NOTE: In a real app, you would fetch: GET /api/pharma-admin/pharmacists/:id/history
-  // Here we display a simulated history entry for immediate feedback
-  list.innerHTML = `
-    <li>
-      <strong>Most Recent Action</strong>
-      <span class="muted">Just now</span>
-      <p>Loaded details for prescription <strong>${prescId}</strong>.</p>
-    </li>
-    <li>
-      <strong>${pharmacistName}</strong>
-      <span class="muted">Assignment</span>
-      <p>Pharmacist assigned to this order.</p>
-    </li>
-  `;
+  // Show loading state
+  list.innerHTML = '<li><span class="muted">Loading history...</span></li>';
+
+  try {
+    const response = await fetchJson(`${API_BASE}/pharmacists/${pharmacistId}/history`);
+    const history = response.data || [];
+
+    if (history.length === 0) {
+      list.innerHTML = '<li><strong>No history</strong><span class="muted">No actions recorded for this pharmacist yet.</span></li>';
+      return;
+    }
+
+    list.innerHTML = history.map(h => `
+      <li>
+        <strong>${h.type || 'Action'}</strong>
+        <span class="muted">${formatDate(h.timestamp)}</span>
+        <p>${h.description}</p>
+      </li>
+    `).join('');
+
+  } catch (error) {
+    console.warn('Could not load history', error);
+    list.innerHTML = '<li><strong>Error</strong><span class="muted">Failed to load history data.</span></li>';
+  }
 }
 
 function resetFilters() {

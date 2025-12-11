@@ -20,7 +20,10 @@ export async function searchPrescriptions(filters = {}) {
         ph.lastName AS pharmacistLastName,
         ph.pharmaID AS pharmacistId,
         d.dispenseID AS dispenseId,
-        pr.dateGiven
+        pr.dateGiven,
+        pd.remainingAmount,
+        pd.dosage,
+        pd.description
       FROM prescription pr
       LEFT JOIN prescriptiondetails pd ON pd.prescID = pr.prescID
       LEFT JOIN medicine m ON m.medID = pd.medID
@@ -36,6 +39,12 @@ export async function searchPrescriptions(filters = {}) {
     if (filters.pharmacistId) {
       sql += ` AND d.pharmaID = ?`;
       params.push(filters.pharmacistId);
+    }
+
+    // Filter by location (Pharmacist's location)
+    if (filters.location) {
+      sql += ` AND ph.location = ?`;
+      params.push(filters.location);
     }
 
     if (filters.from) {
@@ -58,6 +67,9 @@ export async function searchPrescriptions(filters = {}) {
       params.push(term, term, term, term);
     }
 
+    // Filter by status: Since there's no status field in DB, we check the dispense table
+    // - "Fulfilled" or "Collected" = dispense record exists (dispenseID IS NOT NULL)
+    // - "Pending" = no dispense record exists (dispenseID IS NULL)
     if (filters.status) {
       if (filters.status === 'Fulfilled' || filters.status === 'Collected') {
         sql += ` AND d.dispenseID IS NOT NULL`;

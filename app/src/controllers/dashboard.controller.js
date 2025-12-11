@@ -9,8 +9,8 @@ import { getDashboardData } from '../services/dashboard.service.js';
 export async function getDashboard(req, res) {
   try {
     // Step 1: Get data from service layer (which handles business logic)
-    const data = await getDashboardData();
-    
+    const data = await getDashboardData(req.query);
+
     // Step 2: Format the response for the client
     // Models are already plain objects, so we can use them directly
     const response = {
@@ -41,9 +41,9 @@ export async function getDashboard(req, res) {
   } catch (error) {
     // Step 4: Handle errors
     console.error('getDashboard error', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Failed to load dashboard data' 
+    res.status(500).json({
+      success: false,
+      message: 'Failed to load dashboard data'
     });
   }
 }

@@ -7,8 +7,10 @@
   $adminId = $_SESSION['id'] ?? null;
   $adminName = 'Pharmacist Manager';
 
+  $adminLocation = '';
+
   if ($adminId) {
-    $sql = "SELECT firstName, lastName FROM pharma_admin WHERE id = ?";
+    $sql = "SELECT firstName, lastName, location FROM pharma_admin WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $adminId);
     $stmt->execute();
@@ -16,6 +18,7 @@
     $admin = $result->fetch_assoc();
     if ($admin) {
       $adminName = trim(($admin['firstName'] ?? '') . ' ' . ($admin['lastName'] ?? '')) ?: $adminName;
+      $adminLocation = $admin['location'] ?? '';
     }
   }
 
@@ -27,6 +30,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="admin-location" content="<?php echo htmlspecialchars($adminLocation); ?>">
   <title>Pharmacist Admin Dashboard</title>
 
   <!-- Styles -->
@@ -46,7 +50,7 @@
     <section class="item main-content">
       <div class="page-title-bar">
         <div>
-          <p class="eyebrow">Pharmacist Admin</p>
+          <p class="eyebrow">Pharmacist Admin • <?php echo htmlspecialchars($adminLocation); ?></p>
           <h2 class="page-title">Team Oversight</h2>
           <p class="muted">Monitor fulfillment, pending work, and escalations for the pharmacy team.</p>
         </div>
@@ -72,7 +76,7 @@
         <div class="section-heading">
           <div>
             <h3>Pharmacist overview</h3>
-            <p class="muted">Handled prescriptions with shift or location notes.</p>
+            <p class="muted">Handled prescriptions for the team.</p>
           </div>
           <div class="legend">
             <span class="on-track">On track</span>
@@ -85,11 +89,10 @@
             <tr>
               <th>Pharmacist</th>
               <th>Prescriptions handled</th>
-              <th>Shift / Location</th>
             </tr>
           </thead>
           <tbody id="pharmacist-overview-body">
-            <tr><td colspan="3">Loading pharmacists...</td></tr>
+            <tr><td colspan="2">Loading pharmacists...</td></tr>
           </tbody>
         </table>
       </div>

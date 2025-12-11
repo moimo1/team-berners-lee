@@ -24,6 +24,16 @@ export async function getPrescriptionList(query) {
   // Step 3: Transform raw data into prescription models (data structures)
   const prescriptions = rows.map(row => {
     // Business logic: Determine status based on dispenseId
+    // There is no "status" field in the database
+    // Instead, we check if a record exists in the "dispense" table:
+    // - If dispenseId exists (not null) = prescription was fulfilled/dispensed
+    // - If dispenseId is null = prescription is still pending
+    //
+    // NOTE: Currently, dispense records are NOT automatically created when
+    // remainingAmount reaches 0. A dispense record must be manually created
+    // (or through a separate process) to mark a prescription as fulfilled.
+    // The update-prescription-amount.php only updates remainingAmount but
+    // does not create dispense records.
     const status = row.dispenseId ? 'Fulfilled' : 'Pending';
     
     // Build pharmacist name from first and last name

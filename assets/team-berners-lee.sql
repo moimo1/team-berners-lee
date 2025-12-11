@@ -328,6 +328,7 @@ CREATE TABLE IF NOT EXISTS `pharma_admin` (
   `lastname` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `location` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -336,12 +337,12 @@ CREATE TABLE IF NOT EXISTS `pharma_admin` (
 -- Dumping data for table `pharma_admin`
 --
 
-INSERT INTO `pharma_admin` (`id`, `firstname`, `lastname`, `email`, `password`) VALUES
-('PHA001', 'Jane', 'Doe', 'jdoe@pharma.admin', '123'),
-('PHA002', 'Michael', 'Smith', 'msmith@pharma.admin', '123'),
-('PHA003', 'Anna', 'Lopez', 'alopez@pharma.admin', '123'),
-('PHA004', 'Robert', 'Cruz', 'rcruz@pharma.admin', '123'),
-('PHA005', 'Emily', 'Tan', 'etan@pharma.admin', '123');
+INSERT INTO `pharma_admin` (`id`, `firstname`, `lastname`, `email`, `password`, `location`) VALUES
+('PHA001', 'Jane', 'Doe', 'jdoe@pharma.admin', '123', 'City Pharmacy'),
+('PHA002', 'Michael', 'Smith', 'msmith@pharma.admin', '123', 'HealthHub'),
+('PHA003', 'Anna', 'Lopez', 'alopez@pharma.admin', '123', 'MedCenter'),
+('PHA004', 'Robert', 'Cruz', 'rcruz@pharma.admin', '123', 'WellMed'),
+('PHA005', 'Emily', 'Tan', 'etan@pharma.admin', '123', 'QuickMeds');
 
 -- --------------------------------------------------------
 

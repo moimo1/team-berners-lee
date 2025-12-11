@@ -24,12 +24,20 @@ async function hydrateDashboard() {
   const prescContainer = document.getElementById('recent-prescriptions-body');
 
   if (pulseContainer) pulseContainer.innerHTML = '<p class="help-text">Loading metrics...</p>';
-  if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="3">Loading data...</td></tr>';
+  if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="2">Loading data...</td></tr>';
   if (prescContainer) prescContainer.innerHTML = '<tr><td colspan="5">Loading data...</td></tr>';
 
+  // Get admin location from meta tag
+  const adminLocationTag = document.querySelector('meta[name="admin-location"]');
+  const adminLocation = adminLocationTag ? adminLocationTag.content : '';
+
   try {
-    const response = await fetchJson(DASHBOARD_ENDPOINT);
-    
+    const url = adminLocation
+      ? `${DASHBOARD_ENDPOINT}?location=${encodeURIComponent(adminLocation)}`
+      : DASHBOARD_ENDPOINT;
+
+    const response = await fetchJson(url);
+
     const payload = response.data;
 
     renderPulse(payload.stats);
@@ -39,7 +47,7 @@ async function hydrateDashboard() {
   } catch (error) {
     console.error('Failed to load dashboard data:', error);
     if (pulseContainer) pulseContainer.innerHTML = '<p class="error-text">Unable to connect to server.</p>';
-    if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="3">Connection failed.</td></tr>';
+    if (pharmaContainer) pharmaContainer.innerHTML = '<tr><td colspan="2">Connection failed.</td></tr>';
     if (prescContainer) prescContainer.innerHTML = '<tr><td colspan="5">Connection failed.</td></tr>';
   }
 }
@@ -91,21 +99,20 @@ function renderPharmacistOverview(pharmacists = []) {
   if (!tbody) return;
 
   if (!Array.isArray(pharmacists) || pharmacists.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3">No pharmacists found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="2">No pharmacists found.</td></tr>';
     return;
   }
 
   tbody.innerHTML = '';
   pharmacists.forEach((pharmacist) => {
-    const statusClass = 'on-track'; 
-    
+    const statusClass = 'on-track';
+
     const row = document.createElement('tr');
     row.innerHTML = `
       <td><strong>${formatName(pharmacist)}</strong></td>
-      <td>${pharmacist.handled ?? 0} prescriptions</td>
       <td>
         <span class="status-indicator ${statusClass}" style="display:inline-block; width:8px; height:8px; background:green; border-radius:50%; margin-right:5px;"></span>
-        ${pharmacist.location ?? 'Unassigned'}
+        ${pharmacist.handled ?? 0} prescriptions
       </td>
     `;
     tbody.appendChild(row);
@@ -123,9 +130,9 @@ function renderRecentPrescriptions(prescriptions = []) {
 
   tbody.innerHTML = '';
   prescriptions.forEach((prescription) => {
-    const client = `${prescription.clientFirstName ?? ''} ${prescription.clientLastName ?? ''}`.trim() || '—';
+    const client = prescription.clientName || `${prescription.clientFirstName ?? ''} ${prescription.clientLastName ?? ''}`.trim() || '—';
     const statusTone = STATUS_TONES[prescription.status] || '';
-    
+
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${prescription.prescID}</td>

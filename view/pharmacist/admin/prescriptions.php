@@ -7,8 +7,10 @@
   $adminId = $_SESSION['id'] ?? null;
   $adminName = 'Pharmacist Manager';
 
+  $adminLocation = '';
+
   if ($adminId) {
-    $sql = "SELECT firstName, lastName FROM pharma_admin WHERE id = ?";
+    $sql = "SELECT firstName, lastName, location FROM pharma_admin WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $adminId);
     $stmt->execute();
@@ -16,6 +18,7 @@
     $admin = $result->fetch_assoc();
     if ($admin) {
       $adminName = trim(($admin['firstName'] ?? '') . ' ' . ($admin['lastName'] ?? '')) ?: $adminName;
+      $adminLocation = $admin['location'] ?? '';
     }
   }
 
@@ -27,6 +30,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="admin-location" content="<?php echo htmlspecialchars($adminLocation); ?>">
   <title>Prescriptions by Pharmacist</title>
 
   <!-- Styles -->
