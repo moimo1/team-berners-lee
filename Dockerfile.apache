@@ -1,11 +1,16 @@
 FROM php:8.2-apache
 
-# Set working directory in container
+# Set working directory
 WORKDIR /var/www/html
 
-# Install PHP MySQL extension
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+# Install required system packages for mysqli extension
+RUN apt-get update && apt-get install -y \
+    default-mysql-client \
+    default-libmysqlclient-dev \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-enable mysqli
 
+# Copy project files
 COPY *.php ./
 COPY config/ ./config/
 COPY controller/ ./controller/
@@ -14,10 +19,10 @@ COPY view/ ./view/
 COPY includes/ ./includes/
 COPY assets/ ./assets/
 
-# Enable Apache mod_rewrite if needed
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set proper permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
