@@ -1,6 +1,6 @@
 import * as userService from '../services/user-management.service.js';
 
-// --- DOCTOR ---
+// doctor
 export async function getDoctors(req, res) {
     try {
         const doctors = await userService.getDoctors(req.query);
@@ -37,7 +37,7 @@ export async function updateDoctor(req, res) {
     }
 }
 
-// --- PATIENT ---
+// patient
 export async function getPatients(req, res) {
     try {
         const patients = await userService.getPatients(req.query);
@@ -74,7 +74,7 @@ export async function updatePatient(req, res) {
     }
 }
 
-// --- PHARMACIST ---
+// pharmacist
 export async function getPharmacists(req, res) {
     try {
         const pharmacists = await userService.getPharmacists(req.query);

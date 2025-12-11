@@ -1,7 +1,3 @@
-/**
- * Model: Patient data structure
- * Maps from "client" table in database
- */
 export function createPatient(data) {
     return {
         id: data.clientID || data.id,

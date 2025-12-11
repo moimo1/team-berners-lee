@@ -1,12 +1,6 @@
 import { getConnection } from '../config/db.js';
 
-/**
- * Repository: User Management
- * Handles CRUD operations for Doctors, Patients (Clients), and Pharmacists
- */
-
-// --- DOCTOR OPERATIONS ---
-
+// doctor
 export async function searchDoctors(filters = {}) {
     const conn = await getConnection();
     try {
@@ -39,7 +33,6 @@ export async function getDoctorById(id) {
 export async function updateDoctor(id, data) {
     const conn = await getConnection();
     try {
-        // Only update fields that are provided
         const fields = [];
         const params = [];
 
@@ -58,8 +51,7 @@ export async function updateDoctor(id, data) {
     }
 }
 
-// --- PATIENT (CLIENT) OPERATIONS ---
-
+// patient
 export async function searchPatients(filters = {}) {
     const conn = await getConnection();
     try {
@@ -110,8 +102,7 @@ export async function updatePatient(id, data) {
     }
 }
 
-// --- PHARMACIST OPERATIONS ---
-
+// pharmacist
 export async function searchPharmacists(filters = {}) {
     const conn = await getConnection();
     try {
@@ -124,9 +115,6 @@ export async function searchPharmacists(filters = {}) {
             params.push(term, term, term);
         }
 
-        // Admin ID/Location filtering could be applied here if we want to restrict this too,
-        // but the requirement is generally "Admin can manage users". 
-        // If strict location rule applies here too:
         if (filters.location) {
             sql += ' AND location = ?';
             params.push(filters.location);

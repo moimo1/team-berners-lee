@@ -1,6 +1,3 @@
-/**
- * Model: Doctor data structure
- */
 export function createDoctor(data) {
     return {
         id: data.doctorID || data.id,

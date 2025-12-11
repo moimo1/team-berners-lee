@@ -3,17 +3,17 @@ import * as userController from '../controllers/user-management.controller.js';
 
 const router = express.Router();
 
-// Doctor Routes
+// doctor
 router.get('/doctors', userController.getDoctors);
 router.get('/doctors/:id', userController.getDoctor);
 router.put('/doctors/:id', userController.updateDoctor);
 
-// Patient Routes
+// patient
 router.get('/patients', userController.getPatients);
 router.get('/patients/:id', userController.getPatient);
 router.put('/patients/:id', userController.updatePatient);
 
-// Pharmacist Routes
+// pharmacist
 router.get('/pharmacists', userController.getPharmacists);
 router.get('/pharmacists/:id', userController.getPharmacist);
 router.put('/pharmacists/:id', userController.updatePharmacist);
