@@ -21,14 +21,16 @@
 
 .client-dashboard,
 .doctor-dashboard,
-.pharmacist-dashboard {
+.pharmacist-dashboard,
+.admin-dashboard {
     --sidebar-collapsed: 72px;
     --sidebar-expanded: 240px;
 }
 
 .client-dashboard.sidebar-expanded .sidebar,
 .doctor-dashboard.sidebar-expanded .sidebar,
-.pharmacist-dashboard.sidebar-expanded .sidebar {
+.pharmacist-dashboard.sidebar-expanded .sidebar,
+.admin-dashboard.sidebar-expanded .sidebar {
     width: var(--sidebar-expanded);
 }
 
@@ -80,19 +82,22 @@ li a {
 /* Hover states - only when sidebar is expanded */
 .client-dashboard.sidebar-expanded .nav-item:hover,
 .doctor-dashboard.sidebar-expanded .nav-item:hover,
-.pharmacist-dashboard.sidebar-expanded .nav-item:hover {
+.pharmacist-dashboard.sidebar-expanded .nav-item:hover,
+.admin-dashboard.sidebar-expanded .nav-item:hover {
     background: #dde5e9;
 }
 
 .client-dashboard:not(.sidebar-expanded) .nav-item:hover,
 .doctor-dashboard:not(.sidebar-expanded) .nav-item:hover,
-.pharmacist-dashboard:not(.sidebar-expanded) .nav-item:hover {
+.pharmacist-dashboard:not(.sidebar-expanded) .nav-item:hover,
+.admin-dashboard:not(.sidebar-expanded) .nav-item:hover {
     background: transparent;
 }
 
 .client-dashboard:not(.sidebar-expanded) .nav-item:hover .icon,
 .doctor-dashboard:not(.sidebar-expanded) .nav-item:hover .icon,
-.pharmacist-dashboard:not(.sidebar-expanded) .nav-item:hover .icon {
+.pharmacist-dashboard:not(.sidebar-expanded) .nav-item:hover .icon,
+.admin-dashboard:not(.sidebar-expanded) .nav-item:hover .icon {
     background: #dde5e9;
     transition: background-color 0.15s ease;
 }
@@ -104,13 +109,15 @@ li a {
 
 .client-dashboard.sidebar-expanded .nav-item.active,
 .doctor-dashboard.sidebar-expanded .nav-item.active,
-.pharmacist-dashboard.sidebar-expanded .nav-item.active {
+.pharmacist-dashboard.sidebar-expanded .nav-item.active,
+.admin-dashboard.sidebar-expanded .nav-item.active {
     background: #dde5e9;
 }
 
 .client-dashboard.sidebar-expanded .nav-item.active .icon,
 .doctor-dashboard.sidebar-expanded .nav-item.active .icon,
-.pharmacist-dashboard.sidebar-expanded .nav-item.active .icon {
+.pharmacist-dashboard.sidebar-expanded .nav-item.active .icon,
+.admin-dashboard.sidebar-expanded .nav-item.active .icon {
     background: #c9ced3;
 }
 
@@ -145,7 +152,8 @@ li a {
 /* Collapsed: hide label */
 .client-dashboard:not(.sidebar-expanded) .nav-item .label,
 .doctor-dashboard:not(.sidebar-expanded) .nav-item .label,
-.pharmacist-dashboard:not(.sidebar-expanded) .nav-item .label {
+.pharmacist-dashboard:not(.sidebar-expanded) .nav-item .label,
+.admin-dashboard:not(.sidebar-expanded) .nav-item .label {
     max-width: 0;
     opacity: 0;
 }
@@ -153,7 +161,8 @@ li a {
 /* Expanded: show label */
 .client-dashboard.sidebar-expanded .nav-item .label,
 .doctor-dashboard.sidebar-expanded .nav-item .label,
-.pharmacist-dashboard.sidebar-expanded .nav-item .label {
+.pharmacist-dashboard.sidebar-expanded .nav-item .label,
+.admin-dashboard.sidebar-expanded .nav-item .label {
     max-width: 200px;
     opacity: 1;
 }
@@ -189,7 +198,8 @@ li a {
 /* Toggle arrow rotation when expanded */
 .client-dashboard.sidebar-expanded .sidebar-toggle::before,
 .doctor-dashboard.sidebar-expanded .sidebar-toggle::before,
-.pharmacist-dashboard.sidebar-expanded .sidebar-toggle::before {
+.pharmacist-dashboard.sidebar-expanded .sidebar-toggle::before,
+.admin-dashboard.sidebar-expanded .sidebar-toggle::before {
     transform: rotate(180deg);
 }
 

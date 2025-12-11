@@ -26,13 +26,15 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'client';
             <?php elseif ($role === 'pharma_admin'): ?>
                 <li><a href="/view/pharmacist/admin/dashboard.php" class="nav-item <?php echo $currentPage === 'pharma-admin-dashboard' ? 'active' : ''; ?>" aria-label="Dashboard"><span class="icon" aria-hidden="true"><img src="/assets/icons/home.svg" alt=""></span><span class="label">Dashboard</span></a></li>
                 <li><a href="/view/pharmacist/admin/prescriptions.php" class="nav-item <?php echo $currentPage === 'pharma-admin-prescriptions' ? 'active' : ''; ?>" aria-label="Prescriptions by Pharmacist"><span class="icon" aria-hidden="true"><img src="/assets/icons/prescription.svg" alt=""></span><span class="label">Prescriptions</span></a></li>
+            <?php elseif ($role === 'admin'): ?>
+                <li><a href="/view/admin/dashboard.php" class="nav-item <?php echo $currentPage === 'admin-dashboard' ? 'active' : ''; ?>" aria-label="Home"><span class="icon" aria-hidden="true"><img src="/assets/icons/home.svg" alt=""></span><span class="label">Home</span></a></li>
             <?php endif; ?>
         </ul>
     </nav>
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="false"></button>
     <div class="sidebar-footer">
         <ul>
-            <li><a href="#" class="nav-item <?php echo $currentPage === 'profile' ? 'active' : ''; ?>" aria-label="Profile"><span class="icon" aria-hidden="true"><img src="/assets/icons/profile.svg" alt=""></span><span class="label">Profile</span></a></li>
+            <li><a href="<?php echo $role === 'admin' ? '/view/admin/profile.php' : '#'; ?>" class="nav-item <?php echo ($currentPage === 'profile' || $currentPage === 'admin-profile') ? 'active' : ''; ?>" aria-label="Profile"><span class="icon" aria-hidden="true"><img src="/assets/icons/profile.svg" alt=""></span><span class="label">Profile</span></a></li>
             <li><a href="/logout.php" class="nav-item" aria-label="Logout"><span class="icon" aria-hidden="true"><img src="/assets/icons/logout.svg" alt=""></span><span class="label">Logout</span></a></li>
         </ul>
     </div>
