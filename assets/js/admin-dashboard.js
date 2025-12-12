@@ -15,18 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const searchInput = document.getElementById('search-input');
   const refreshButton = document.getElementById('refresh-list');
-  
+
   if (refreshButton) {
     refreshButton.addEventListener('click', fetchAndRender);
   }
-  
+
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       // Clear existing timeout
       if (searchTimeout) {
         clearTimeout(searchTimeout);
       }
-      
+
       // Debounce search - wait 300ms after user stops typing
       searchTimeout = setTimeout(() => {
         fetchAndRender();
@@ -34,8 +34,95 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Add User Modal Logic
+  const addUserBtn = document.getElementById('add-user-btn');
+  const addModal = document.getElementById('add-modal');
+  const addForm = document.getElementById('add-form');
+  const closeAddBtns = document.querySelectorAll('[data-close-add-modal]');
+  const roleSelect = document.getElementById('add-role');
+
+  if (addUserBtn && addModal) {
+    addUserBtn.addEventListener('click', () => {
+      addModal.classList.add('active'); // CSS based visibility usually
+      addModal.style.display = 'flex'; // Fallback
+      addModal.setAttribute('aria-hidden', 'false');
+    });
+
+    closeAddBtns.forEach(btn => btn.addEventListener('click', () => {
+      closeAddModal();
+    }));
+
+    if (roleSelect) {
+      roleSelect.addEventListener('change', () => {
+        updateDynamicFields(roleSelect.value);
+      });
+    }
+
+    if (addForm) {
+      addForm.addEventListener('submit', handleAddUser);
+    }
+  }
+
   fetchAndRender();
 });
+
+function closeAddModal() {
+  const addModal = document.getElementById('add-modal');
+  if (addModal) {
+    addModal.style.display = 'none';
+    addModal.setAttribute('aria-hidden', 'true');
+    document.getElementById('add-form').reset();
+    document.getElementById('add-status').textContent = '';
+    updateDynamicFields('');
+  }
+}
+
+function updateDynamicFields(role) {
+  document.getElementById('add-specialization-field').style.display = role === 'doctor' ? 'block' : 'none';
+  document.getElementById('add-location-field').style.display = role === 'pharmacist' ? 'block' : 'none';
+
+  const isClient = role === 'client';
+  document.getElementById('add-address-field').style.display = isClient ? 'block' : 'none';
+  document.getElementById('add-contact-field').style.display = isClient ? 'block' : 'none';
+}
+
+async function handleAddUser(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
+  const role = data.role;
+  const statusEl = document.getElementById('add-status');
+
+  statusEl.textContent = 'Creating user...';
+  statusEl.classList.remove('error');
+
+  let endpoint = '';
+  if (role === 'doctor') endpoint = 'doctors';
+  else if (role === 'client') endpoint = 'patients';
+  else if (role === 'pharmacist') endpoint = 'pharmacists';
+  else return;
+
+  try {
+    const res = await fetch(`${ADMIN_API_BASE}/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      alert('User created successfully!');
+      closeAddModal();
+      fetchAndRender();
+    } else {
+      throw new Error(result.error);
+    }
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = err.message || 'Failed to create user.';
+    statusEl.classList.add('error');
+  }
+}
 
 function setActiveFilter(filter) {
   activeFilter = filter;

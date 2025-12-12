@@ -78,6 +78,49 @@ if ($stmt_new_prescription->execute()) {
         $medicineIndex++;
     }
     
+    // --- Save as Template Logic ---
+    if (isset($_POST['save-template']) && !empty($_POST['template-name'])) {
+        $templateName = $_POST['template-name'];
+        
+        // Re-construct medicines array for JSON storage
+        $medicinesArray = [];
+        $medIdx = 0;
+        
+        // Reset pointer or re-loop carefully. Since we processed $_POST logic above, let's re-read $_POST
+        // Note: $_POST is still available.
+        while (isset($_POST["medicine-{$medIdx}-id"])) {
+             $tMedID = $_POST["medicine-{$medIdx}-id"];
+             $tDosage = $_POST["medicine-{$medIdx}-dosage"] ?? '';
+             $tAmount = $_POST["medicine-{$medIdx}-amount"] ?? null;
+             $tDesc = $_POST["medicine-{$medIdx}-description"] ?? '';
+             
+             // Validate amount for template same as above
+             $tRemaining = null;
+             if ($tAmount !== null && $tAmount !== '') {
+                 $tRemaining = (int)$tAmount;
+             }
+
+             $medicinesArray[] = [
+                 'medID' => $tMedID,
+                 'dosage' => $tDosage,
+                 'amount' => $tRemaining, // Store the initial amount
+                 'description' => $tDesc
+             ];
+             $medIdx++;
+        }
+
+        if (!empty($medicinesArray)) {
+            $jsonMedicines = json_encode($medicinesArray);
+            // $clientID is already defined at top of file
+            $sql_template = "INSERT INTO prescription_templates (doctorID, clientID, templateName, medicines) VALUES (?, ?, ?, ?)";
+            $stmt_template = $conn->prepare($sql_template);
+            $stmt_template->bind_param("ssss", $doctorID, $clientID, $templateName, $jsonMedicines);
+            $stmt_template->execute();
+            $stmt_template->close();
+        }
+    }
+    // ----------------------------
+
     if ($medicinesAdded > 0) {
         echo json_encode(['success' => true, 'prescID' => $prescID, 'medicinesAdded' => $medicinesAdded]);
     } else {

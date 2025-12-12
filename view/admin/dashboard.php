@@ -55,6 +55,7 @@
             <button class="filter-btn" data-filter="pharmacist">Pharmacist</button>
           </div>
           <div class="search-actions">
+            <button class="btn-ghost" id="add-user-btn" type="button" style="background-color: #007bff; color: white; margin-right: 8px;">+ Add User</button>
             <button class="btn-ghost" id="refresh-list" type="button">Refresh</button>
             <div class="search-box">
               <input type="text" id="search-input" placeholder="Search by name or email" aria-label="Search users">
@@ -80,6 +81,69 @@
   </main>
 
   <?php include '../../includes/footer.php'; ?>
+
+  <!-- Add User Modal -->
+  <div class="modal" id="add-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-add-modal></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="add-modal-title">
+      <div class="modal-header">
+        <h3 id="add-modal-title">Add New User</h3>
+        <button class="modal-close" type="button" data-close-add-modal>&times;</button>
+      </div>
+      <form id="add-form" class="modal-body">
+        <div class="field">
+          <label for="add-role">Role</label>
+          <select id="add-role" name="role" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="doctor">Doctor</option>
+            <option value="client">Client</option>
+            <option value="pharmacist">Pharmacist</option>
+          </select>
+        </div>
+        
+        <div class="field">
+          <label for="add-firstName">First Name</label>
+          <input type="text" id="add-firstName" name="firstName" required>
+        </div>
+        <div class="field">
+          <label for="add-lastName">Last Name</label>
+          <input type="text" id="add-lastName" name="lastName" required>
+        </div>
+        <div class="field">
+          <label for="add-email">Email</label>
+          <input type="email" id="add-email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="add-password">Password</label>
+          <input type="password" id="add-password" name="password" required minlength="3">
+        </div>
+
+        <!-- Dynamic Fields -->
+        <div class="field dynamic-field" id="add-specialization-field" style="display:none;">
+          <label for="add-specialization">Specialization</label>
+          <input type="text" id="add-specialization" name="specialization">
+        </div>
+        <div class="field dynamic-field" id="add-address-field" style="display:none;">
+          <label for="add-address">Address</label>
+          <input type="text" id="add-address" name="address">
+        </div>
+        <div class="field dynamic-field" id="add-contact-field" style="display:none;">
+          <label for="add-contact">Contact Number</label>
+          <input type="text" id="add-contact" name="contact">
+        </div>
+        <div class="field dynamic-field" id="add-location-field" style="display:none;">
+          <label for="add-location">Location</label>
+          <input type="text" id="add-location" name="location">
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-ghost" type="button" data-close-add-modal>Cancel</button>
+          <button class="btn-primary" type="submit">Create User</button>
+        </div>
+        <p class="admin-muted" id="add-status" style="margin-top:8px;"></p>
+      </form>
+    </div>
+  </div>
 
   <div class="modal" id="edit-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-modal></div>

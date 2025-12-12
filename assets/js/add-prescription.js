@@ -25,6 +25,93 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to fetch clients:', err);
         });
 
+    // --- TEMPLATE LOGIC START ---
+    const loadTemplateSelect = document.getElementById('load-template');
+    const saveTemplateCheckbox = document.getElementById('save-template');
+    const templateNameContainer = document.getElementById('template-name-container');
+    const templateNameInput = document.getElementById('template-name');
+    let allTemplates = [];
+
+
+    function fetchTemplatesForClient(clientId) {
+        if (!loadTemplateSelect) return;
+
+        // Clear previous options
+        loadTemplateSelect.innerHTML = '<option value="">-- Select a Template --</option>';
+        allTemplates = [];
+
+        if (!clientId) return;
+
+        fetch(`../../controller/get-templates.php?client_id=${clientId}`, { credentials: 'same-origin' })
+            .then(res => res.json())
+            .then(data => {
+                allTemplates = data;
+                if (data.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = "";
+                    opt.textContent = "No templates found for this client";
+                    opt.disabled = true;
+                    loadTemplateSelect.appendChild(opt);
+                } else {
+                    data.forEach(tpl => {
+                        const opt = document.createElement('option');
+                        opt.value = tpl.templateID;
+                        opt.textContent = tpl.templateName;
+                        loadTemplateSelect.appendChild(opt);
+                    });
+                }
+            })
+            .catch(err => console.error('Failed to fetch templates:', err));
+    }
+
+    // Load Template Handler
+    if (loadTemplateSelect) {
+        loadTemplateSelect.addEventListener('change', (e) => {
+            const tplId = e.target.value;
+            if (!tplId) return;
+
+            const tpl = allTemplates.find(t => t.templateID == tplId);
+            if (tpl && tpl.medicines) {
+                // Clear existing medicines if any? Or append? usually clear or confirmation.
+                // For simplicity, we just add them.
+                if (selectedMedicines.length > 0) {
+                    if (!confirm('This will append to your current list. Continue?')) {
+                        loadTemplateSelect.value = "";
+                        return;
+                    }
+                }
+
+                tpl.medicines.forEach(m => {
+                    selectedMedicines.push({
+                        id: m.medID,
+                        name: getMedicineNameById(m.medID), // Helper needed or store name in JSON
+                        brand: '', // JSON might not have brand, fetch it?
+                        medID: m.medID,
+                        dosage: m.dosage,
+                        amount: m.amount,
+                        description: m.description
+                    });
+                });
+                updateSelectedMedicinesDisplay();
+            }
+        });
+    }
+
+    // Toggle Template Name Visibility
+    if (saveTemplateCheckbox) {
+        saveTemplateCheckbox.addEventListener('change', (e) => {
+            templateNameContainer.style.display = e.target.checked ? 'block' : 'none';
+            if (e.target.checked) templateNameInput.focus();
+        });
+    }
+
+    // Helper to get name from ID (since template only stores ID in my simplified JSON plan, strictly speaking we need to match it)
+    function getMedicineNameById(id) {
+        const med = allMedicines.find(m => m.medID === id);
+        return med ? med.genericName : 'Unknown Medicine';
+    }
+    // --- TEMPLATE LOGIC END ---
+
     const clientNameInput = document.getElementById('client-name');
     const clientIdInput = document.getElementById('client-id');
     const clientDropdown = document.getElementById('client-dropdown');
@@ -56,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayMedicineDropdownInModal(medicines) {
         modalMedicineDropdown.innerHTML = '';
-        
+
         if (medicines.length === 0) {
             modalMedicineDropdown.innerHTML = '<div class="dropdown-item no-results">No medicines found</div>';
             modalMedicineDropdown.style.display = 'block';
@@ -82,11 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectMedicineInModal(medicine) {
         // Store the selected medicine
         currentSelectedMedicine = medicine;
-        
+
         // Display medicine name in the modal search field
         const displayName = `${medicine.genericName}${medicine.brand ? ' (' + medicine.brand + ')' : ''}`;
         modalMedicineSearch.value = displayName;
-        
+
         // Hide dropdown
         modalMedicineDropdown.style.display = 'none';
     }
@@ -99,10 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
         medicineAmount.value = '';
         medicineDescription.value = '';
         modalMedicineDropdown.style.display = 'none';
-        
+
         // Show modal
         medicineDetailsModal.style.display = 'block';
-        
+
         // Focus on the medicine search input
         setTimeout(() => {
             modalMedicineSearch.focus();
@@ -153,21 +240,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         selectedMedicines.push(medicineData);
-        
+
         // Update display
         updateSelectedMedicinesDisplay();
-        
+
         // Hide modal and clear current selection
         hideMedicineDetailsModal();
     }
 
     function updateSelectedMedicinesDisplay() {
         selectedMedicinesList.innerHTML = '';
-        
+
         if (selectedMedicines.length === 0) {
             return;
         }
-        
+
         selectedMedicines.forEach((medicine, index) => {
             const medicineItem = document.createElement('div');
             medicineItem.className = 'selected-medicine-item';
@@ -182,12 +269,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <button type="button" class="remove-medicine-btn" data-index="${index}">×</button>
             `;
-            
+
             const removeBtn = medicineItem.querySelector('.remove-medicine-btn');
             removeBtn.addEventListener('click', () => {
                 removeMedicine(index);
             });
-            
+
             selectedMedicinesList.appendChild(medicineItem);
         });
     }
@@ -215,15 +302,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstName = (client.firstName || '').toLowerCase();
             const lastName = (client.lastName || '').toLowerCase();
             const fullName = `${firstName} ${lastName}`.toLowerCase();
-            return firstName.includes(lowerQuery) || 
-                   lastName.includes(lowerQuery) || 
-                   fullName.includes(lowerQuery);
+            return firstName.includes(lowerQuery) ||
+                lastName.includes(lowerQuery) ||
+                fullName.includes(lowerQuery);
         });
     }
 
     function displayClientDropdown(clients) {
         clientDropdown.innerHTML = '';
-        
+
         if (clients.length === 0) {
             clientDropdown.innerHTML = '<div class="dropdown-item no-results">No clients found</div>';
             clientDropdown.style.display = 'block';
@@ -248,12 +335,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectClient(client) {
         // Store the selected client
         currentSelectedClient = client;
-        
+
         // Display client name in the input field
         const displayName = `${client.firstName} ${client.lastName}`;
         clientNameInput.value = displayName;
         clientIdInput.value = client.clientID;
-        
+
+        // Fetch templates for this client
+        fetchTemplatesForClient(client.clientID);
+
         // Hide dropdown
         clientDropdown.style.display = 'none';
     }
@@ -262,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clientNameInput) {
         clientNameInput.setAttribute('autocomplete', 'off');
         clientNameInput.setAttribute('list', '');
-        
+
         clientNameInput.addEventListener('input', (e) => {
             const query = e.target.value;
             const filtered = filterClients(query);
@@ -290,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clientDropdown.style.display = 'none';
             }
         }
-        
+
         // Hide modal medicine dropdown
         if (modalMedicineSearch && modalMedicineDropdown) {
             if (!modalMedicineSearch.contains(e.target) && !modalMedicineDropdown.contains(e.target)) {
@@ -303,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalMedicineSearch) {
         modalMedicineSearch.setAttribute('autocomplete', 'off');
         modalMedicineSearch.setAttribute('list', '');
-        
+
         modalMedicineSearch.addEventListener('input', (e) => {
             const query = e.target.value;
             const filtered = filterMedicines(query);
@@ -387,7 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Prepare form data
             const formData = new FormData(form);
-            
+
             // Add medicine data to form data
             selectedMedicines.forEach((medicine, index) => {
                 formData.append(`medicine-${index}-id`, medicine.id);

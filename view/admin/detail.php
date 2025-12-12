@@ -69,6 +69,7 @@
           <button class="btn btn-primary" id="edit-btn" type="button">Edit Details</button>
           <button class="btn btn-ghost" id="cancel-btn" type="button" disabled>Cancel</button>
           <button class="btn btn-primary" id="save-btn" type="button" disabled>Save</button>
+          <button class="btn btn-danger" id="delete-btn" type="button" style="margin-left: auto; background-color: #dc3545; color: white;">Delete User</button>
         </div>
         <p class="status" id="status"></p>
       </div>

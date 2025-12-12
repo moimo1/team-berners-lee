@@ -157,3 +157,100 @@ export async function updatePharmacist(id, data) {
         conn.release();
     }
 }
+
+export async function deleteDoctor(id) {
+    const conn = await getConnection();
+    try {
+        const [result] = await conn.query('DELETE FROM doctor WHERE doctorID = ?', [id]);
+        return result.affectedRows > 0;
+    } finally {
+        conn.release();
+    }
+}
+
+export async function deletePatient(id) {
+    const conn = await getConnection();
+    try {
+        const [result] = await conn.query('DELETE FROM client WHERE clientID = ?', [id]);
+        return result.affectedRows > 0;
+    } finally {
+        conn.release();
+    }
+}
+
+export async function deletePharmacist(id) {
+    const conn = await getConnection();
+    try {
+        const [result] = await conn.query('DELETE FROM pharmacist WHERE pharmaID = ?', [id]);
+        return result.affectedRows > 0;
+    } finally {
+        conn.release();
+    }
+}
+
+// Helpers for ID generation
+async function generateId(conn, table, idColumn, prefix, substringStart = 2) {
+    const [rows] = await conn.query(`SELECT MAX(CAST(SUBSTRING(${idColumn}, ${substringStart}) AS UNSIGNED)) as maxNum FROM ${table}`);
+    const nextNum = (rows[0].maxNum || 0) + 1;
+    return prefix + String(nextNum).padStart(3, '0');
+}
+
+export async function createDoctor(data) {
+    const conn = await getConnection();
+    try {
+        const newID = await generateId(conn, 'doctor', 'doctorID', 'D');
+        const sql = 'INSERT INTO doctor (doctorID, firstName, lastName, specialty, phonenum, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const [result] = await conn.query(sql, [
+            newID,
+            data.firstName,
+            data.lastName,
+            data.specialty || '',
+            data.phonenum || '',
+            data.email,
+            data.password
+        ]);
+        return { id: newID, ...data };
+    } finally {
+        conn.release();
+    }
+}
+
+export async function createPatient(data) {
+    const conn = await getConnection();
+    try {
+        const newID = await generateId(conn, 'client', 'clientID', 'C');
+        const sql = 'INSERT INTO client (clientID, firstName, lastName, contact, address, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const [result] = await conn.query(sql, [
+            newID,
+            data.firstName,
+            data.lastName,
+            data.contact || '', // database field is 'contact', form usually 'contacts'
+            data.address || '',
+            data.email,
+            data.password
+        ]);
+        return { id: newID, ...data };
+    } finally {
+        conn.release();
+    }
+}
+
+export async function createPharmacist(data) {
+    const conn = await getConnection();
+    try {
+        const newID = await generateId(conn, 'pharmacist', 'pharmaID', 'PH', 3);
+        // Note: Pharmacist table uses 'location' often for designation in this codebase context
+        const sql = 'INSERT INTO pharmacist (pharmaID, firstName, lastName, location, email, password) VALUES (?, ?, ?, ?, ?, ?)';
+        const [result] = await conn.query(sql, [
+            newID,
+            data.firstName,
+            data.lastName,
+            data.location || '',
+            data.email,
+            data.password
+        ]);
+        return { id: newID, ...data };
+    } finally {
+        conn.release();
+    }
+}

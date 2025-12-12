@@ -43,7 +43,7 @@ if ($result->num_rows === 1) {
             break;
 
         case 'admin':
-            $_SESSION['id'] = $user['id'];
+            $_SESSION['id'] = $user['adminID'];
             header("Location: ../view/admin/dashboard.php");
             break;
         case 'pharma_admin':

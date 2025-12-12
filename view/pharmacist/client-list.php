@@ -54,6 +54,7 @@
         <table class="table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Client Name</th>
               <th>Date Given</th>
               <th>Date Expiry</th>

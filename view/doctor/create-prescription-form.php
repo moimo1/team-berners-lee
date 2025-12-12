@@ -49,6 +49,15 @@
 
       <div class="card prescription-form-card">
         <form id="create-prescription-form" method="POST" action="../../controller/create-prescription.php">
+
+          <!-- Load Template -->
+          <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+            <label for="load-template" style="color: #0f172a; font-weight: 600;">📂 Load Saved Prescription</label>
+            <select id="load-template" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+              <option value="">-- Select a Template --</option>
+            </select>
+          </div>
+
           <!-- Client Name -->
           <div class="form-group">
             <label for="client-name">Client Name<span class="required">*</span></label>
@@ -88,6 +97,18 @@
               <option value="Active">Active</option>
               <option value="Expired">Expired</option>
             </select>
+          </div>
+
+          <!-- Save as Template -->
+          <div class="form-group" style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="save-template" name="save-template" style="width: auto;">
+              <span style="font-weight: 600; color: #00897b;">Save as Template for future use</span>
+            </label>
+            <div id="template-name-container" style="display: none; margin-top: 10px;">
+              <label for="template-name">Template Name</label>
+              <input type="text" id="template-name" name="template-name" placeholder="e.g., Flu Treatment Standard">
+            </div>
           </div>
 
           <!-- Buttons -->

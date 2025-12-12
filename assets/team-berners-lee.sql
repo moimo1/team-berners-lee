@@ -408,6 +408,47 @@ INSERT INTO `prescriptiondetails` (`prescID`, `medID`, `dosage`, `remainingAmoun
 ('P007', 'M003', '500mg tablet every 6 hours', 12, 'Take after meals to relieve pain'),
 ('P008', 'M003', '500 mg every 10 hours', 10, 'Take after meals to relieve pain');
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prescription_templates`
+--
+
+DROP TABLE IF EXISTS `prescription_templates`;
+CREATE TABLE IF NOT EXISTS `prescription_templates` (
+  `templateID` int NOT NULL AUTO_INCREMENT,
+  `doctorID` char(4) NOT NULL,
+  `clientID` char(4) NOT NULL,
+  `templateName` varchar(100) NOT NULL,
+  `medicines` json NOT NULL,
+  PRIMARY KEY (`templateID`),
+  KEY `doctorID` (`doctorID`),
+  KEY `clientID` (`clientID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE IF NOT EXISTS `admin` (
+  `adminID` varchar(20) NOT NULL,
+  `firstName` varchar(30) NOT NULL,
+  `lastName` varchar(30) NOT NULL,
+  `email` varchar(25) NOT NULL,
+  `password` varchar(25) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`adminID`, `firstName`, `lastName`, `email`, `password`) VALUES
+('A000', 'John', 'Santos', 'john.santos@example.com', '123'),
+('A001', 'Maria', 'DelaCruz', 'maria.delacruz@example.co', '123'),
+('A002', 'Kevin', 'Ramirez', 'kevin.ramirez@example.com', '123'),
+('A003', 'Angela', 'Torres', 'angela.torres@example.com', '123'),
+('A004', 'Patrick', 'Mendoza', 'patrick.mendoza@example.c', '123');
+
 -- --------------------------------------------------------
 
 --

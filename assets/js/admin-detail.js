@@ -16,9 +16,37 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('edit-btn').addEventListener('click', enableEditing);
   document.getElementById('cancel-btn').addEventListener('click', cancelEditing);
   document.getElementById('save-btn').addEventListener('click', saveEdits);
+  document.getElementById('delete-btn').addEventListener('click', deleteEntity);
 
   loadEntity(type, id);
 });
+
+
+
+async function deleteEntity() {
+  const type = document.getElementById('entity-type').value;
+  const id = document.getElementById('entity-id').value;
+
+  if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    return;
+  }
+
+  renderStatus('Deleting...');
+  try {
+    const res = await fetch(`${ADMIN_API_BASE}/${mapPath(type)}/${id}`, {
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.error || `Failed (${res.status})`);
+
+    alert('User deleted successfully.');
+    window.location.href = '/view/admin/dashboard.php';
+  } catch (err) {
+    console.error(err);
+    renderStatus('Error deleting user. Please try again.', true);
+  }
+}
 
 function mapPath(type) {
   if (type === 'doctor') return 'doctors';
