@@ -17,6 +17,6 @@ app.use('/api/pharma-admin/prescriptions', prescriptionRoutes);
 app.use('/api/pharma-admin/pharmacists', historyRoutes);
 app.use('/api/admin', adminUserRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
