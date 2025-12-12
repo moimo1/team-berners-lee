@@ -84,6 +84,8 @@ body {
   background: #f8fafc;
   color: #0f172a;
   transition: all 0.15s ease;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .form-input:focus {
@@ -121,6 +123,8 @@ body {
   font-weight: 600;
   font-size: 14px;
   transition: all 0.15s ease;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .btn:disabled {
@@ -129,14 +133,14 @@ body {
 }
 
 .btn-primary {
-  background: #00897b;
+  background: #334155;
   color: #ffffff;
-  border-color: #00897b;
+  border-color: #334155;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #00695c;
-  border-color: #00695c;
+  background: #1f2937;
+  border-color: #1f2937;
 }
 
 .btn-ghost {
