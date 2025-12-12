@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/admin';
+const API_URL = `${window.location.protocol}//${window.location.hostname}:3000/api/admin`;
 
 let currentFilter = 'all';
 
