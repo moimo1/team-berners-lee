@@ -1,524 +1,435 @@
+// ==========================================
+// 1. GLOBAL VARIABLES
+// ==========================================
+let allMedicines = [];      // Stores all medicines fetched from server
+let allClients = [];        // Stores all clients fetched from server
+let selectedMedicines = []; // Stores medicines added to the "cart"
+
+// Current selections
+let currentSelectedClient = null;
+let currentSelectedMedicine = null;
+
+
+// ==========================================
+// 2. INITIALIZATION (RUNS WHEN PAGE LOADS)
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    let allMedicines = [];
-    let allClients = [];
-    let selectedMedicines = [];
-    let currentSelectedMedicine = null; // Store the medicine selected in modal
-    let currentSelectedClient = null; // Store the client selected
+    console.log('Page loaded. Configuring...');
 
-    // Fetch all medicines from database
-    fetch('../../controller/get-medicines.php', { credentials: 'same-origin' })
-        .then(res => res.json())
-        .then(data => {
-            allMedicines = data;
-        })
-        .catch(err => {
-            console.error('Failed to fetch medicines:', err);
+    // Load initial data
+    loadAllMedicines();
+    loadAllClients();
+
+    // Setup Client Search (The "Who is this for?" part)
+    setupClientSearch();
+
+    // Setup Medicine Search (The "Add Medicine" part)
+    setupMedicineSearch();
+
+    // Setup the "Submit" button
+    setupFormSubmission();
+
+    // Setup "Templates" (Optional feature to load saved bundles)
+    setupTemplates();
+});
+
+
+// ==========================================
+// 3. DATA LOADING (FETCHING FROM SERVER)
+// ==========================================
+async function loadAllMedicines() {
+    try {
+        const response = await fetch('../../controller/get-medicines.php', { credentials: 'same-origin' });
+        const data = await response.json();
+        allMedicines = data;
+        console.log('Medicines loaded:', allMedicines.length);
+    } catch (error) {
+        console.error('Error loading medicines:', error);
+    }
+}
+
+async function loadAllClients() {
+    try {
+        const response = await fetch('../../controller/get-clients.php', { credentials: 'same-origin' });
+        const data = await response.json();
+        allClients = data;
+        console.log('Clients loaded:', allClients.length);
+    } catch (error) {
+        console.error('Error loading clients:', error);
+    }
+}
+
+
+// ==========================================
+// 4. CLIENT SEARCH & SELECTION
+// ==========================================
+function setupClientSearch() {
+    const nameInput = document.getElementById('client-name');
+    const dropdown = document.getElementById('client-dropdown');
+    const idInput = document.getElementById('client-id'); // Hidden input for Database ID
+
+    if (!nameInput) return; // Skip if element missing
+
+    // When typing in the client name box...
+    nameInput.addEventListener('input', (e) => {
+        const text = e.target.value.toLowerCase();
+
+        // Filter the list of clients
+        const matches = allClients.filter(c => {
+            const fullName = (c.firstName + ' ' + c.lastName).toLowerCase();
+            return fullName.includes(text);
         });
 
-    // Fetch all clients from database
-    fetch('../../controller/get-clients.php', { credentials: 'same-origin' })
-        .then(res => res.json())
-        .then(data => {
-            allClients = data;
-        })
-        .catch(err => {
-            console.error('Failed to fetch clients:', err);
-        });
+        // Show the dropdown with matches
+        showClientDropdown(matches);
 
-    // --- TEMPLATE LOGIC START ---
-    const loadTemplateSelect = document.getElementById('load-template');
-    const saveTemplateCheckbox = document.getElementById('save-template');
-    const templateNameContainer = document.getElementById('template-name-container');
-    const templateNameInput = document.getElementById('template-name');
-    let allTemplates = [];
-
-
-    function fetchTemplatesForClient(clientId) {
-        if (!loadTemplateSelect) return;
-
-        // Clear previous options
-        loadTemplateSelect.innerHTML = '<option value="">-- Select a Template --</option>';
-        allTemplates = [];
-
-        if (!clientId) return;
-
-        fetch(`../../controller/get-templates.php?client_id=${clientId}`, { credentials: 'same-origin' })
-            .then(res => res.json())
-            .then(data => {
-                allTemplates = data;
-                if (data.length === 0) {
-                    const opt = document.createElement('option');
-                    opt.value = "";
-                    opt.textContent = "No templates found for this client";
-                    opt.disabled = true;
-                    loadTemplateSelect.appendChild(opt);
-                } else {
-                    data.forEach(tpl => {
-                        const opt = document.createElement('option');
-                        opt.value = tpl.templateID;
-                        opt.textContent = tpl.templateName;
-                        loadTemplateSelect.appendChild(opt);
-                    });
-                }
-            })
-            .catch(err => console.error('Failed to fetch templates:', err));
-    }
-
-    // Load Template Handler
-    if (loadTemplateSelect) {
-        loadTemplateSelect.addEventListener('change', (e) => {
-            const tplId = e.target.value;
-            if (!tplId) return;
-
-            const tpl = allTemplates.find(t => t.templateID == tplId);
-            if (tpl && tpl.medicines) {
-                // Clear existing medicines if any? Or append? usually clear or confirmation.
-                // For simplicity, we just add them.
-                if (selectedMedicines.length > 0) {
-                    if (!confirm('This will append to your current list. Continue?')) {
-                        loadTemplateSelect.value = "";
-                        return;
-                    }
-                }
-
-                tpl.medicines.forEach(m => {
-                    selectedMedicines.push({
-                        id: m.medID,
-                        name: getMedicineNameById(m.medID), // Helper needed or store name in JSON
-                        brand: '', // JSON might not have brand, fetch it?
-                        medID: m.medID,
-                        dosage: m.dosage,
-                        amount: m.amount,
-                        description: m.description
-                    });
-                });
-                updateSelectedMedicinesDisplay();
-            }
-        });
-    }
-
-    // Toggle Template Name Visibility
-    if (saveTemplateCheckbox) {
-        saveTemplateCheckbox.addEventListener('change', (e) => {
-            templateNameContainer.style.display = e.target.checked ? 'block' : 'none';
-            if (e.target.checked) templateNameInput.focus();
-        });
-    }
-
-    // Helper to get name from ID (since template only stores ID in my simplified JSON plan, strictly speaking we need to match it)
-    function getMedicineNameById(id) {
-        const med = allMedicines.find(m => m.medID === id);
-        return med ? med.genericName : 'Unknown Medicine';
-    }
-    // --- TEMPLATE LOGIC END ---
-
-    const clientNameInput = document.getElementById('client-name');
-    const clientIdInput = document.getElementById('client-id');
-    const clientDropdown = document.getElementById('client-dropdown');
-    const medicineSearch = document.getElementById('medicine-search');
-    const selectedMedicinesList = document.getElementById('selected-medicines-list');
-    const addMedicineBtn = document.getElementById('add-medicine-btn');
-    const medicineDetailsModal = document.getElementById('medicine-details-modal');
-    const modalMedicineSearch = document.getElementById('modal-medicine-search');
-    const modalMedicineDropdown = document.getElementById('modal-medicine-dropdown');
-    const medicineDosage = document.getElementById('medicine-dosage');
-    const medicineAmount = document.getElementById('medicine-amount');
-    const medicineDescription = document.getElementById('medicine-description');
-    const confirmMedicineBtn = document.getElementById('confirm-medicine-btn');
-    const cancelMedicineBtn = document.getElementById('cancel-medicine-btn');
-    const medicineModalClose = document.querySelector('.medicine-modal-close');
-
-    function filterMedicines(query) {
-        if (!query || query.trim() === '') {
-            return allMedicines;
-        }
-
-        const lowerQuery = query.toLowerCase();
-        return allMedicines.filter(medicine => {
-            const genericName = (medicine.genericName || '').toLowerCase();
-            const brand = (medicine.brand || '').toLowerCase();
-            return genericName.includes(lowerQuery) || brand.includes(lowerQuery);
-        });
-    }
-
-    function displayMedicineDropdownInModal(medicines) {
-        modalMedicineDropdown.innerHTML = '';
-
-        if (medicines.length === 0) {
-            modalMedicineDropdown.innerHTML = '<div class="dropdown-item no-results">No medicines found</div>';
-            modalMedicineDropdown.style.display = 'block';
-            return;
-        }
-
-        medicines.slice(0, 10).forEach(medicine => {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
-            item.innerHTML = `
-                <strong>${escapeHtml(medicine.genericName || 'N/A')}</strong>
-                ${medicine.brand ? `<span class="brand-name">${escapeHtml(medicine.brand)}</span>` : ''}
-            `;
-            item.addEventListener('click', () => {
-                selectMedicineInModal(medicine);
-            });
-            modalMedicineDropdown.appendChild(item);
-        });
-
-        modalMedicineDropdown.style.display = 'block';
-    }
-
-    function selectMedicineInModal(medicine) {
-        // Store the selected medicine
-        currentSelectedMedicine = medicine;
-
-        // Display medicine name in the modal search field
-        const displayName = `${medicine.genericName}${medicine.brand ? ' (' + medicine.brand + ')' : ''}`;
-        modalMedicineSearch.value = displayName;
-
-        // Hide dropdown
-        modalMedicineDropdown.style.display = 'none';
-    }
-
-    function showMedicineDetailsModal() {
-        // Clear previous values
-        currentSelectedMedicine = null;
-        modalMedicineSearch.value = '';
-        medicineDosage.value = '';
-        medicineAmount.value = '';
-        medicineDescription.value = '';
-        modalMedicineDropdown.style.display = 'none';
-
-        // Show modal
-        medicineDetailsModal.style.display = 'block';
-
-        // Focus on the medicine search input
-        setTimeout(() => {
-            modalMedicineSearch.focus();
-        }, 100);
-    }
-
-    function hideMedicineDetailsModal() {
-        medicineDetailsModal.style.display = 'none';
-        currentSelectedMedicine = null;
-        modalMedicineSearch.value = '';
-        medicineDosage.value = '';
-        medicineAmount.value = '';
-        medicineDescription.value = '';
-        modalMedicineDropdown.style.display = 'none';
-    }
-
-    function confirmMedicineDetails() {
-        const dosage = medicineDosage.value.trim();
-        const amount = medicineAmount.value.trim();
-        const description = medicineDescription.value.trim();
-
-        if (!currentSelectedMedicine) {
-            alert('Please select a medicine');
-            return;
-        }
-
-        if (!dosage || !amount || !description) {
-            alert('Please fill in dosage, amount, and description');
-            return;
-        }
-
-        // Validate amount is a positive number
-        const amountNum = parseInt(amount);
-        if (isNaN(amountNum) || amountNum < 1) {
-            alert('Please enter a valid amount (at least 1)');
-            return;
-        }
-
-        // Add medicine to selected medicines with details
-        const medicineData = {
-            id: currentSelectedMedicine.medID,
-            name: currentSelectedMedicine.genericName,
-            brand: currentSelectedMedicine.brand || '',
-            medID: currentSelectedMedicine.medID,
-            dosage: dosage,
-            amount: amountNum,
-            description: description
-        };
-
-        selectedMedicines.push(medicineData);
-
-        // Update display
-        updateSelectedMedicinesDisplay();
-
-        // Hide modal and clear current selection
-        hideMedicineDetailsModal();
-    }
-
-    function updateSelectedMedicinesDisplay() {
-        selectedMedicinesList.innerHTML = '';
-
-        if (selectedMedicines.length === 0) {
-            return;
-        }
-
-        selectedMedicines.forEach((medicine, index) => {
-            const medicineItem = document.createElement('div');
-            medicineItem.className = 'selected-medicine-item';
-            medicineItem.innerHTML = `
-                <div class="medicine-info">
-                    <div class="medicine-name">${escapeHtml(medicine.name)}${medicine.brand ? ' (' + escapeHtml(medicine.brand) + ')' : ''}</div>
-                    <div class="medicine-details">
-                        <div class="medicine-dosage-display"><strong>Dosage:</strong> ${escapeHtml(medicine.dosage || 'N/A')}</div>
-                        <div class="medicine-amount-display"><strong>Amount:</strong> ${escapeHtml(medicine.amount || 'N/A')}</div>
-                        <div class="medicine-description-display"><strong>Description:</strong> ${escapeHtml(medicine.description || 'N/A')}</div>
-                    </div>
-                </div>
-                <button type="button" class="remove-medicine-btn" data-index="${index}">×</button>
-            `;
-
-            const removeBtn = medicineItem.querySelector('.remove-medicine-btn');
-            removeBtn.addEventListener('click', () => {
-                removeMedicine(index);
-            });
-
-            selectedMedicinesList.appendChild(medicineItem);
-        });
-    }
-
-    function removeMedicine(index) {
-        selectedMedicines.splice(index, 1);
-        updateSelectedMedicinesDisplay();
-    }
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    // Client search functionality
-    function filterClients(query) {
-        if (!query || query.trim() === '') {
-            return allClients;
-        }
-
-        const lowerQuery = query.toLowerCase();
-        return allClients.filter(client => {
-            const firstName = (client.firstName || '').toLowerCase();
-            const lastName = (client.lastName || '').toLowerCase();
-            const fullName = `${firstName} ${lastName}`.toLowerCase();
-            return firstName.includes(lowerQuery) ||
-                lastName.includes(lowerQuery) ||
-                fullName.includes(lowerQuery);
-        });
-    }
-
-    function displayClientDropdown(clients) {
-        clientDropdown.innerHTML = '';
-
-        if (clients.length === 0) {
-            clientDropdown.innerHTML = '<div class="dropdown-item no-results">No clients found</div>';
-            clientDropdown.style.display = 'block';
-            return;
-        }
-
-        clients.slice(0, 10).forEach(client => {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
-            item.innerHTML = `
-                <strong>${escapeHtml(client.firstName || '')} ${escapeHtml(client.lastName || '')}</strong>
-            `;
-            item.addEventListener('click', () => {
-                selectClient(client);
-            });
-            clientDropdown.appendChild(item);
-        });
-
-        clientDropdown.style.display = 'block';
-    }
-
-    function selectClient(client) {
-        // Store the selected client
-        currentSelectedClient = client;
-
-        // Display client name in the input field
-        const displayName = `${client.firstName} ${client.lastName}`;
-        clientNameInput.value = displayName;
-        clientIdInput.value = client.clientID;
-
-        // Fetch templates for this client
-        fetchTemplatesForClient(client.clientID);
-
-        // Hide dropdown
-        clientDropdown.style.display = 'none';
-    }
-
-    // Client name input event listeners
-    if (clientNameInput) {
-        clientNameInput.setAttribute('autocomplete', 'off');
-        clientNameInput.setAttribute('list', '');
-
-        clientNameInput.addEventListener('input', (e) => {
-            const query = e.target.value;
-            const filtered = filterClients(query);
-            displayClientDropdown(filtered);
-            // Clear current selection when user types
-            if (query && !query.includes(currentSelectedClient?.firstName || '') && !query.includes(currentSelectedClient?.lastName || '')) {
-                currentSelectedClient = null;
-                clientIdInput.value = '';
-            }
-        });
-
-        clientNameInput.addEventListener('focus', () => {
-            if (clientNameInput.value) {
-                const filtered = filterClients(clientNameInput.value);
-                displayClientDropdown(filtered);
-            }
-        });
-    }
-
-    // Hide dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        // Hide client dropdown
-        if (clientNameInput && clientDropdown) {
-            if (!clientNameInput.contains(e.target) && !clientDropdown.contains(e.target)) {
-                clientDropdown.style.display = 'none';
-            }
-        }
-
-        // Hide modal medicine dropdown
-        if (modalMedicineSearch && modalMedicineDropdown) {
-            if (!modalMedicineSearch.contains(e.target) && !modalMedicineDropdown.contains(e.target)) {
-                modalMedicineDropdown.style.display = 'none';
-            }
+        // If user clears text, clear selection
+        if (text === '') {
+            currentSelectedClient = null;
+            idInput.value = '';
         }
     });
 
-    // Modal medicine search event listeners
-    if (modalMedicineSearch) {
-        modalMedicineSearch.setAttribute('autocomplete', 'off');
-        modalMedicineSearch.setAttribute('list', '');
+    // When clicking the input, show list immediately
+    nameInput.addEventListener('focus', () => {
+        if (nameInput.value) {
+            // Trigger input event logic manually
+            nameInput.dispatchEvent(new Event('input'));
+        }
+    });
 
-        modalMedicineSearch.addEventListener('input', (e) => {
-            const query = e.target.value;
-            const filtered = filterMedicines(query);
-            displayMedicineDropdownInModal(filtered);
-            // Clear current selection when user types
-            if (query && !query.includes(currentSelectedMedicine?.genericName || '')) {
-                currentSelectedMedicine = null;
-            }
+    // Hide dropdown if clicking outside
+    document.addEventListener('click', (e) => {
+        if (!nameInput.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
+function showClientDropdown(clients) {
+    const dropdown = document.getElementById('client-dropdown');
+    dropdown.innerHTML = ''; // Clear old list
+
+    if (clients.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    // Show only top 10 results
+    clients.slice(0, 10).forEach(client => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item';
+        div.textContent = `${client.firstName} ${client.lastName}`;
+
+        // When clicking a name...
+        div.addEventListener('click', () => {
+            selectClient(client);
+            dropdown.style.display = 'none';
         });
 
-        modalMedicineSearch.addEventListener('focus', () => {
-            if (modalMedicineSearch.value) {
-                const filtered = filterMedicines(modalMedicineSearch.value);
-                displayMedicineDropdownInModal(filtered);
-            }
+        dropdown.appendChild(div);
+    });
+
+    dropdown.style.display = 'block';
+}
+
+function selectClient(client) {
+    currentSelectedClient = client;
+
+    // Fill the inputs
+    document.getElementById('client-name').value = `${client.firstName} ${client.lastName}`;
+    document.getElementById('client-id').value = client.clientID;
+
+    // Load templates for this client (if any)
+    loadTemplatesForClient(client.clientID);
+}
+
+
+// ==========================================
+// 5. MEDICINE SEARCH (MODAL)
+// ==========================================
+function setupMedicineSearch() {
+    // Buttons to open/close modal
+    const openBtn = document.getElementById('add-medicine-btn');
+    const modal = document.getElementById('medicine-details-modal');
+    const closeBtn = document.querySelector('.medicine-modal-close');
+    const cancelBtn = document.getElementById('cancel-medicine-btn');
+    const confirmBtn = document.getElementById('confirm-medicine-btn');
+
+    // Search box INSIDE the modal
+    const searchInput = document.getElementById('modal-medicine-search');
+    const dropdown = document.getElementById('modal-medicine-dropdown');
+
+    // OPEN MODAL
+    if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Stop button from submitting form
+            resetMedicineModal(); // Clear old data
+            modal.style.display = 'block';
+            setTimeout(() => searchInput.focus(), 100); // Focus search box
         });
     }
 
+    // CLOSE MODAL (X button or Cancel)
+    const closeModal = () => { modal.style.display = 'none'; };
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 
-    // Add medicine button - opens modal
-    if (addMedicineBtn) {
-        addMedicineBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            showMedicineDetailsModal();
-        });
-    }
+    // SEARCH LOGIC
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const text = e.target.value.toLowerCase();
 
-    // Make the input field clickable to open modal
-    if (medicineSearch) {
-        medicineSearch.addEventListener('click', () => {
-            showMedicineDetailsModal();
-        });
-    }
-
-    // Modal close handlers
-    if (medicineModalClose) {
-        medicineModalClose.addEventListener('click', () => {
-            hideMedicineDetailsModal();
-        });
-    }
-
-    if (cancelMedicineBtn) {
-        cancelMedicineBtn.addEventListener('click', () => {
-            hideMedicineDetailsModal();
-        });
-    }
-
-    if (confirmMedicineBtn) {
-        confirmMedicineBtn.addEventListener('click', () => {
-            confirmMedicineDetails();
-        });
-    }
-
-    // Close modal when clicking outside
-    if (medicineDetailsModal) {
-        medicineDetailsModal.addEventListener('click', (e) => {
-            if (e.target === medicineDetailsModal) {
-                hideMedicineDetailsModal();
-            }
-        });
-    }
-
-    // Update form submission to include medicine details
-    const form = document.getElementById('create-prescription-form');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // Validate that at least one medicine is added
-            if (selectedMedicines.length === 0) {
-                alert('Please add at least one medicine');
-                return false;
-            }
-
-            // Validate that a client is selected
-            if (!clientIdInput.value || !currentSelectedClient) {
-                alert('Please select a client');
-                return false;
-            }
-
-            // Prepare form data
-            const formData = new FormData(form);
-
-            // Add medicine data to form data
-            selectedMedicines.forEach((medicine, index) => {
-                formData.append(`medicine-${index}-id`, medicine.id);
-                formData.append(`medicine-${index}-name`, medicine.name);
-                formData.append(`medicine-${index}-dosage`, medicine.dosage);
-                formData.append(`medicine-${index}-amount`, medicine.amount);
-                formData.append(`medicine-${index}-description`, medicine.description);
+            const matches = allMedicines.filter(m => {
+                const name = (m.genericName || '').toLowerCase();
+                const brand = (m.brand || '').toLowerCase();
+                return name.includes(text) || brand.includes(text);
             });
 
-            // Disable submit button to prevent double submission
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
+            // Show results
+            dropdown.innerHTML = '';
+            matches.slice(0, 10).forEach(med => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.innerHTML = `<strong>${med.genericName}</strong> <small>(${med.brand || 'Generic'})</small>`;
 
-            try {
-                // Submit form data via fetch
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'same-origin'
+                div.addEventListener('click', () => {
+                    // Start filling the form
+                    currentSelectedMedicine = med;
+                    searchInput.value = med.genericName; // Show name
+                    dropdown.style.display = 'none'; // Hide list
                 });
 
-                const result = await response.json();
+                dropdown.appendChild(div);
+            });
 
-                if (result.success) {
-                    // Show success message and redirect to dashboard
-                    alert('Prescription created successfully!');
-                    window.location.href = './dashboard.php';
-                } else {
-                    // Show error message
-                    alert(result.error || 'Failed to create prescription. Please try again.');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                }
-            } catch (error) {
-                console.error('Error creating prescription:', error);
-                alert('An error occurred while creating the prescription. Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            }
+            dropdown.style.display = matches.length ? 'block' : 'none';
         });
     }
-});
+
+    // CONFIRM BUTTON (Add to list)
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            addMedicineToList();
+            closeModal();
+        });
+    }
+}
+
+function resetMedicineModal() {
+    currentSelectedMedicine = null;
+    document.getElementById('modal-medicine-search').value = '';
+    document.getElementById('medicine-dosage').value = '';
+    document.getElementById('medicine-amount').value = '';
+    document.getElementById('medicine-description').value = '';
+    document.getElementById('modal-medicine-dropdown').style.display = 'none';
+}
+
+function addMedicineToList() {
+    // 1. Validate
+    if (!currentSelectedMedicine) {
+        alert('Please select a medicine first.');
+        return;
+    }
+
+    const dosage = document.getElementById('medicine-dosage').value;
+    const amount = document.getElementById('medicine-amount').value;
+    const description = document.getElementById('medicine-description').value;
+
+    if (!dosage || !amount) {
+        alert('Please fill in dosage and amount.');
+        return;
+    }
+
+    // 2. Create Object
+    const newItem = {
+        id: currentSelectedMedicine.medID,
+        name: currentSelectedMedicine.genericName,
+        brand: currentSelectedMedicine.brand,
+        dosage: dosage,
+        amount: amount,
+        description: description
+    };
+
+    // 3. Add to our global list
+    selectedMedicines.push(newItem);
+
+    // 4. Update the screen
+    renderSelectedMedicines();
+}
+
+function renderSelectedMedicines() {
+    const container = document.getElementById('selected-medicines-list');
+    container.innerHTML = '';
+
+    selectedMedicines.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'selected-medicine-item';
+        div.innerHTML = `
+            <div class="medicine-info">
+                <strong>${item.name}</strong> 
+                <span class="muted">(${item.brand || 'Generic'})</span>
+                <br>
+                <small>Dosage: ${item.dosage} | Qty: ${item.amount}</small>
+                <div class="desc">${item.description}</div>
+            </div>
+            <button class="remove-btn" type="button">X</button>
+        `;
+
+        // Remove button
+        div.querySelector('.remove-btn').addEventListener('click', () => {
+            selectedMedicines.splice(index, 1); // Remove from array
+            renderSelectedMedicines(); // Redraw
+        });
+
+        container.appendChild(div);
+    });
+}
+
+
+// ==========================================
+// 6. FORM SUBMISSION (FINAL SAVE)
+// ==========================================
+function setupFormSubmission() {
+    const form = document.getElementById('create-prescription-form');
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Stop normal reload
+
+        // Validation
+        if (!currentSelectedClient || !document.getElementById('client-id').value) {
+            alert('Please select a client.');
+            return;
+        }
+        if (selectedMedicines.length === 0) {
+            alert('Please add at least one medicine.');
+            return;
+        }
+
+        // Prepare Data for PHP
+        const formData = new FormData(form);
+
+        // We need to add the medicines manually to the form data
+        // Format: medicine-0-id, medicine-0-amount, etc.
+        selectedMedicines.forEach((med, index) => {
+            formData.append(`medicine-${index}-id`, med.id);
+            formData.append(`medicine-${index}-dosage`, med.dosage);
+            formData.append(`medicine-${index}-amount`, med.amount);
+            formData.append(`medicine-${index}-description`, med.description);
+        });
+
+        // Send to Server
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Saving...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Prescription created!');
+                window.location.href = './dashboard.php';
+            } else {
+                alert('Error: ' + (result.error || 'Check inputs'));
+                submitBtn.textContent = 'Create Prescription';
+                submitBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Server error.');
+            submitBtn.textContent = 'Create Prescription';
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+
+// ==========================================
+// 7. TEMPLATES (OPTIONAL FEATURE)
+// ==========================================
+function setupTemplates() {
+    const templateSelect = document.getElementById('load-template');
+    if (!templateSelect) return;
+
+    // When user picks a template from the dropdown
+    templateSelect.addEventListener('change', (e) => {
+        const templateId = e.target.value;
+        if (!templateId) return;
+
+        // Find the template object in our list (saved globally)
+        const template = window.currentClientTemplates.find(t => t.templateID == templateId);
+
+        if (template && template.medicines) {
+            // Ask before overwriting/appending? For simplicity we just append.
+            if (selectedMedicines.length > 0) {
+                if (!confirm('Add these template items to your current list?')) return;
+            }
+
+            // Convert template medicines to our format and add
+            template.medicines.forEach(tm => {
+                const realMed = allMedicines.find(m => m.medID == tm.medID);
+                selectedMedicines.push({
+                    id: tm.medID,
+                    name: realMed ? realMed.genericName : 'Unknown',
+                    brand: realMed ? realMed.brand : '',
+                    dosage: tm.dosage,
+                    amount: tm.amount,
+                    description: tm.description
+                });
+            });
+
+            renderSelectedMedicines();
+        }
+    });
+
+    // Handle "Save Template" checkbox
+    const saveCheck = document.getElementById('save-template');
+    const nameInput = document.getElementById('template-name-container');
+
+    if (saveCheck) {
+        saveCheck.addEventListener('change', (e) => {
+            nameInput.style.display = e.target.checked ? 'block' : 'none';
+        });
+    }
+}
+
+async function loadTemplatesForClient(clientId) {
+    const select = document.getElementById('load-template');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">Loading...</option>';
+    window.currentClientTemplates = []; // Reset global
+
+    try {
+        const response = await fetch(`../../controller/get-templates.php?client_id=${clientId}`);
+        const templates = await response.json();
+
+        window.currentClientTemplates = templates;
+
+        select.innerHTML = '<option value="">-- Load Saved Template --</option>';
+        if (templates.length === 0) {
+            const opt = document.createElement('option');
+            opt.textContent = "No saved templates";
+            opt.disabled = true;
+            select.appendChild(opt);
+        } else {
+            templates.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.templateID;
+                opt.textContent = t.templateName;
+                select.appendChild(opt);
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        select.innerHTML = '<option>Error loading templates</option>';
+    }
+}
+
