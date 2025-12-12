@@ -1,4 +1,4 @@
-const DASHBOARD_ENDPOINT = `${window.location.protocol}//${window.location.hostname}:3000/api/pharma-admin/dashboard`;
+const DASHBOARD_ENDPOINT = '/api/pharma-admin/dashboard';
 
 const STATUS_TONES = {
   'Fulfilled': 'status-success',

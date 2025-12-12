@@ -1,4 +1,4 @@
-const API_URL = `${window.location.protocol}//${window.location.hostname}:3000/api/admin`;
+const API_URL = '/api/admin';
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Detail page loaded');
 

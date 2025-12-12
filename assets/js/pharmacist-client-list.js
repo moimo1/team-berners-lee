@@ -19,7 +19,7 @@ async function loadAllPrescriptions() {
     const listContainer = document.getElementById('prescription-table-body');
 
     try {
-        const response = await fetch('../../controller/get-all-prescriptions.php', { credentials: 'same-origin' });
+        const response = await fetch('../../controller/get-all-prescriptions.php', { credentials: 'include' });
 
         if (response.status === 401) {
             listContainer.innerHTML = '<tr><td colspan="3" class="error-text">Please log in to view prescriptions.</td></tr>';
@@ -90,7 +90,7 @@ async function openDetailsModal(prescID) {
     body.innerHTML = '<p>Loading details...</p>';
 
     try {
-        const response = await fetch(`../../controller/get-prescription-details.php?prescID=${prescID}`, { credentials: 'same-origin' });
+        const response = await fetch(`../../controller/get-prescription-details.php?prescID=${prescID}`, { credentials: 'include' });
         const data = await response.json();
 
         if (data.error) {
@@ -202,7 +202,7 @@ async function submitPurchase(medID, prescID, amount, maxLimit) {
         const response = await fetch('../../controller/update-prescription-amount.php', {
             method: 'POST',
             body: formData,
-            credentials: 'same-origin'
+            credentials: 'include'
         });
 
         const result = await response.json();

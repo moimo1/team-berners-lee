@@ -9,7 +9,10 @@ import adminUserRoutes from './src/routes/admin-users.routes.js';
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: true, // Reflects the request origin
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/pharma-admin/dashboard', dashboardRoutes);

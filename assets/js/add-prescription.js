@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAllMedicines() {
     try {
-        const response = await fetch('../../controller/get-medicines.php', { credentials: 'same-origin' });
+        const response = await fetch('../../controller/get-medicines.php', { credentials: 'include' });
         const data = await response.json();
         allMedicines = data;
         console.log('Medicines loaded:', allMedicines.length);
@@ -31,7 +31,7 @@ async function loadAllMedicines() {
 
 async function loadAllClients() {
     try {
-        const response = await fetch('../../controller/get-clients.php', { credentials: 'same-origin' });
+        const response = await fetch('../../controller/get-clients.php', { credentials: 'include' });
         const data = await response.json();
         allClients = data;
         console.log('Clients loaded:', allClients.length);
@@ -269,7 +269,7 @@ function setupFormSubmission() {
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: formData,
-                credentials: 'same-origin'
+                credentials: 'include'
             });
             const result = await response.json();
 

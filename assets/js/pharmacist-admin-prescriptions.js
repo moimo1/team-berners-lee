@@ -1,6 +1,6 @@
 /* assets/js/pharmacist-admin-prescriptions.js */
 
-const API_BASE = `${window.location.protocol}//${window.location.hostname}:3000/api/pharma-admin`;
+const API_BASE = '/api/pharma-admin';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initial Load
