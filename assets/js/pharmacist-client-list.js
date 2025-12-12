@@ -1,20 +1,10 @@
-// ==========================================
-// 1. GLOBAL VARIABLES
-// ==========================================
 let allPrescriptions = [];          // Stores raw data
 let currentPrescriptionDetails = null; // Stores details of the currently viewed prescription
 
-
-// ==========================================
-// 2. INITIALIZATION
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Pharmacist Client List Loaded');
 
-    // 1. Load Data
     loadAllPrescriptions();
-
-    // 2. Setup Search Bar
     const searchInput = document.getElementById('searchbar');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -22,21 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Setup Modal Close Buttons (Global)
     setupModalClosers();
 });
 
-
-// ==========================================
-// 3. DATA LOADING
-// ==========================================
 async function loadAllPrescriptions() {
     const listContainer = document.getElementById('prescription-table-body');
 
     try {
         const response = await fetch('../../controller/get-all-prescriptions.php', { credentials: 'same-origin' });
 
-        // Handle "Not Logged In"
         if (response.status === 401) {
             listContainer.innerHTML = '<tr><td colspan="3" class="error-text">Please log in to view prescriptions.</td></tr>';
             return;
@@ -44,10 +28,8 @@ async function loadAllPrescriptions() {
 
         const data = await response.json();
 
-        // Save to global variable
         allPrescriptions = data || [];
 
-        // Render to screen
         renderTable(allPrescriptions);
 
     } catch (error) {
@@ -56,13 +38,9 @@ async function loadAllPrescriptions() {
     }
 }
 
-
-// ==========================================
-// 4. RENDERING & SEARCH
-// ==========================================
 function renderTable(list) {
     const container = document.getElementById('prescription-table-body');
-    container.innerHTML = ''; // Clear old rows
+    container.innerHTML = '';
 
     if (list.length === 0) {
         container.innerHTML = '<tr><td colspan="3" class="muted-text">No prescriptions found.</td></tr>';
@@ -72,7 +50,6 @@ function renderTable(list) {
     list.forEach(item => {
         const tr = document.createElement('tr');
 
-        // Make the whole row clickable
         tr.style.cursor = 'pointer';
         tr.onclick = () => openDetailsModal(item.prescID);
 
@@ -91,7 +68,7 @@ function handleSearch(query) {
     const lowerQuery = query.toLowerCase().trim();
 
     if (!lowerQuery) {
-        renderTable(allPrescriptions); // Show all if empty
+        renderTable(allPrescriptions);
         return;
     }
 
@@ -105,15 +82,10 @@ function handleSearch(query) {
     renderTable(filtered);
 }
 
-
-// ==========================================
-// 5. DETAILS MODAL LOGIC
-// ==========================================
 async function openDetailsModal(prescID) {
     const modal = document.getElementById('prescription-details-modal');
     const body = document.getElementById('prescription-details-body');
 
-    // Show modal and Loading message
     modal.style.display = 'block';
     body.innerHTML = '<p>Loading details...</p>';
 
@@ -126,10 +98,7 @@ async function openDetailsModal(prescID) {
             return;
         }
 
-        // Save for later (e.g., if we need to refresh)
         currentPrescriptionDetails = data;
-
-        // Render the details
         renderDetailsContent(data, body);
 
     } catch (error) {
@@ -165,7 +134,6 @@ function renderDetailsContent(data, container) {
             const remaining = med.amountRemaining === null ? 'Unlimited' : med.amountRemaining;
             const isClickable = (remaining === 'Unlimited' || remaining > 0);
 
-            // We attach the data directly to the row element for easy access
             medicinesHtml += `
                 <tr class="${isClickable ? 'clickable-medicine' : 'disabled-medicine'}" 
                     onclick="if(${isClickable}) openPurchaseModal(${med.medID}, '${escapeHtml(med.medicineName || '')}', ${med.amountRemaining}, ${data.prescID})">
@@ -184,30 +152,21 @@ function renderDetailsContent(data, container) {
     container.innerHTML = infoHtml + medicinesHtml;
 }
 
-
-// ==========================================
-// 6. PURCHASE MODAL LOGIC
-// ==========================================
 function openPurchaseModal(medID, medName, remaining, prescID) {
     const modal = document.getElementById('purchase-modal');
 
-    // Fill the visuals
     document.getElementById('medicine-name-display').value = medName;
     document.getElementById('remaining-amount-display').value = (remaining === null ? 'Unlimited' : remaining);
 
-    // Fill hidden inputs for the form
     document.getElementById('purchase-med-id').value = medID;
     document.getElementById('purchase-presc-id').value = prescID;
 
-    // Reset inputs
     const amountInput = document.getElementById('purchase-amount');
     amountInput.value = '';
-    amountInput.max = (remaining === null ? '' : remaining); // Set max HTML attribute
+    amountInput.max = (remaining === null ? '' : remaining);
 
-    // Setup the confirm button logic
     const confirmBtn = document.getElementById('confirm-purchase-btn');
 
-    // REMOVE old listeners to prevent duplicates (cloning trick)
     const newBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
 
@@ -222,7 +181,6 @@ async function submitPurchase(medID, prescID, amount, maxLimit) {
     const errorMsg = document.getElementById('amount-error');
     const modal = document.getElementById('purchase-modal');
 
-    // Validation
     const amountNum = parseInt(amount);
     if (!amount || amountNum <= 0) {
         errorMsg.textContent = 'Please enter a valid amount.';
@@ -251,8 +209,8 @@ async function submitPurchase(medID, prescID, amount, maxLimit) {
 
         if (result.success) {
             alert('Purchase successful!');
-            modal.style.display = 'none'; // Close purchase modal
-            openDetailsModal(prescID);    // Refresh the details view
+            modal.style.display = 'none';
+            openDetailsModal(prescID);
         } else {
             errorMsg.textContent = result.error || 'Purchase failed.';
             errorMsg.style.display = 'block';
@@ -265,20 +223,14 @@ async function submitPurchase(medID, prescID, amount, maxLimit) {
 }
 
 
-// ==========================================
-// 7. HELPER FUNCTIONS
-// ==========================================
 function setupModalClosers() {
-    // Close buttons (x)
     document.querySelectorAll('.close-btn, .purchase-close-btn, #cancel-purchase-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Find the closest parent modal and hide it
             const modal = e.target.closest('.modal');
             if (modal) modal.style.display = 'none';
         });
     });
 
-    // Validating Purchase Input Real-time
     const amountInput = document.getElementById('purchase-amount');
     if (amountInput) {
         amountInput.addEventListener('input', () => {
@@ -296,8 +248,7 @@ function formatDate(dateStr) {
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
-    div.innerText = text; // innerText handles escaping automatically
+    div.innerText = text;
     return div.innerHTML;
 }
-
 

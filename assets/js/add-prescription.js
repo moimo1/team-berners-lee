@@ -1,42 +1,23 @@
-// ==========================================
-// 1. GLOBAL VARIABLES
-// ==========================================
-let allMedicines = [];      // Stores all medicines fetched from server
-let allClients = [];        // Stores all clients fetched from server
-let selectedMedicines = []; // Stores medicines added to the "cart"
 
-// Current selections
+let allMedicines = [];
+let allClients = [];
+let selectedMedicines = [];
+
 let currentSelectedClient = null;
 let currentSelectedMedicine = null;
 
-
-// ==========================================
-// 2. INITIALIZATION (RUNS WHEN PAGE LOADS)
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Page loaded. Configuring...');
 
-    // Load initial data
     loadAllMedicines();
     loadAllClients();
-
-    // Setup Client Search (The "Who is this for?" part)
     setupClientSearch();
-
-    // Setup Medicine Search (The "Add Medicine" part)
     setupMedicineSearch();
-
-    // Setup the "Submit" button
     setupFormSubmission();
-
-    // Setup "Templates" (Optional feature to load saved bundles)
     setupTemplates();
 });
 
 
-// ==========================================
-// 3. DATA LOADING (FETCHING FROM SERVER)
-// ==========================================
 async function loadAllMedicines() {
     try {
         const response = await fetch('../../controller/get-medicines.php', { credentials: 'same-origin' });
@@ -59,46 +40,35 @@ async function loadAllClients() {
     }
 }
 
-
-// ==========================================
-// 4. CLIENT SEARCH & SELECTION
-// ==========================================
 function setupClientSearch() {
     const nameInput = document.getElementById('client-name');
     const dropdown = document.getElementById('client-dropdown');
     const idInput = document.getElementById('client-id'); // Hidden input for Database ID
 
-    if (!nameInput) return; // Skip if element missing
+    if (!nameInput) return;
 
-    // When typing in the client name box...
     nameInput.addEventListener('input', (e) => {
         const text = e.target.value.toLowerCase();
 
-        // Filter the list of clients
         const matches = allClients.filter(c => {
             const fullName = (c.firstName + ' ' + c.lastName).toLowerCase();
             return fullName.includes(text);
         });
 
-        // Show the dropdown with matches
         showClientDropdown(matches);
 
-        // If user clears text, clear selection
         if (text === '') {
             currentSelectedClient = null;
             idInput.value = '';
         }
     });
 
-    // When clicking the input, show list immediately
     nameInput.addEventListener('focus', () => {
         if (nameInput.value) {
-            // Trigger input event logic manually
             nameInput.dispatchEvent(new Event('input'));
         }
     });
 
-    // Hide dropdown if clicking outside
     document.addEventListener('click', (e) => {
         if (!nameInput.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.style.display = 'none';
@@ -108,20 +78,18 @@ function setupClientSearch() {
 
 function showClientDropdown(clients) {
     const dropdown = document.getElementById('client-dropdown');
-    dropdown.innerHTML = ''; // Clear old list
+    dropdown.innerHTML = '';
 
     if (clients.length === 0) {
         dropdown.style.display = 'none';
         return;
     }
 
-    // Show only top 10 results
     clients.slice(0, 10).forEach(client => {
         const div = document.createElement('div');
         div.className = 'dropdown-item';
         div.textContent = `${client.firstName} ${client.lastName}`;
 
-        // When clicking a name...
         div.addEventListener('click', () => {
             selectClient(client);
             dropdown.style.display = 'none';
@@ -136,46 +104,35 @@ function showClientDropdown(clients) {
 function selectClient(client) {
     currentSelectedClient = client;
 
-    // Fill the inputs
     document.getElementById('client-name').value = `${client.firstName} ${client.lastName}`;
     document.getElementById('client-id').value = client.clientID;
 
-    // Load templates for this client (if any)
     loadTemplatesForClient(client.clientID);
 }
 
 
-// ==========================================
-// 5. MEDICINE SEARCH (MODAL)
-// ==========================================
 function setupMedicineSearch() {
-    // Buttons to open/close modal
     const openBtn = document.getElementById('add-medicine-btn');
     const modal = document.getElementById('medicine-details-modal');
     const closeBtn = document.querySelector('.medicine-modal-close');
     const cancelBtn = document.getElementById('cancel-medicine-btn');
     const confirmBtn = document.getElementById('confirm-medicine-btn');
 
-    // Search box INSIDE the modal
     const searchInput = document.getElementById('modal-medicine-search');
     const dropdown = document.getElementById('modal-medicine-dropdown');
 
-    // OPEN MODAL
     if (openBtn) {
         openBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Stop button from submitting form
-            resetMedicineModal(); // Clear old data
+            e.preventDefault();
+            resetMedicineModal();
             modal.style.display = 'block';
-            setTimeout(() => searchInput.focus(), 100); // Focus search box
+            setTimeout(() => searchInput.focus(), 100);
         });
     }
 
-    // CLOSE MODAL (X button or Cancel)
     const closeModal = () => { modal.style.display = 'none'; };
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-
-    // SEARCH LOGIC
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const text = e.target.value.toLowerCase();
@@ -186,7 +143,6 @@ function setupMedicineSearch() {
                 return name.includes(text) || brand.includes(text);
             });
 
-            // Show results
             dropdown.innerHTML = '';
             matches.slice(0, 10).forEach(med => {
                 const div = document.createElement('div');
@@ -194,10 +150,9 @@ function setupMedicineSearch() {
                 div.innerHTML = `<strong>${med.genericName}</strong> <small>(${med.brand || 'Generic'})</small>`;
 
                 div.addEventListener('click', () => {
-                    // Start filling the form
                     currentSelectedMedicine = med;
-                    searchInput.value = med.genericName; // Show name
-                    dropdown.style.display = 'none'; // Hide list
+                    searchInput.value = med.genericName;
+                    dropdown.style.display = 'none';
                 });
 
                 dropdown.appendChild(div);
@@ -207,7 +162,6 @@ function setupMedicineSearch() {
         });
     }
 
-    // CONFIRM BUTTON (Add to list)
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
             addMedicineToList();
@@ -226,7 +180,6 @@ function resetMedicineModal() {
 }
 
 function addMedicineToList() {
-    // 1. Validate
     if (!currentSelectedMedicine) {
         alert('Please select a medicine first.');
         return;
@@ -241,7 +194,6 @@ function addMedicineToList() {
         return;
     }
 
-    // 2. Create Object
     const newItem = {
         id: currentSelectedMedicine.medID,
         name: currentSelectedMedicine.genericName,
@@ -251,10 +203,7 @@ function addMedicineToList() {
         description: description
     };
 
-    // 3. Add to our global list
     selectedMedicines.push(newItem);
-
-    // 4. Update the screen
     renderSelectedMedicines();
 }
 
@@ -276,10 +225,9 @@ function renderSelectedMedicines() {
             <button class="remove-btn" type="button">X</button>
         `;
 
-        // Remove button
         div.querySelector('.remove-btn').addEventListener('click', () => {
-            selectedMedicines.splice(index, 1); // Remove from array
-            renderSelectedMedicines(); // Redraw
+            selectedMedicines.splice(index, 1);
+            renderSelectedMedicines();
         });
 
         container.appendChild(div);
@@ -287,18 +235,14 @@ function renderSelectedMedicines() {
 }
 
 
-// ==========================================
-// 6. FORM SUBMISSION (FINAL SAVE)
-// ==========================================
 function setupFormSubmission() {
     const form = document.getElementById('create-prescription-form');
 
     if (!form) return;
 
     form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Stop normal reload
+        e.preventDefault();
 
-        // Validation
         if (!currentSelectedClient || !document.getElementById('client-id').value) {
             alert('Please select a client.');
             return;
@@ -308,11 +252,8 @@ function setupFormSubmission() {
             return;
         }
 
-        // Prepare Data for PHP
         const formData = new FormData(form);
 
-        // We need to add the medicines manually to the form data
-        // Format: medicine-0-id, medicine-0-amount, etc.
         selectedMedicines.forEach((med, index) => {
             formData.append(`medicine-${index}-id`, med.id);
             formData.append(`medicine-${index}-dosage`, med.dosage);
@@ -320,7 +261,6 @@ function setupFormSubmission() {
             formData.append(`medicine-${index}-description`, med.description);
         });
 
-        // Send to Server
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.textContent = 'Saving...';
         submitBtn.disabled = true;
@@ -351,28 +291,21 @@ function setupFormSubmission() {
 }
 
 
-// ==========================================
-// 7. TEMPLATES (OPTIONAL FEATURE)
-// ==========================================
 function setupTemplates() {
     const templateSelect = document.getElementById('load-template');
     if (!templateSelect) return;
 
-    // When user picks a template from the dropdown
     templateSelect.addEventListener('change', (e) => {
         const templateId = e.target.value;
         if (!templateId) return;
 
-        // Find the template object in our list (saved globally)
         const template = window.currentClientTemplates.find(t => t.templateID == templateId);
 
         if (template && template.medicines) {
-            // Ask before overwriting/appending? For simplicity we just append.
             if (selectedMedicines.length > 0) {
                 if (!confirm('Add these template items to your current list?')) return;
             }
 
-            // Convert template medicines to our format and add
             template.medicines.forEach(tm => {
                 const realMed = allMedicines.find(m => m.medID == tm.medID);
                 selectedMedicines.push({
@@ -389,7 +322,6 @@ function setupTemplates() {
         }
     });
 
-    // Handle "Save Template" checkbox
     const saveCheck = document.getElementById('save-template');
     const nameInput = document.getElementById('template-name-container');
 

@@ -1,27 +1,21 @@
-// 1. WHEN PAGE LOADS
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Client dashboard loaded');
 
-    // These are the two main sections we want to fill with data
-    const medicineListContainer = document.getElementById('medicine-list'); // Current meds
-    const historyListContainer = document.getElementById('recent-prescriptions-list'); // History
+    const medicineListContainer = document.getElementById('medicine-list');
+    const historyListContainer = document.getElementById('recent-prescriptions-list');
 
-    // If the "Current Medications" box exists on this page, load the data
     if (medicineListContainer) {
         loadCurrentMedications(medicineListContainer);
     }
 
-    // If the "Recent Prescriptions" box exists on this page, load the data
     if (historyListContainer) {
         loadPrescriptionHistory(historyListContainer);
     }
 });
 
 
-// 2. LOAD CURRENT MEDICATIONS
 async function loadCurrentMedications(container) {
     try {
-        // Fetch data from server
         const response = await fetch('../../controller/get-prescription.php', { credentials: 'same-origin' });
 
         if (!response.ok) {
@@ -30,18 +24,14 @@ async function loadCurrentMedications(container) {
 
         const medicationList = await response.json();
 
-        // Check if list is empty
         if (!Array.isArray(medicationList) || medicationList.length === 0) {
             container.innerHTML = '<p class="no-medications">No current medications.</p>';
             return;
         }
 
-        // Clear existing content
         container.innerHTML = '';
 
-        // Loop through each medicine and create a card
         medicationList.forEach(medicine => {
-            // Decide the color and text for "Remaining"
             let remainingText = '';
             let colorClass = '';
 
@@ -62,7 +52,6 @@ async function loadCurrentMedications(container) {
                 }
             }
 
-            // Create HTML for one item
             const itemDiv = document.createElement('div');
             itemDiv.className = 'medicine-item';
 
@@ -77,7 +66,6 @@ async function loadCurrentMedications(container) {
                 </div>
             `;
 
-            // Add it to the list
             container.appendChild(itemDiv);
         });
 
@@ -88,12 +76,10 @@ async function loadCurrentMedications(container) {
 }
 
 
-// 3. LOAD RECENT HISTORY
 async function loadPrescriptionHistory(container) {
     try {
         const response = await fetch('../../controller/get-prescription-history.php', { credentials: 'same-origin' });
 
-        // Check for "Not Logged In" (401)
         if (response.status === 401) {
             container.innerHTML = '<p class="error">Please log in to view prescriptions.</p>';
             return;
@@ -105,9 +91,8 @@ async function loadPrescriptionHistory(container) {
 
         const historyList = await response.json();
 
-        if (!historyList) return; // Stop if no data at all
+        if (!historyList) return;
 
-        // Clear existing content
         container.innerHTML = '';
 
         if (!Array.isArray(historyList) || historyList.length === 0) {
@@ -115,7 +100,6 @@ async function loadPrescriptionHistory(container) {
             return;
         }
 
-        // Only show the top 5
         const top5 = historyList.slice(0, 5);
 
         top5.forEach(item => {
@@ -123,7 +107,6 @@ async function loadPrescriptionHistory(container) {
             itemDiv.className = 'prescription-item';
             itemDiv.style.cursor = 'pointer';
 
-            // Format the dates nicely
             const dateGiven = formatDate(item.dateGiven);
             const dateExpiry = formatDate(item.dateExpiry);
 
@@ -135,7 +118,6 @@ async function loadPrescriptionHistory(container) {
                 </div>
             `;
 
-            // Make it clickable
             itemDiv.addEventListener('click', () => {
                 window.location.href = './prescription-details.php';
             });
@@ -150,9 +132,7 @@ async function loadPrescriptionHistory(container) {
 }
 
 
-// 4. HELPER FUNCTIONS
 
-// Makes dates look like "Jan 1, 2023"
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -165,7 +145,6 @@ function formatDate(dateString) {
     });
 }
 
-// Prevents hacking (XSS) by turning special characters into safe text
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
