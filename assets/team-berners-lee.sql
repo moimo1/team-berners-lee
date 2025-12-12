@@ -26,7 +26,7 @@ DELIMITER $$
 -- Procedures
 --
 DROP PROCEDURE IF EXISTS `CreatePrescription`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CreatePrescription` (IN `p_doctorID` VARCHAR(10), IN `p_clientID` VARCHAR(10), IN `p_dateGiven` DATE, IN `p_dateExpiry` DATE, IN `p_medicines` JSON)   BEGIN
+CREATE PROCEDURE `CreatePrescription` (IN `p_doctorID` VARCHAR(10), IN `p_clientID` VARCHAR(10), IN `p_dateGiven` DATE, IN `p_dateExpiry` DATE, IN `p_medicines` JSON)   BEGIN
     DECLARE v_prescID VARCHAR(10);
     DECLARE v_lastID VARCHAR(10);
     DECLARE v_num INT;
