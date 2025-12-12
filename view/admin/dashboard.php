@@ -77,10 +77,6 @@
         </div>
       </div>
 
-      <div class="admin-shell details-panel" id="detail-panel">
-        <p class="admin-muted">Select a person to view details.</p>
-        <button class="btn-ghost" id="edit-selected" type="button" style="margin-top:10px; display:none;">Edit details</button>
-      </div>
     </section>
   </main>
 

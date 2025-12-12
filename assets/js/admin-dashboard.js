@@ -68,19 +68,25 @@ async function loadEntities(filter, search) {
   if (filter === 'doctor') {
     const doctors = await fetchList('doctors', search);
     counts.doctor = doctors.length;
-    return { items: normalizeList(doctors, 'doctor'), counts };
+    const items = normalizeList(doctors, 'doctor');
+    items.sort((a, b) => a.name.localeCompare(b.name));
+    return { items, counts };
   }
 
   if (filter === 'client') {
     const clients = await fetchList('patients', search);
     counts.client = clients.length;
-    return { items: normalizeList(clients, 'client'), counts };
+    const items = normalizeList(clients, 'client');
+    items.sort((a, b) => a.name.localeCompare(b.name));
+    return { items, counts };
   }
 
   if (filter === 'pharmacist') {
     const pharmacists = await fetchList('pharmacists', search);
     counts.pharmacist = pharmacists.length;
-    return { items: normalizeList(pharmacists, 'pharmacist'), counts };
+    const items = normalizeList(pharmacists, 'pharmacist');
+    items.sort((a, b) => a.name.localeCompare(b.name));
+    return { items, counts };
   }
 
   const [doctors, clients, pharmacists] = await Promise.all([
@@ -179,11 +185,10 @@ function renderList(items) {
     card.addEventListener('click', (event) => {
       const btn = event.target.closest('button[data-action="view"]');
       if (btn) {
+        event.stopPropagation();
         const idx = Number(btn.dataset.index);
         const selected = currentItems[idx];
         if (selected) goToDetail(selected);
-      } else {
-        goToDetail(item);
       }
     });
 
