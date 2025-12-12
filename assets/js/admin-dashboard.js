@@ -3,6 +3,7 @@ const ADMIN_API_BASE = `${window.location.protocol}//${window.location.hostname}
 let activeFilter = 'all';
 let currentItems = [];
 let currentSelected = null;
+let searchTimeout = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const filterButtons = document.querySelectorAll('[data-filter]');
@@ -13,26 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const searchInput = document.getElementById('search-input');
-  const searchButton = document.getElementById('search-button');
   const refreshButton = document.getElementById('refresh-list');
-  if (searchButton) {
-    searchButton.addEventListener('click', handleSearch);
-  }
+  
   if (refreshButton) {
     refreshButton.addEventListener('click', fetchAndRender);
   }
+  
   if (searchInput) {
-    searchInput.addEventListener('keyup', (event) => {
-      if (event.key === 'Enter') handleSearch();
+    searchInput.addEventListener('input', () => {
+      // Clear existing timeout
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      
+      // Debounce search - wait 300ms after user stops typing
+      searchTimeout = setTimeout(() => {
+        fetchAndRender();
+      }, 300);
     });
   }
 
   fetchAndRender();
 });
-
-function handleSearch() {
-  fetchAndRender();
-}
 
 function setActiveFilter(filter) {
   activeFilter = filter;

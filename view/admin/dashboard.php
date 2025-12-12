@@ -62,7 +62,6 @@
                 <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79l5 5L20.49 19l-5-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z" fill="currentColor"/>
               </svg>
             </div>
-            <button class="btn-primary" id="search-button" type="button">Search</button>
           </div>
         </div>
       </div>
