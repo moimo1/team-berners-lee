@@ -1,14 +1,10 @@
 import { getConnection } from '../config/db.js';
 
-/**
- * Repository: Data access layer for pharmacist history
- */
-
 // Get history of actions for a specific pharmacist
 export async function getPharmacistHistory(pharmacistId) {
-    const conn = await getConnection();
-    try {
-        const sql = `
+  const conn = await getConnection();
+  try {
+    const sql = `
       SELECT 
         d.dispenseID,
         d.dateDispensed,
@@ -26,9 +22,9 @@ export async function getPharmacistHistory(pharmacistId) {
       LIMIT 50
     `;
 
-        const [rows] = await conn.query(sql, [pharmacistId]);
-        return rows;
-    } finally {
-        conn.release();
-    }
+    const [rows] = await conn.query(sql, [pharmacistId]);
+    return rows;
+  } finally {
+    conn.release();
+  }
 }

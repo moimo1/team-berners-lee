@@ -1,15 +1,9 @@
 import { getConnection } from '../config/db.js';
 
-/**
- * Repository: Data access layer for prescriptions
- * Simple function that does database query for prescriptions
- */
-
 // Search prescriptions with filters from database
 export async function searchPrescriptions(filters = {}) {
   const conn = await getConnection();
   try {
-    // Start building the SQL query
     let sql = `
       SELECT 
         pr.prescID,
@@ -67,9 +61,6 @@ export async function searchPrescriptions(filters = {}) {
       params.push(term, term, term, term);
     }
 
-    // Filter by status: Since there's no status field in DB, we check the dispense table
-    // - "Fulfilled" or "Collected" = dispense record exists (dispenseID IS NOT NULL)
-    // - "Pending" = no dispense record exists (dispenseID IS NULL)
     if (filters.status) {
       if (filters.status === 'Fulfilled' || filters.status === 'Collected') {
         sql += ` AND d.dispenseID IS NOT NULL`;

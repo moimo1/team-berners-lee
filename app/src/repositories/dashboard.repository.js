@@ -1,19 +1,12 @@
 import { getConnection } from '../config/db.js';
 
-/**
- * Repository: Data access layer for dashboard
- * Simple functions that do database queries
- */
-
 // Get total count of prescriptions from database
-// Note: Prescriptions don't have location directly, so we filter by pharmacist location if needed
 export async function getTotalPrescriptions(filters = {}) {
   const conn = await getConnection();
   try {
     let sql = 'SELECT COUNT(pr.prescID) AS total FROM prescription pr';
     const params = [];
 
-    // Optional: If you only want to count prescriptions handled by pharmacists at this location:
     if (filters.location) {
       sql += ` LEFT JOIN dispense d ON d.prescID = pr.prescID
                LEFT JOIN pharmacist p ON p.pharmaID = d.pharmaID
