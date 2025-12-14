@@ -192,12 +192,14 @@ function setupAddUserModal() {
       document.getElementById('add-address-field').style.display = 'none';
       document.getElementById('add-location-field').style.display = 'none';
       document.getElementById('add-contact-field').style.display = 'none';
+      document.getElementById('add-birthdate-field').style.display = 'none';
 
       if (role === 'doctor') {
         document.getElementById('add-specialization-field').style.display = 'block';
       } else if (role === 'client') {
         document.getElementById('add-address-field').style.display = 'block';
         document.getElementById('add-contact-field').style.display = 'block';
+        document.getElementById('add-birthdate-field').style.display = 'block';
       } else if (role === 'pharmacist') {
         document.getElementById('add-location-field').style.display = 'block';
       }

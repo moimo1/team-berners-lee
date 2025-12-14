@@ -219,15 +219,16 @@ export async function createPatient(data) {
     const conn = await getConnection();
     try {
         const newID = await generateId(conn, 'client', 'clientID', 'C');
-        const sql = 'INSERT INTO client (clientID, firstName, lastName, contact, address, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        // Check if birthdate is present, default to null if not (though schema might require it, basic validation is in controller)
+        const sql = 'INSERT INTO client (clientID, firstName, lastName, address, email, password, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?)';
         const [result] = await conn.query(sql, [
             newID,
             data.firstName,
             data.lastName,
-            data.contact || '', // database field is 'contact', form usually 'contacts'
             data.address || '',
             data.email,
-            data.password
+            data.password,
+            data.birthdate || null
         ]);
         return { id: newID, ...data };
     } finally {

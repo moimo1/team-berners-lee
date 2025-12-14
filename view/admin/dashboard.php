@@ -131,6 +131,10 @@
           <label for="add-contact">Contact Number</label>
           <input type="text" id="add-contact" name="contact">
         </div>
+        <div class="field dynamic-field" id="add-birthdate-field" style="display:none;">
+          <label for="add-birthdate">Date of Birth</label>
+          <input type="date" id="add-birthdate" name="birthdate">
+        </div>
         <div class="field dynamic-field" id="add-location-field" style="display:none;">
           <label for="add-location">Location</label>
           <input type="text" id="add-location" name="location">
