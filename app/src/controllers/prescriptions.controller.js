@@ -18,6 +18,19 @@ export async function getPrescriptions(req, res) {
       description: pr.description
     }));
 
+    // DEBUG LOGGING
+    if (data.length > 0) {
+      console.log('Sample prescription sent to frontend:', {
+        id: data[0].prescID,
+        amount: data[0].amount,
+        dosage: data[0].dosage,
+        pharmaId: data[0].pharmacistId,
+        pharmaName: data[0].pharmacistName
+      });
+    } else {
+      console.log('No prescriptions found to send.');
+    }
+
     res.json({
       success: true,
       data: data

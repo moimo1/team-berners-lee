@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $role = $_POST['role'] ?? '';
 $firstName = trim($_POST['firstName'] ?? '');
 $lastName = trim($_POST['lastName'] ?? '');
-$middleInitial = trim($_POST['middleInitial'] ?? '');
+
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirmPassword = $_POST['confirmPassword'] ?? '';
@@ -46,8 +46,13 @@ if ($role === 'pharmacist' && empty($_POST['designation'] ?? '')) {
     exit();
 }
 
-if (empty($contacts)) {
-    header("Location: ../view/SignUp.php?role=$role&error=Contact number is required");
+if ($role === 'doctor' && empty($contacts)) {
+    header("Location: ../view/SignUp.php?role=$role&error=Contact number is required for doctors");
+    exit();
+}
+
+if ($role === 'client' && empty($address)) {
+    header("Location: ../view/SignUp.php?role=$role&error=Address is required for clients");
     exit();
 }
 
@@ -189,13 +194,13 @@ if ($role === 'doctor') {
     $location = $designation ?? '';
     $stmt->bind_param("ssssss", $newID, $firstName, $lastName, $location, $email, $password);
 } elseif ($role === 'client') {
-    $sql = "INSERT INTO $table ($idColumn, firstName, lastName, contact, address, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO $table ($idColumn, firstName, lastName, address, email, password) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         header("Location: ../view/SignUp.php?role=$role&error=Database error: " . $conn->error);
         exit();
     }
-    $stmt->bind_param("sssssss", $newID, $firstName, $lastName, $contacts, $address, $email, $password);
+    $stmt->bind_param("ssssss", $newID, $firstName, $lastName, $address, $email, $password);
 }
 
 if ($stmt && $stmt->execute()) {

@@ -105,12 +105,9 @@
                                     <input type="text" id="lastName" name="lastName" placeholder="Enter last name" required>
                                 </div>
                                 <div class="form-field">
+                                <div class="form-field">
                                     <label for="firstName">First Name</label>
                                     <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
-                                </div>
-                                <div class="form-field">
-                                    <label for="middleInitial">Middle Initial</label>
-                                    <input type="text" id="middleInitial" name="middleInitial" placeholder="M.I." maxlength="1">
                                 </div>
                             </div>
                             
@@ -122,32 +119,30 @@
                             <?php elseif ($isPharmacist): ?>
                                 <div class="form-field">
                                     <label for="designation">Designation</label>
-                                    <input type="text" id="designation" name="designation" placeholder="Enter designation" required>
+                                    <input type="text" id="designation" name="designation" placeholder="Enter designation (Location)" required>
                                 </div>
                             <?php endif; ?>
                             
                             <div class="form-row">
+                                <?php if ($isDoctor): ?>
                                 <div class="form-field">
-                                    <label for="contacts">Contacts</label>
+                                    <label for="contacts">Phone Number</label>
                                     <input type="tel" id="contacts" name="contacts" placeholder="Enter contact number" required>
                                 </div>
+                                <?php endif; ?>
+
                                 <div class="form-field">
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email" placeholder="Enter email address" required>
                                 </div>
                             </div>
                             
-                            <!-- Address (Client only used in DB) -->
+                            <?php if ($isClient): ?>
                             <div class="form-field">
                                 <label for="address">Address</label>
-                                <input type="text" id="address" name="address" placeholder="Enter full address">
+                                <input type="text" id="address" name="address" placeholder="Enter full address" required>
                             </div>
-                            
-                            <!-- Account Credentials -->
-                            <div class="form-field">
-                                <label for="username">Username</label>
-                                <input type="text" id="username" name="username" placeholder="Enter username" required>
-                            </div>
+                            <?php endif; ?>
                             
                             <div class="form-field">
                                 <label for="password">Password</label>

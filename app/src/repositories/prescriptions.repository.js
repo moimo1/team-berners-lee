@@ -7,17 +7,17 @@ export async function searchPrescriptions(filters = {}) {
     let sql = `
       SELECT 
         pr.prescID,
-        m.genericName AS medicineName,
-        c.firstName AS clientFirstName,
-        c.lastName AS clientLastName,
-        ph.firstName AS pharmacistFirstName,
-        ph.lastName AS pharmacistLastName,
-        ph.pharmaID AS pharmacistId,
-        d.dispenseID AS dispenseId,
+        ANY_VALUE(m.genericName) AS medicineName,
+        ANY_VALUE(c.firstName) AS clientFirstName,
+        ANY_VALUE(c.lastName) AS clientLastName,
+        ANY_VALUE(ph.firstName) AS pharmacistFirstName,
+        ANY_VALUE(ph.lastName) AS pharmacistLastName,
+        ANY_VALUE(ph.pharmaID) AS pharmacistId,
+        ANY_VALUE(d.dispenseID) AS dispenseId,
         pr.dateGiven,
-        pd.remainingAmount,
-        pd.dosage,
-        pd.description
+        ANY_VALUE(pd.remainingAmount) AS remainingAmount,
+        ANY_VALUE(pd.dosage) AS dosage,
+        ANY_VALUE(pd.description) AS description
       FROM prescription pr
       LEFT JOIN prescriptiondetails pd ON pd.prescID = pr.prescID
       LEFT JOIN medicine m ON m.medID = pd.medID

@@ -10,9 +10,12 @@ export async function getPharmacistHistory(pharmacistId) {
         pr.prescID,
         m.genericName AS medicineName,
         c.firstName AS clientFirstName,
-        c.lastName AS clientLastName
+        c.lastName AS clientLastName,
+        di.quantitySold AS quantity,
+        pd.remainingAmount
       FROM dispense d
       JOIN prescription pr ON pr.prescID = d.prescID
+      LEFT JOIN dispense_items di ON di.dispenseID = d.dispenseID
       LEFT JOIN prescriptiondetails pd ON pd.prescID = pr.prescID
       LEFT JOIN medicine m ON m.medID = pd.medID
       LEFT JOIN client c ON c.clientID = pr.clientID

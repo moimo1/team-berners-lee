@@ -64,7 +64,7 @@ if ($purchaseAmount > $currentAmount) {
     http_response_code(400);
     echo json_encode([
         "error" => "Invalid Amount",
-        "message" => "Purchase amount ($purchaseAmount) exceeds remaining amount ($currentAmount).",
+        "message" => "Amount is greater than prescribed limit.",
         "remainingAmount" => $currentAmount
     ]);
     exit;

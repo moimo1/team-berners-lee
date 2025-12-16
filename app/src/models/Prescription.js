@@ -20,7 +20,10 @@ export function createPrescription(data) {
     pharmacistId: data.pharmacistId,
     status: status,
     dateGiven: data.dateGiven,
-    dispenseId: data.dispenseId
+    dispenseId: data.dispenseId,
+    remainingAmount: data.remainingAmount,
+    dosage: data.dosage,
+    description: data.description
   };
 }
 

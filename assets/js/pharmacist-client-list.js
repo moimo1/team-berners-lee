@@ -191,7 +191,7 @@ async function submitPurchase(medID, prescID, amount, maxLimit) {
         return;
     }
     if (maxLimit !== null && amountNum > maxLimit) {
-        errorMsg.textContent = 'Not enough stock remaining.';
+        errorMsg.textContent = 'Amount is greater than prescribed limit.';
         errorMsg.style.display = 'block';
         return;
     }

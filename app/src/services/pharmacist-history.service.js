@@ -5,9 +5,20 @@ import { getPharmacistHistory } from '../repositories/pharmacist-history.reposit
 export async function getHistory(pharmacistId) {
     const rows = await getPharmacistHistory(pharmacistId);
 
-    return rows.map(row => ({
-        type: 'Dispense',
-        timestamp: row.dateDispensed,
-        description: `Dispensed ${row.medicineName} to ${row.clientFirstName} ${row.clientLastName} (Prescription #${row.prescID})`
-    }));
+    return rows.map(row => {
+        let details = `Dispensed ${row.quantity || '?'} ${row.medicineName} to ${row.clientFirstName} ${row.clientLastName}`;
+
+        // If remaining amount is <= 0, indicate fulfillment
+        if (row.remainingAmount !== null && row.remainingAmount <= 0) {
+            details += ' (Prescription Fulfilled)';
+        }
+
+        details += ` (Prescription #${row.prescID})`;
+
+        return {
+            type: 'Dispense',
+            timestamp: row.dateDispensed,
+            description: details
+        };
+    });
 }
