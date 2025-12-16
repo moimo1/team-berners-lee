@@ -29,13 +29,11 @@ export async function searchPrescriptions(filters = {}) {
 
     const params = [];
 
-    // Add filters to the query if they exist
     if (filters.pharmacistId) {
       sql += ` AND d.pharmaID = ?`;
       params.push(filters.pharmacistId);
     }
 
-    // Filter by location (Pharmacist's location)
     if (filters.location) {
       sql += ` AND ph.location = ?`;
       params.push(filters.location);

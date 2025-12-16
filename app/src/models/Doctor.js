@@ -5,6 +5,5 @@ export function createDoctor(data) {
         lastName: data.lastName,
         email: data.email,
         specialization: data.doctorSpecialization || data.specialization,
-        // Add other fields as necessary from database
     };
 }

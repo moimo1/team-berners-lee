@@ -1,6 +1,5 @@
 import { getConnection } from '../config/db.js';
 
-// Get history of actions for a specific pharmacist
 export async function getPharmacistHistory(pharmacistId) {
   const conn = await getConnection();
   try {
