@@ -1,5 +1,5 @@
-let allPrescriptions = [];          // Stores raw data
-let currentPrescriptionDetails = null; // Stores details of the currently viewed prescription
+let allPrescriptions = [];
+let currentPrescriptionDetails = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Pharmacist Client List Loaded');

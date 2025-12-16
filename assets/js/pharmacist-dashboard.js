@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const prescriptionsList = document.getElementById('recent-prescriptions-list');
 
-    // Fetch recent prescriptions for pharmacist (all prescriptions)
     fetch('../../controller/get-all-prescriptions.php', { credentials: 'same-origin' })
         .then(res => {
             if (res.status === 401) {
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Show only the 5 most recent prescriptions
             const recentPrescriptions = data.slice(0, 5);
 
             recentPrescriptions.forEach(item => {
@@ -87,7 +85,6 @@ function showPrescriptionDetails(prescID, prescriptionData) {
         return;
     }
 
-    // Show loading state
     detailsBody.innerHTML = '<p>Loading prescription details...</p>';
     modal.style.display = 'block';
     console.log('Modal display set to block');
@@ -180,8 +177,6 @@ function showPrescriptionDetails(prescID, prescriptionData) {
         });
     }
 
-    // Close modal when clicking outside (on the modal background)
-    // Use a single handler that we can reference
     if (!modal.hasAttribute('data-modal-listener-attached')) {
         modal.setAttribute('data-modal-listener-attached', 'true');
         modal.addEventListener('click', (event) => {

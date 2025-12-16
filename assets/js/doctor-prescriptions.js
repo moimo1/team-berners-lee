@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             if (data === null) return;
-            
+
             renderPrescriptionList(data, listContainer);
         })
         .catch(err => {
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderPrescriptionList(data, container) {
-    container.innerHTML = ''; 
+    container.innerHTML = '';
     if (!data || data.length === 0) {
         container.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b;">No prescriptions found</td></tr>';
         return;
@@ -47,10 +47,10 @@ function getRowContent(item) {
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
-        return isNaN(date) ? 'N/A' : date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
+        return isNaN(date) ? 'N/A' : date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
         });
     };
 
@@ -71,19 +71,17 @@ function escapeHtml(text) {
 function showPrescriptionDetails(prescID, prescriptionData) {
     const modal = document.getElementById('prescription-details-modal');
     const detailsBody = document.getElementById('prescription-details-body');
-    
+
     if (!modal || !detailsBody) {
         console.error('Modal elements not found');
         return;
     }
-    
-    // Show loading state
+
     detailsBody.innerHTML = '<p>Loading prescription details...</p>';
     modal.style.display = 'block';
-    
-    // Fetch prescription details
-    fetch(`../../controller/get-prescription-details.php?prescID=${escapeHtml(prescID)}`, { 
-        credentials: 'same-origin' 
+
+    fetch(`../../controller/get-prescription-details.php?prescID=${escapeHtml(prescID)}`, {
+        credentials: 'same-origin'
     })
         .then(res => {
             if (!res.ok) {
@@ -96,19 +94,17 @@ function showPrescriptionDetails(prescID, prescriptionData) {
                 detailsBody.innerHTML = `<p class="error">${escapeHtml(data.error)}</p>`;
                 return;
             }
-            
-            // Format dates
+
             const formatDate = (dateString) => {
                 if (!dateString) return 'N/A';
                 const date = new Date(dateString);
-                return isNaN(date) ? 'N/A' : date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                return isNaN(date) ? 'N/A' : date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                 });
             };
-            
-            // Build the details HTML using CSS classes
+
             let html = `
                 <div class="prescription-details-section">
                     <h4>Patient Information</h4>
@@ -118,14 +114,14 @@ function showPrescriptionDetails(prescID, prescriptionData) {
                     <p><strong>Expiry Date:</strong> ${formatDate(prescriptionData.dateExpiry)}</p>
                 </div>
             `;
-            
+
             if (data.medicines && data.medicines.length > 0) {
                 html += `
                     <div class="medications-section">
                         <h4>Medications</h4>
                         <div class="medications-grid">
                 `;
-                
+
                 data.medicines.forEach((medicine, index) => {
                     html += `
                         <div class="medicine-card">
@@ -135,7 +131,7 @@ function showPrescriptionDetails(prescID, prescriptionData) {
                         </div>
                     `;
                 });
-                
+
                 html += `
                         </div>
                     </div>
@@ -143,15 +139,14 @@ function showPrescriptionDetails(prescID, prescriptionData) {
             } else {
                 html += '<p class="no-medications">No medications found for this prescription.</p>';
             }
-            
+
             detailsBody.innerHTML = html;
         })
         .catch(err => {
             console.error('Failed to fetch prescription details:', err);
             detailsBody.innerHTML = '<p class="error">Error loading prescription details. Please try again.</p>';
         });
-    
-    // Close button functionality - set up once
+
     const closeBtn = modal.querySelector('.close-btn');
     if (closeBtn && !closeBtn.hasAttribute('data-listener-attached')) {
         closeBtn.setAttribute('data-listener-attached', 'true');
@@ -160,8 +155,7 @@ function showPrescriptionDetails(prescID, prescriptionData) {
             detailsBody.innerHTML = '';
         });
     }
-    
-    // Close modal when clicking outside (on the modal background)
+
     if (!modal.hasAttribute('data-modal-listener-attached')) {
         modal.setAttribute('data-modal-listener-attached', 'true');
         modal.addEventListener('click', (event) => {

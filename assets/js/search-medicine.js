@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     var searchForm = document.getElementById('search-form');
@@ -14,10 +14,10 @@
         if (!dateString) return 'N/A';
         try {
             var date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
             });
         } catch (e) {
             return dateString;
@@ -27,12 +27,12 @@
     function displayMedicine(medicine) {
         var item = document.createElement('div');
         item.className = 'medicine-item';
-        
+
         var brandHtml = '';
         if (medicine.brand && medicine.brand.trim()) {
             brandHtml = '<p class="medicine-brand">Brand: ' + escapeHtml(medicine.brand) + '</p>';
         }
-        
+
         var descriptionHtml = '';
         if (medicine.description && medicine.description.trim()) {
             descriptionHtml = `
@@ -42,7 +42,7 @@
                 </div>
             `;
         }
-        
+
         item.innerHTML = `
             <div class="medicine-header">
                 <div>
@@ -63,7 +63,7 @@
             </div>
             ${descriptionHtml}
         `;
-        
+
         return item;
     }
 
@@ -76,13 +76,13 @@
 
     function displayResults(medicines) {
         searchResults.innerHTML = '';
-        
+
         if (!medicines || medicines.length === 0) {
             searchResults.innerHTML = '<p class="no-results">No medicines found. Try a different search term.</p>';
             return;
         }
 
-        medicines.forEach(function(medicine) {
+        medicines.forEach(function (medicine) {
             searchResults.appendChild(displayMedicine(medicine));
         });
     }
@@ -102,7 +102,7 @@
     function performSearch() {
         var query = searchInput.value.trim();
         var searchTypeValue = searchType.value;
-        
+
         // If query is empty, show placeholder message
         if (!query) {
             searchResults.innerHTML = '<p class="no-results">Enter a drug name to search for medicine information.</p>';
@@ -119,60 +119,56 @@
                 'Accept': 'application/json'
             }
         })
-        .then(function(response) {
-            if (response.status === 401) {
-                throw new Error('Please log in to search medicines.');
-            }
-            
-            if (!response.ok) {
-                return response.json().then(function(data) {
-                    throw new Error(data.message || 'Search failed. Please try again.');
-                });
-            }
-            
-            return response.json();
-        })
-        .then(function(data) {
-            setLoading(false);
-            
-            if (data.error) {
-                displayError(data.message || data.error);
-                return;
-            }
-            
-            displayResults(data);
-        })
-        .catch(function(err) {
-            setLoading(false);
-            displayError(err.message || 'An error occurred while searching. Please try again.');
-        });
+            .then(function (response) {
+                if (response.status === 401) {
+                    throw new Error('Please log in to search medicines.');
+                }
+
+                if (!response.ok) {
+                    return response.json().then(function (data) {
+                        throw new Error(data.message || 'Search failed. Please try again.');
+                    });
+                }
+
+                return response.json();
+            })
+            .then(function (data) {
+                setLoading(false);
+
+                if (data.error) {
+                    displayError(data.message || data.error);
+                    return;
+                }
+
+                displayResults(data);
+            })
+            .catch(function (err) {
+                setLoading(false);
+                displayError(err.message || 'An error occurred while searching. Please try again.');
+            });
     }
 
-    // Debounce function to limit API calls while typing
     var searchTimeout;
     function debounceSearch() {
         clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(function() {
+        searchTimeout = setTimeout(function () {
             performSearch();
-        }, 300); // Wait 300ms after user stops typing
+        }, 300);
     }
 
-    // Real-time search as user types
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         debounceSearch();
     });
 
-    // Also listen for search type changes
-    searchType.addEventListener('change', function() {
+    searchType.addEventListener('change', function () {
         if (searchInput.value.trim()) {
             debounceSearch();
         }
     });
 
-    // Keep form submission for manual search (optional, but good for accessibility)
-    searchForm.addEventListener('submit', function(e) {
+    searchForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        clearTimeout(searchTimeout); // Cancel any pending debounced search
+        clearTimeout(searchTimeout);
         performSearch();
     });
 })();

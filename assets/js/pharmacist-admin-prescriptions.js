@@ -1,19 +1,15 @@
-/* assets/js/pharmacist-admin-prescriptions.js */
 
 const API_BASE = '/api/pharma-admin';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initial Load
   loadPharmacistsDropdown();
   loadPrescriptions();
 
-  // 2. Event Listeners
   document.getElementById('refresh-prescriptions')?.addEventListener('click', loadPrescriptions);
   document.getElementById('apply-filters')?.addEventListener('click', loadPrescriptions);
   document.getElementById('clear-filters')?.addEventListener('click', resetFilters);
 });
 
-// --- Core Data Loading Functions ---
 const getAdminLocation = () => {
   const tag = document.querySelector('meta[name="admin-location"]');
   return tag ? tag.content : '';
@@ -29,15 +25,14 @@ async function loadPharmacistsDropdown() {
       ? `${API_BASE}/dashboard?location=${encodeURIComponent(adminLocation)}`
       : `${API_BASE}/dashboard`;
 
-    const result = await fetchJson(url); // Reusing dashboard endpoint for simplicity to get list
+    const result = await fetchJson(url);
     const pharmacists = result.data?.pharmacists || [];
 
-    // Keep the first "All pharmacists" option
     select.innerHTML = '<option value="">All pharmacists</option>';
 
     pharmacists.forEach(p => {
       const option = document.createElement('option');
-      option.value = p.id; // Assuming ID is 'id' or 'pharmaID'
+      option.value = p.id;
       option.textContent = `${p.firstName} ${p.lastName}`;
       select.appendChild(option);
     });
@@ -52,7 +47,6 @@ async function loadPrescriptions() {
 
   if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1rem;">Loading...</td></tr>';
 
-  // 1. Gather Filter Values
   const filters = {
     location: getAdminLocation(),
     pharmacistId: document.getElementById('pharmacist-filter')?.value,
@@ -63,19 +57,13 @@ async function loadPrescriptions() {
   };
 
   try {
-    // 2. Build Query String
     const params = new URLSearchParams();
     for (const key in filters) {
       if (filters[key]) params.append(key, filters[key]);
     }
 
-    // 3. Fetch Data
-    // Note: You will need to implement this specific route in your Node backend
-    // For now, we simulate the fetch or use the existing dashboard/recent if specific search isn't built
     const url = `${API_BASE}/prescriptions?${params.toString()}`;
 
-    // Fallback: If the search endpoint doesn't exist yet, we catch the error 
-    // and just use the dashboard's "recent" list for demonstration.
     let prescriptions = [];
     try {
       const response = await fetchJson(url);
@@ -86,7 +74,6 @@ async function loadPrescriptions() {
       prescriptions = dashboardData.data?.recentPrescriptions || [];
     }
 
-    // 4. Render
     renderTable(prescriptions);
     if (countBadge) countBadge.textContent = `${prescriptions.length} results`;
 
@@ -109,9 +96,8 @@ function renderTable(list) {
 
   list.forEach(item => {
     const row = document.createElement('tr');
-    row.style.cursor = 'pointer'; // Make it look clickable
+    row.style.cursor = 'pointer';
 
-    // Status color mapping
     const statusClass = getStatusClass(item.status);
 
     row.innerHTML = `
@@ -124,17 +110,13 @@ function renderTable(list) {
       <td><button class="btn btn-secondary btn-sm" type="button">View</button></td>
     `;
 
-    // Click handler for the whole row
     row.addEventListener('click', () => selectPrescription(item));
 
     tbody.appendChild(row);
   });
 }
 
-// --- Interaction Functions ---
-
 function selectPrescription(item) {
-  // 1. Populate Details Card
   const detailCard = document.getElementById('prescription-detail-card');
   if (detailCard) {
     detailCard.innerHTML = `
@@ -169,7 +151,6 @@ function selectPrescription(item) {
     `;
   }
 
-  // 2. Update History Section Header
   const historyLabel = document.getElementById('history-pharmacist-label');
   if (historyLabel) {
     historyLabel.textContent = item.pharmacistName
@@ -177,7 +158,6 @@ function selectPrescription(item) {
       : 'Unassigned Prescription';
   }
 
-  // 3. Populate History List
   loadPharmacistHistory(item.pharmacistName, item.pharmacistId);
 }
 
@@ -190,7 +170,6 @@ async function loadPharmacistHistory(pharmacistName, pharmacistId) {
     return;
   }
 
-  // Show loading state
   list.innerHTML = '<li><span class="muted">Loading history...</span></li>';
 
   try {

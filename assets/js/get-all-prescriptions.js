@@ -3,16 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('#searchbar');
     let allPrescriptions = [];
 
-    // Fetch all prescriptions initially
     fetch('../../controller/get-all-prescriptions.php', { credentials: 'same-origin' })
         .then(res => res.json())
         .then(data => {
             allPrescriptions = data;
-            renderPrescriptions(allPrescriptions.slice(0, 10)); // show initial top 10
+            renderPrescriptions(allPrescriptions.slice(0, 10));
         })
         .catch(err => console.error('Failed to fetch prescriptions:', err));
 
-    // Live search as the user types
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.trim().toLowerCase();
 
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Show only results where the full name starts with the query
         const filtered = allPrescriptions.filter(item => {
             const first = item.clientFirstName?.toLowerCase() ?? '';
             const last = item.clientLastName?.toLowerCase() ?? '';

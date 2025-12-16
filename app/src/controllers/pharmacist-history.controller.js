@@ -1,8 +1,5 @@
 import { getHistory } from '../services/pharmacist-history.service.js';
 
-/**
- * Controller: HTTP request/response handling for pharmacist history
- */
 
 export async function getPharmacistHistory(req, res) {
     try {
