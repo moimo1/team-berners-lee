@@ -36,14 +36,20 @@ if ($password !== $confirmPassword) {
     header("Location: ../view/SignUp.php?role=$role&error=Passwords do not match");
     exit();
 }
-if ($role === 'doctor' && empty($_POST['specialization'] ?? '')) {
-    header("Location: ../view/SignUp.php?role=$role&error=Specialization is required for doctors");
-    exit();
+if ($role === 'doctor') {
+    $specialization = trim($_POST['specialization'] ?? '');
+    if (empty($specialization)) {
+        header("Location: ../view/SignUp.php?role=$role&error=Specialization is required for doctors");
+        exit();
+    }
 }
 
-if ($role === 'pharmacist' && empty($_POST['designation'] ?? '')) {
-    header("Location: ../view/SignUp.php?role=$role&error=Designation is required for pharmacists");
-    exit();
+if ($role === 'pharmacist') {
+    $designation = trim($_POST['designation'] ?? '');
+    if (empty($designation)) {
+        header("Location: ../view/SignUp.php?role=$role&error=Designation is required for pharmacists");
+        exit();
+    }
 }
 
 if ($role === 'doctor' && empty($contacts)) {
