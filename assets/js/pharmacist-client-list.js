@@ -90,7 +90,10 @@ async function openDetailsModal(prescID) {
     body.innerHTML = '<p>Loading details...</p>';
 
     try {
-        const response = await fetch(`../../controller/get-prescription-details.php?prescID=${prescID}`, { credentials: 'include' });
+        const response = await fetch(`../../controller/get-prescription-details.php?prescID=${prescID}`, {
+            credentials: 'include',
+            cache: 'no-store'
+        });
         const data = await response.json();
 
         if (data.error) {
@@ -136,7 +139,7 @@ function renderDetailsContent(data, container) {
 
             medicinesHtml += `
                 <tr class="${isClickable ? 'clickable-medicine' : 'disabled-medicine'}" 
-                    onclick="if(${isClickable}) openPurchaseModal(${med.medID}, '${escapeHtml(med.medicineName || '')}', ${med.amountRemaining}, ${data.prescID})">
+                    onclick="if(${isClickable}) openPurchaseModal('${med.medID}', '${escapeHtml(med.medicineName || '')}', ${med.amountRemaining}, '${data.prescID}')">
                     
                     <td>${escapeHtml(med.medicineName || 'Unknown')}</td>
                     <td>${escapeHtml(med.dosage || 'N/A')}</td>
@@ -242,7 +245,11 @@ function setupModalClosers() {
 function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
     const d = new Date(dateStr);
-    return isNaN(d) ? 'N/A' : d.toLocaleDateString('en-US', { dateStyle: 'medium' });
+    return isNaN(d) ? 'N/A' : d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    });
 }
 
 function escapeHtml(text) {

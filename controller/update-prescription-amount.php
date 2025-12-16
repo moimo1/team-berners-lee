@@ -96,10 +96,32 @@ if (!$stmt_update) {
 
 $stmt_update->bind_param("iss", $newRemainingAmount, $prescID, $medID);
 
-if (!$stmt_update->execute()) {
+    if (!$stmt_update->execute()) {
     http_response_code(500);
     echo json_encode(["error" => "Database Error", "message" => $stmt_update->error]);
     exit;
+}
+
+// Insert into dispense table
+$pharmaID = $_SESSION['id'];
+$sql_dispense = "INSERT INTO dispense (prescID, pharmaID, dateDispensed) VALUES (?, ?, NOW())";
+$stmt_dispense = $conn->prepare($sql_dispense);
+if ($stmt_dispense) {
+    $stmt_dispense->bind_param("ss", $prescID, $pharmaID);
+    if ($stmt_dispense->execute()) {
+        $dispenseID = $stmt_dispense->insert_id;
+        
+        // Insert into dispense_items table
+        // Note: priceAtSale is currently not passed, setting to NULL or 0
+        $sql_item = "INSERT INTO dispense_items (dispenseID, medID, quantitySold, priceAtSale) VALUES (?, ?, ?, NULL)";
+        $stmt_item = $conn->prepare($sql_item);
+        if ($stmt_item) {
+            $stmt_item->bind_param("isi", $dispenseID, $medID, $purchaseAmount);
+            $stmt_item->execute();
+            $stmt_item->close();
+        }
+    }
+    $stmt_dispense->close();
 }
 
 echo json_encode([

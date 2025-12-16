@@ -67,7 +67,7 @@ export async function searchPrescriptions(filters = {}) {
       }
     }
 
-    sql += ` ORDER BY pr.dateGiven DESC LIMIT 50`;
+    sql += ` GROUP BY pr.prescID ORDER BY pr.dateGiven DESC LIMIT 50`;
 
     const [rows] = await conn.query(sql, params);
     return rows;

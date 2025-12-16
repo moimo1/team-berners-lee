@@ -13,7 +13,7 @@ $prescID = $_GET['prescID'];
 
 // ✅ Get prescription + client info
 $sql_prescription = "
-    SELECT p.prescID, c.firstName AS clientFirstName, c.lastName AS clientLastName
+    SELECT p.prescID, c.firstName AS clientFirstName, c.lastName AS clientLastName, p.dateGiven, p.dateExpiry
     FROM prescription p
     JOIN client c ON p.clientID = c.clientID
     WHERE p.prescID = ?
@@ -55,8 +55,11 @@ while ($row = $result_details->fetch_assoc()) {
 
 // ✅ Return structured JSON that matches JS expectations
 echo json_encode([
+    'prescID' => $prescID,
     'clientFirstName' => $prescription['clientFirstName'],
     'clientLastName' => $prescription['clientLastName'],
+    'dateGiven' => $prescription['dateGiven'],
+    'dateExpiry' => $prescription['dateExpiry'],
     'medicines' => $medicines
 ]);
 ?>
