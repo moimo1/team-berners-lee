@@ -106,7 +106,7 @@ function renderTable(list) {
       <td>${item.clientName || item.clientFirstName + ' ' + item.clientLastName}</td>
       <td>${item.medicineName || '—'}</td>
       <td><span class="badge ${statusClass}">${item.status || 'Pending'}</span></td>
-      <td>${formatDate(item.dateGiven || item.updatedAt)}</td>
+      <td>${formatDate(item.updatedAt || item.dateGiven)}</td>
       <td><button class="btn btn-secondary btn-sm" type="button">View</button></td>
     `;
 

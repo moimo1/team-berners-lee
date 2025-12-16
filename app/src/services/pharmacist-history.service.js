@@ -8,7 +8,6 @@ export async function getHistory(pharmacistId) {
     return rows.map(row => {
         let details = `Dispensed ${row.quantity || '?'} ${row.medicineName} to ${row.clientFirstName} ${row.clientLastName}`;
 
-        // If remaining amount is <= 0, indicate fulfillment
         if (row.remainingAmount !== null && row.remainingAmount <= 0) {
             details += ' (Prescription Fulfilled)';
         }

@@ -111,7 +111,6 @@ async function openDetailsModal(prescID) {
 }
 
 function renderDetailsContent(data, container) {
-    // 1. Patient Info Section
     const infoHtml = `
         <div class="prescription-details-section">
             <h4>Patient Information</h4>
@@ -121,7 +120,6 @@ function renderDetailsContent(data, container) {
         </div>
     `;
 
-    // 2. Medicines List Section
     let medicinesHtml = '<div class="medications-section"><h4>Medications</h4>';
 
     if (!data.medicines || data.medicines.length === 0) {

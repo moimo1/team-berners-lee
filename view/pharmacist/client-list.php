@@ -8,7 +8,6 @@
 
   $role = $_SESSION['role'];
   
-  // Get pharmacist's name from database
   include '../../config/db_con.php';
   $pharmacistID = $_SESSION['id'];
   $sql = "SELECT firstName, lastName FROM pharmacist WHERE pharmaID = ?";

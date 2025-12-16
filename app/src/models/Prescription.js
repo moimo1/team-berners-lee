@@ -23,7 +23,8 @@ export function createPrescription(data) {
     dispenseId: data.dispenseId,
     remainingAmount: data.remainingAmount,
     dosage: data.dosage,
-    description: data.description
+    description: data.description,
+    updatedAt: data.updatedAt
   };
 }
 

@@ -15,10 +15,11 @@ export async function getPrescriptions(req, res) {
       dateGiven: pr.dateGiven,
       amount: pr.remainingAmount,
       dosage: pr.dosage,
-      description: pr.description
+      dosage: pr.dosage,
+      description: pr.description,
+      updatedAt: pr.updatedAt
     }));
 
-    // DEBUG LOGGING
     if (data.length > 0) {
       console.log('Sample prescription sent to frontend:', {
         id: data[0].prescID,

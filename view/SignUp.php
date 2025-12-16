@@ -154,7 +154,6 @@
                                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
                             </div>
                             
-                            <!-- License Upload (Doctor and Pharmacist only) -->
                             <?php if ($isDoctor || $isPharmacist): ?>
                                 <div class="form-field">
                                     <label for="licensePicture">Provide Your License Picture</label>

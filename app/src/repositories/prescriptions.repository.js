@@ -1,6 +1,5 @@
 import { getConnection } from '../config/db.js';
 
-// Search prescriptions with filters from database
 export async function searchPrescriptions(filters = {}) {
   const conn = await getConnection();
   try {
@@ -14,10 +13,10 @@ export async function searchPrescriptions(filters = {}) {
         ANY_VALUE(ph.lastName) AS pharmacistLastName,
         ANY_VALUE(ph.pharmaID) AS pharmacistId,
         ANY_VALUE(d.dispenseID) AS dispenseId,
-        pr.dateGiven,
         ANY_VALUE(pd.remainingAmount) AS remainingAmount,
         ANY_VALUE(pd.dosage) AS dosage,
-        ANY_VALUE(pd.description) AS description
+        ANY_VALUE(pd.description) AS description,
+        GREATEST(pr.dateGiven, COALESCE(MAX(d.dateDispensed), pr.dateGiven)) AS updatedAt
       FROM prescription pr
       LEFT JOIN prescriptiondetails pd ON pd.prescID = pr.prescID
       LEFT JOIN medicine m ON m.medID = pd.medID
@@ -67,7 +66,7 @@ export async function searchPrescriptions(filters = {}) {
       }
     }
 
-    sql += ` GROUP BY pr.prescID ORDER BY pr.dateGiven DESC LIMIT 50`;
+    sql += ` GROUP BY pr.prescID ORDER BY updatedAt DESC LIMIT 50`;
 
     const [rows] = await conn.query(sql, params);
     return rows;
