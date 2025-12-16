@@ -3,7 +3,6 @@ session_start();
 include '../config/db_con.php';
 header('Content-Type: application/json');
 
-// Check if user is logged in
 if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'pharma') {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized", "message" => "Please log in as a pharmacist."]);
@@ -26,7 +25,6 @@ if ($purchaseAmount <= 0) {
     exit;
 }
 
-// First, get the current remaining amount
 $sql_check = "
     SELECT remainingAmount 
     FROM prescriptiondetails 
@@ -53,11 +51,7 @@ if (!$current) {
 
 $currentAmount = $current['remainingAmount'];
 
-// Check if remaining amount is NULL (unlimited) or validate against current amount
 if ($currentAmount === null) {
-    // If remaining amount is NULL, allow any purchase (unlimited prescription)
-    // Update to set remaining amount (optional - you might want to keep it NULL)
-    // For now, we'll just return success without updating
     echo json_encode([
         "success" => true,
         "message" => "Purchase completed successfully (unlimited prescription).",
@@ -66,7 +60,6 @@ if ($currentAmount === null) {
     exit;
 }
 
-// Validate purchase amount doesn't exceed remaining amount
 if ($purchaseAmount > $currentAmount) {
     http_response_code(400);
     echo json_encode([
@@ -77,10 +70,8 @@ if ($purchaseAmount > $currentAmount) {
     exit;
 }
 
-// Calculate new remaining amount
 $newRemainingAmount = $currentAmount - $purchaseAmount;
 
-// Update the remaining amount
 $sql_update = "
     UPDATE prescriptiondetails 
     SET remainingAmount = ? 
@@ -102,7 +93,6 @@ $stmt_update->bind_param("iss", $newRemainingAmount, $prescID, $medID);
     exit;
 }
 
-// Insert into dispense table
 $pharmaID = $_SESSION['id'];
 $sql_dispense = "INSERT INTO dispense (prescID, pharmaID, dateDispensed) VALUES (?, ?, NOW())";
 $stmt_dispense = $conn->prepare($sql_dispense);
@@ -111,8 +101,6 @@ if ($stmt_dispense) {
     if ($stmt_dispense->execute()) {
         $dispenseID = $stmt_dispense->insert_id;
         
-        // Insert into dispense_items table
-        // Note: priceAtSale is currently not passed, setting to NULL or 0
         $sql_item = "INSERT INTO dispense_items (dispenseID, medID, quantitySold, priceAtSale) VALUES (?, ?, ?, NULL)";
         $stmt_item = $conn->prepare($sql_item);
         if ($stmt_item) {
