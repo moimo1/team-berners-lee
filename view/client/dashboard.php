@@ -1,5 +1,10 @@
 <?php
     session_start();
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'client') {
+        header("Location: ../../index.php");
+        exit();
+    }
+
     $role = 'client';
     include '../../includes/navbar.php';
 ?>

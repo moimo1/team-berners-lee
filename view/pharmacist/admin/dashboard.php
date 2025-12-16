@@ -1,5 +1,11 @@
 <?php
   session_start();
+
+  if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'pharma') {
+      header("Location: ../../index.php");
+      exit();
+  }
+
   $role = $_SESSION['role'];
 
   include '../../../config/db_con.php';
