@@ -17,8 +17,6 @@ if ($clientID) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $doctorID, $clientID);
 } else {
-    // If no client selected, return empty or all? Requirement says patient specific.
-    // Let's return empty to be safe and force selection.
     echo json_encode([]);
     exit();
 }
@@ -27,7 +25,6 @@ $result = $stmt->get_result();
 
 $templates = [];
 while ($row = $result->fetch_assoc()) {
-    // Medicines are stored as JSON strings in DB, decode them for the frontend
     $row['medicines'] = json_decode($row['medicines'], true);
     $templates[] = $row;
 }

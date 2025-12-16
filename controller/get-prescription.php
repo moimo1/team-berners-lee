@@ -11,7 +11,6 @@ if (!isset($_SESSION['id'])) {
 include '../config/db_con.php';
 $clientID = $_SESSION['id'];
 
-// Fetch the most recent prescription for this client
 $sql = "SELECT * FROM prescription WHERE clientID = ? ORDER BY dateGiven DESC LIMIT 1";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $clientID);
@@ -26,13 +25,12 @@ $result = $stmt->get_result();
 $prescription = $result->fetch_assoc();
 
 if (!$prescription) {
-    echo json_encode([]); // No prescriptions found
+    echo json_encode([]); 
     exit;
 }
 
 $prescID = trim($prescription["prescID"]);
 
-// Get the medicine details linked to this prescription
 $sql_prescDetails = "
     SELECT 
         pd.prescID,

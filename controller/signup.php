@@ -2,7 +2,6 @@
 session_start();
 include '../config/db_con.php';
 
-// Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../view/SignUp.php?error=Invalid request method");
     exit();
@@ -18,31 +17,25 @@ $confirmPassword = $_POST['confirmPassword'] ?? '';
 $contacts = trim($_POST['contacts'] ?? '');
 $address = trim($_POST['address'] ?? '');
 
-// Validate required fields
 if (empty($role) || empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
     header("Location: ../view/SignUp.php?role=$role&error=Please fill in all required fields");
     exit();
 }
 
-// Validate email format
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     header("Location: ../view/SignUp.php?role=$role&error=Invalid email format");
     exit();
 }
 
-// Validate password length
 if (strlen($password) < 3) {
     header("Location: ../view/SignUp.php?role=$role&error=Password must be at least 3 characters long");
     exit();
 }
 
-// Validate passwords match
 if ($password !== $confirmPassword) {
     header("Location: ../view/SignUp.php?role=$role&error=Passwords do not match");
     exit();
 }
-
-// Validate role-specific required fields
 if ($role === 'doctor' && empty($_POST['specialization'] ?? '')) {
     header("Location: ../view/SignUp.php?role=$role&error=Specialization is required for doctors");
     exit();
@@ -58,30 +51,24 @@ if (empty($contacts)) {
     exit();
 }
 
-// File upload handling
 $profilePhotoPath = null;
 $licensePicturePath = null;
 $uploadDir = '../uploads/';
 $allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-$maxFileSize = 5 * 1024 * 1024; // 5MB
+$maxFileSize = 5 * 1024 * 1024;
 
-// Create uploads directory if it doesn't exist
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
-
-// Handle profile photo upload
 if (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
     $profilePhoto = $_FILES['profilePhoto'];
     
-    // Validate file type
     $fileType = mime_content_type($profilePhoto['tmp_name']);
     if (!in_array($fileType, $allowedImageTypes)) {
         header("Location: ../view/SignUp.php?role=$role&error=Profile photo must be an image file (JPEG, PNG, or GIF)");
         exit();
     }
     
-    // Validate file size
     if ($profilePhoto['size'] > $maxFileSize) {
         header("Location: ../view/SignUp.php?role=$role&error=Profile photo must be less than 5MB");
         exit();
@@ -96,19 +83,16 @@ if (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOA
     }
 }
 
-// Handle license picture upload (Doctor and Pharmacist only)
 if (($role === 'doctor' || $role === 'pharmacist') && 
     isset($_FILES['licensePicture']) && $_FILES['licensePicture']['error'] === UPLOAD_ERR_OK) {
     $licensePicture = $_FILES['licensePicture'];
     
-    // Validate file type
     $fileType = mime_content_type($licensePicture['tmp_name']);
     if (!in_array($fileType, $allowedImageTypes)) {
         header("Location: ../view/SignUp.php?role=$role&error=License picture must be an image file (JPEG, PNG, or GIF)");
         exit();
     }
     
-    // Validate file size
     if ($licensePicture['size'] > $maxFileSize) {
         header("Location: ../view/SignUp.php?role=$role&error=License picture must be less than 5MB");
         exit();
@@ -123,11 +107,10 @@ if (($role === 'doctor' || $role === 'pharmacist') &&
     }
 }
 
-// Generate ID based on role
 $prefix = '';
 $table = '';
 $idColumn = '';
-$substringStart = 2; // Default for single letter prefix (D, C)
+$substringStart = 2;
 
 switch ($role) {
     case 'doctor':
@@ -140,7 +123,7 @@ switch ($role) {
         $prefix = 'PH';
         $table = 'pharmacist';
         $idColumn = 'pharmaID';
-        $substringStart = 3; // For "PH001" format, start at position 3
+        $substringStart = 3;
         $designation = trim($_POST['designation'] ?? '');
         break;
     case 'client':
@@ -153,7 +136,6 @@ switch ($role) {
         exit();
 }
 
-// Generate unique ID
 $sql = "SELECT MAX(CAST(SUBSTRING($idColumn, $substringStart) AS UNSIGNED)) as maxNum FROM $table";
 $result = $conn->query($sql);
 if (!$result) {
@@ -164,14 +146,12 @@ if (!$result) {
 $row = $result->fetch_assoc();
 $nextNum = ($row['maxNum'] ?? 0) + 1;
 
-// Format ID with correct padding based on role
 if ($role === 'pharmacist') {
-    $newID = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT); // PH001
+    $newID = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT); 
 } else {
-    $newID = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT); // D001, C001
+    $newID = $prefix . str_pad($nextNum, 3, '0', STR_PAD_LEFT); 
 }
 
-// Check if email already exists
 $checkEmail = "SELECT * FROM $table WHERE email = ?";
 $stmtCheck = $conn->prepare($checkEmail);
 if (!$stmtCheck) {
@@ -190,7 +170,6 @@ if ($resultCheck->num_rows > 0) {
 }
 $stmtCheck->close();
 
-// Insert into database based on role
 $stmt = null;
 if ($role === 'doctor') {
     $sql = "INSERT INTO $table ($idColumn, firstName, lastName, specialty, phonenum, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -201,7 +180,6 @@ if ($role === 'doctor') {
     }
     $stmt->bind_param("sssssss", $newID, $firstName, $lastName, $specialization, $contacts, $email, $password);
 } elseif ($role === 'pharmacist') {
-    // Note: Pharmacist table doesn't have designation field in DB, using location field instead this is for reference only - Jhorone:)
     $sql = "INSERT INTO $table ($idColumn, firstName, lastName, location, email, password) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
@@ -211,7 +189,6 @@ if ($role === 'doctor') {
     $location = $designation ?? '';
     $stmt->bind_param("ssssss", $newID, $firstName, $lastName, $location, $email, $password);
 } elseif ($role === 'client') {
-    // Match current DB schema where the column is named `contact`
     $sql = "INSERT INTO $table ($idColumn, firstName, lastName, contact, address, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {

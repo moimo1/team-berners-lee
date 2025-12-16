@@ -3,7 +3,6 @@ session_start();
 include '../config/db_con.php';
 header('Content-Type: application/json');
 
-// ✅ Ensure prescID is provided
 if (!isset($_GET['prescID']) || empty($_GET['prescID'])) {
     echo json_encode(["error" => "Missing prescID"]);
     exit;
@@ -11,7 +10,6 @@ if (!isset($_GET['prescID']) || empty($_GET['prescID'])) {
 
 $prescID = $_GET['prescID'];
 
-// ✅ Get prescription + client info
 $sql_prescription = "
     SELECT p.prescID, c.firstName AS clientFirstName, c.lastName AS clientLastName, p.dateGiven, p.dateExpiry
     FROM prescription p
@@ -30,7 +28,6 @@ if (!$prescription) {
     exit;
 }
 
-// ✅ Get medicine details for that prescription
 $sql_details = "
     SELECT 
         pd.medID,
@@ -53,7 +50,6 @@ while ($row = $result_details->fetch_assoc()) {
     $medicines[] = $row;
 }
 
-// ✅ Return structured JSON that matches JS expectations
 echo json_encode([
     'prescID' => $prescID,
     'clientFirstName' => $prescription['clientFirstName'],

@@ -53,7 +53,6 @@ if ($result->num_rows === 1) {
     }
     exit();
 } else {
-    // Invalid credentials - redirect back to login page with error
     header("Location: ../index.php?error=invalid_credentials");
     exit();
 }

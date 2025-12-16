@@ -2,7 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Check if user is logged in
 if (!isset($_SESSION['id'])) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized", "message" => "Please log in to search medicines."]);
@@ -11,17 +10,14 @@ if (!isset($_SESSION['id'])) {
 
 include '../config/db_con.php';
 
-// Get search parameters
 $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 $searchType = isset($_GET['type']) ? $_GET['type'] : 'genericName';
 
-// Allow empty query for real-time search (return empty results)
 if (empty($query)) {
     echo json_encode([]);
     exit;
 }
 
-// Validate search type - prevent SQL injection
 $validSearchTypes = ['genericName', 'brand'];
 if (!in_array($searchType, $validSearchTypes)) {
     $searchType = 'genericName';

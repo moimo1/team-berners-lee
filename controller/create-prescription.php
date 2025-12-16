@@ -9,26 +9,21 @@ $date = $_POST['date-given'];
 $expiry = $_POST['expiry-date'];
 $status = $_POST['status'];
 
-// Validate client ID
 if (!$clientID) {
     echo json_encode(['error' => 'Client ID is required']);
     exit();
 }
 
-// Get new Prescription ID
 $sql_new_prescID = "SELECT prescID FROM prescription WHERE prescID LIKE 'P%' ORDER BY prescID DESC LIMIT 1";
 $result = $conn->query($sql_new_prescID);
 
 if ($result && $row = $result->fetch_assoc()) {
-    // Extract numeric part
     $last_id = $row["prescID"];
     $number = (int)substr($last_id, strlen("P"));
 } else {
-    // If no existing IDs, start at 0
     $number = 0;
 }
 
-// --- Increment and format new ID ---
 $next_number = $number + 1;
 $prescID = "P" . str_pad($next_number, 3, "0", STR_PAD_LEFT);
 
@@ -38,7 +33,6 @@ $stmt_new_prescription = $conn->prepare($sql_new_prescription);
 $stmt_new_prescription->bind_param("sssss", $prescID, $doctorID, $clientID, $date, $expiry);
 
 if ($stmt_new_prescription->execute()) {
-    // Get all medicine data from POST
     $medicineIndex = 0;
     $medicinesAdded = 0;
     
@@ -48,7 +42,6 @@ if ($stmt_new_prescription->execute()) {
         $amount = $_POST["medicine-{$medicineIndex}-amount"] ?? null;
         $description = $_POST["medicine-{$medicineIndex}-description"] ?? '';
         
-        // Validate amount
         $remainingAmount = null;
         if ($amount !== null && $amount !== '') {
             $amountInt = (int)$amount;
@@ -57,14 +50,11 @@ if ($stmt_new_prescription->execute()) {
             }
         }
         
-        // Insert into prescriptiondetails
-        // remainingAmount is set to the prescribed amount initially
         if ($remainingAmount !== null) {
             $sql_details = "INSERT INTO prescriptiondetails (prescID, medID, dosage, description, remainingAmount) VALUES (?, ?, ?, ?, ?)";
             $stmt_details = $conn->prepare($sql_details);
             $stmt_details->bind_param("ssssi", $prescID, $medID, $dosage, $description, $remainingAmount);
         } else {
-            // If amount is invalid or not provided, insert with NULL
             $sql_details = "INSERT INTO prescriptiondetails (prescID, medID, dosage, description, remainingAmount) VALUES (?, ?, ?, ?, NULL)";
             $stmt_details = $conn->prepare($sql_details);
             $stmt_details->bind_param("ssss", $prescID, $medID, $dosage, $description);
@@ -78,23 +68,18 @@ if ($stmt_new_prescription->execute()) {
         $medicineIndex++;
     }
     
-    // --- Save as Template Logic ---
     if (isset($_POST['save-template']) && !empty($_POST['template-name'])) {
         $templateName = $_POST['template-name'];
         
-        // Re-construct medicines array for JSON storage
         $medicinesArray = [];
         $medIdx = 0;
         
-        // Reset pointer or re-loop carefully. Since we processed $_POST logic above, let's re-read $_POST
-        // Note: $_POST is still available.
         while (isset($_POST["medicine-{$medIdx}-id"])) {
              $tMedID = $_POST["medicine-{$medIdx}-id"];
              $tDosage = $_POST["medicine-{$medIdx}-dosage"] ?? '';
              $tAmount = $_POST["medicine-{$medIdx}-amount"] ?? null;
              $tDesc = $_POST["medicine-{$medIdx}-description"] ?? '';
              
-             // Validate amount for template same as above
              $tRemaining = null;
              if ($tAmount !== null && $tAmount !== '') {
                  $tRemaining = (int)$tAmount;
@@ -103,7 +88,7 @@ if ($stmt_new_prescription->execute()) {
              $medicinesArray[] = [
                  'medID' => $tMedID,
                  'dosage' => $tDosage,
-                 'amount' => $tRemaining, // Store the initial amount
+                 'amount' => $tRemaining,
                  'description' => $tDesc
              ];
              $medIdx++;
@@ -111,7 +96,6 @@ if ($stmt_new_prescription->execute()) {
 
         if (!empty($medicinesArray)) {
             $jsonMedicines = json_encode($medicinesArray);
-            // $clientID is already defined at top of file
             $sql_template = "INSERT INTO prescription_templates (doctorID, clientID, templateName, medicines) VALUES (?, ?, ?, ?)";
             $stmt_template = $conn->prepare($sql_template);
             $stmt_template->bind_param("ssss", $doctorID, $clientID, $templateName, $jsonMedicines);
@@ -119,7 +103,6 @@ if ($stmt_new_prescription->execute()) {
             $stmt_template->close();
         }
     }
-    // ----------------------------
 
     if ($medicinesAdded > 0) {
         echo json_encode(['success' => true, 'prescID' => $prescID, 'medicinesAdded' => $medicinesAdded]);
