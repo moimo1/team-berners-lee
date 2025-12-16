@@ -1,11 +1,6 @@
 <?php
-  session_start();
-  
-  if (!isset($_SESSION['role']) || !isset($_SESSION['id'])) {
-      header("Location: ../../index.php");
-      exit();
-  }
-
+  require_once dirname(__DIR__, 2) . '/includes/session.php';
+  requireRole('pharma');
   $role = $_SESSION['role'];
   
   include '../../config/db_con.php';

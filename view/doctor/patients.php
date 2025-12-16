@@ -1,5 +1,6 @@
 <?php
-  session_start();
+  require_once dirname(__DIR__, 2) . '/includes/session.php';
+  requireRole('doctor');
   $role = $_SESSION['role'];
 ?>
 

@@ -1,5 +1,6 @@
 <?php
-  session_start();
+  require_once dirname(__DIR__, 3) . '/includes/session.php';
+  requireRole('pharma_admin');
   $role = $_SESSION['role'];
 
   include '../../../config/db_con.php';
