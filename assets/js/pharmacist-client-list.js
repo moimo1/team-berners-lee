@@ -4,7 +4,9 @@ let currentPrescriptionDetails = null;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Pharmacist Client List Loaded');
 
+    // Load data and wire up interactions
     loadAllPrescriptions();
+
     const searchInput = document.getElementById('searchbar');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -12,38 +14,98 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const historyFilter = document.getElementById('history-view-filter');
+    if (historyFilter) {
+        historyFilter.addEventListener('change', () => {
+            renderHistoryTable();
+        });
+    }
+
+    const tabActiveBtn = document.getElementById('tab-active-btn');
+    const tabHistoryBtn = document.getElementById('tab-history-btn');
+    if (tabActiveBtn && tabHistoryBtn) {
+        tabActiveBtn.addEventListener('click', () => switchTab('active'));
+        tabHistoryBtn.addEventListener('click', () => switchTab('history'));
+    }
+
     setupModalClosers();
 });
 
 async function loadAllPrescriptions() {
-    const listContainer = document.getElementById('prescription-table-body');
+    const activeContainer = document.getElementById('prescription-active-tbody');
+    const historyContainer = document.getElementById('prescription-history-tbody');
+
+    if (activeContainer) {
+        activeContainer.innerHTML = '<tr><td colspan="4" class="muted-text">Loading prescriptions...</td></tr>';
+    }
+    if (historyContainer) {
+        historyContainer.innerHTML = '<tr><td colspan="5" class="muted-text">Loading history...</td></tr>';
+    }
 
     try {
         const response = await fetch('../../controller/get-all-prescriptions.php', { credentials: 'include' });
 
         if (response.status === 401) {
-            listContainer.innerHTML = '<tr><td colspan="3" class="error-text">Please log in to view prescriptions.</td></tr>';
+            if (activeContainer) {
+                activeContainer.innerHTML = '<tr><td colspan="4" class="error-text">Please log in to view prescriptions.</td></tr>';
+            }
+            if (historyContainer) {
+                historyContainer.innerHTML = '<tr><td colspan="5" class="error-text">Please log in to view prescriptions.</td></tr>';
+            }
             return;
         }
 
         const data = await response.json();
 
-        allPrescriptions = data || [];
+        allPrescriptions = Array.isArray(data) ? data : [];
 
-        renderTable(allPrescriptions);
+        // Initial render: active tab (clean workspace) and matching history
+        renderActiveTable();
+        renderHistoryTable();
 
     } catch (error) {
         console.error('Error loading data:', error);
-        listContainer.innerHTML = '<tr><td colspan="3" class="error-text">Error loading data.</td></tr>';
+        if (activeContainer) {
+            activeContainer.innerHTML = '<tr><td colspan="4" class="error-text">Error loading data.</td></tr>';
+        }
+        if (historyContainer) {
+            historyContainer.innerHTML = '<tr><td colspan="5" class="error-text">Error loading data.</td></tr>';
+        }
     }
 }
 
-function renderTable(list) {
-    const container = document.getElementById('prescription-table-body');
+/**
+ * Active workspace: only prescriptions that are NOT expired and NOT fully dispensed.
+ */
+function getActivePrescriptions() {
+    return allPrescriptions.filter(item => {
+        const isExpired = !!item.isExpired;
+        const isFullyDispensed = !!item.isFullyDispensed;
+        return !isExpired && !isFullyDispensed;
+    });
+}
+
+/**
+ * History workspace: prescriptions that are expired OR fully dispensed.
+ */
+function getHistoryPrescriptions() {
+    return allPrescriptions.filter(item => {
+        const isExpired = !!item.isExpired;
+        const isFullyDispensed = !!item.isFullyDispensed;
+        return isExpired || isFullyDispensed;
+    });
+}
+
+function renderActiveTable(listOverride) {
+    const container = document.getElementById('prescription-active-tbody');
+    if (!container) return;
+
+    const list = Array.isArray(listOverride) ? listOverride : getActivePrescriptions();
+
     container.innerHTML = '';
 
     if (list.length === 0) {
-        container.innerHTML = '<tr><td colspan="3" class="muted-text">No prescriptions found.</td></tr>';
+        container.innerHTML = '<tr><td colspan="4" class="muted-text">No active prescriptions found.</td></tr>';
         return;
     }
 
@@ -64,22 +126,82 @@ function renderTable(list) {
     });
 }
 
-function handleSearch(query) {
-    const lowerQuery = query.toLowerCase().trim();
+function renderHistoryTable() {
+    const container = document.getElementById('prescription-history-tbody');
+    if (!container) return;
 
-    if (!lowerQuery) {
-        renderTable(allPrescriptions);
+    const filterSelect = document.getElementById('history-view-filter');
+    const mode = filterSelect ? filterSelect.value : 'all';
+
+    let list = getHistoryPrescriptions();
+
+    if (mode === 'expired') {
+        list = list.filter(item => !!item.isExpired);
+    } else if (mode === 'fully-dispensed') {
+        list = list.filter(item => !!item.isFullyDispensed);
+    }
+
+    container.innerHTML = '';
+
+    if (list.length === 0) {
+        container.innerHTML = '<tr><td colspan="5" class="muted-text">No prescriptions found for this view.</td></tr>';
         return;
     }
 
-    const filtered = allPrescriptions.filter(item => {
+    list.forEach(item => {
+        const tr = document.createElement('tr');
+
+        // History is read-only; no click handler for dispensing
+        tr.style.cursor = 'default';
+
+        const statusLabel = buildHistoryStatusLabel(item);
+
+        tr.innerHTML = `
+            <td>#${item.prescID}</td>
+            <td>${escapeHtml(item.clientFirstName)} ${escapeHtml(item.clientLastName)}</td>
+            <td>${formatDate(item.dateGiven)}</td>
+            <td>${formatDate(item.dateExpiry)}</td>
+            <td>${statusLabel}</td>
+        `;
+
+        container.appendChild(tr);
+    });
+}
+
+function buildHistoryStatusLabel(item) {
+    const isExpired = !!item.isExpired;
+    const isFullyDispensed = !!item.isFullyDispensed;
+
+    if (isExpired && isFullyDispensed) {
+        return 'Expired & Fully Dispensed';
+    }
+    if (isExpired) {
+        return 'Expired';
+    }
+    if (isFullyDispensed) {
+        return 'Fully Dispensed';
+    }
+    return 'Historical';
+}
+
+function handleSearch(query) {
+    const lowerQuery = query.toLowerCase().trim();
+
+    const baseList = getActivePrescriptions();
+
+    if (!lowerQuery) {
+        renderActiveTable(baseList);
+        return;
+    }
+
+    const filtered = baseList.filter(item => {
         const fullName = (item.clientFirstName + ' ' + item.clientLastName).toLowerCase();
         const id = String(item.prescID);
 
         return fullName.includes(lowerQuery) || id.includes(lowerQuery);
     });
 
-    renderTable(filtered);
+    renderActiveTable(filtered);
 }
 
 async function openDetailsModal(prescID) {
@@ -255,5 +377,30 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.innerText = text;
     return div.innerHTML;
+}
+
+/**
+ * Simple tab switching between Active and History
+ */
+function switchTab(tab) {
+    const activePanel = document.getElementById('tab-active');
+    const historyPanel = document.getElementById('tab-history');
+    const activeBtn = document.getElementById('tab-active-btn');
+    const historyBtn = document.getElementById('tab-history-btn');
+
+    if (!activePanel || !historyPanel || !activeBtn || !historyBtn) return;
+
+    const showActive = tab === 'active';
+
+    activePanel.style.display = showActive ? '' : 'none';
+    historyPanel.style.display = showActive ? 'none' : '';
+
+    if (showActive) {
+        activeBtn.classList.add('active');
+        historyBtn.classList.remove('active');
+    } else {
+        historyBtn.classList.add('active');
+        activeBtn.classList.remove('active');
+    }
 }
 
