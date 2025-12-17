@@ -50,7 +50,7 @@
         <!-- Simple tab header to switch between Active and History views -->
         <div class="tab-header">
           <button id="tab-active-btn" class="btn btn-secondary tab-btn active" type="button">
-            All Client Prescriptions
+            Active Prescriptions
           </button>
           <button id="tab-history-btn" class="btn btn-secondary tab-btn" type="button">
             History
