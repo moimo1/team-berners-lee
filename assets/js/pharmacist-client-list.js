@@ -1,4 +1,6 @@
 let allPrescriptions = [];
+let activePrescriptions = [];
+let historyPrescriptions = [];
 let currentPrescriptionDetails = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
             handleSearch(e.target.value);
         });
     }
+
+    setupTabs();
+    setupHistoryFilter();
 
     setupModalClosers();
 });
@@ -28,14 +33,49 @@ async function loadAllPrescriptions() {
 
         const data = await response.json();
 
-        allPrescriptions = data || [];
-
-        renderTable(allPrescriptions);
+        allPrescriptions = Array.isArray(data) ? data : [];
+        classifyPrescriptions();
+        renderTable(activePrescriptions);
+        // Initialize history view (default filter = all)
+        renderHistoryTable(getFilteredHistory('all'));
 
     } catch (error) {
         console.error('Error loading data:', error);
         listContainer.innerHTML = '<tr><td colspan="3" class="error-text">Error loading data.</td></tr>';
     }
+}
+
+function classifyPrescriptions() {
+    activePrescriptions = [];
+    historyPrescriptions = [];
+
+    const nowActive = [];
+    const nowHistory = [];
+
+    (allPrescriptions || []).forEach(item => {
+        const isExpired = Number(item.isExpired) === 1;
+        const isFullyDispensed = Number(item.isFullyDispensed) === 1;
+
+        // History if expired or fully dispensed
+        const isHistory = isExpired || isFullyDispensed;
+
+        if (isHistory) {
+            nowHistory.push({
+                ...item,
+                isExpired,
+                isFullyDispensed
+            });
+        } else {
+            nowActive.push({
+                ...item,
+                isExpired,
+                isFullyDispensed
+            });
+        }
+    });
+
+    activePrescriptions = nowActive;
+    historyPrescriptions = nowHistory;
 }
 
 function renderTable(list) {
@@ -51,7 +91,7 @@ function renderTable(list) {
         const tr = document.createElement('tr');
 
         tr.style.cursor = 'pointer';
-        tr.onclick = () => openDetailsModal(item.prescID);
+        tr.onclick = () => openDetailsModal(item.prescID, false);
 
         tr.innerHTML = `
             <td>#${item.prescID}</td>
@@ -68,11 +108,11 @@ function handleSearch(query) {
     const lowerQuery = query.toLowerCase().trim();
 
     if (!lowerQuery) {
-        renderTable(allPrescriptions);
+        renderTable(activePrescriptions);
         return;
     }
 
-    const filtered = allPrescriptions.filter(item => {
+    const filtered = activePrescriptions.filter(item => {
         const fullName = (item.clientFirstName + ' ' + item.clientLastName).toLowerCase();
         const id = String(item.prescID);
 
@@ -82,7 +122,7 @@ function handleSearch(query) {
     renderTable(filtered);
 }
 
-async function openDetailsModal(prescID) {
+async function openDetailsModal(prescID, isHistory = false) {
     const modal = document.getElementById('prescription-details-modal');
     const body = document.getElementById('prescription-details-body');
 
@@ -101,8 +141,8 @@ async function openDetailsModal(prescID) {
             return;
         }
 
-        currentPrescriptionDetails = data;
-        renderDetailsContent(data, body);
+        currentPrescriptionDetails = { ...data, isHistory };
+        renderDetailsContent(currentPrescriptionDetails, body);
 
     } catch (error) {
         console.error(error);
@@ -133,12 +173,13 @@ function renderDetailsContent(data, container) {
 
         data.medicines.forEach(med => {
             const remaining = med.amountRemaining === null ? 'Unlimited' : med.amountRemaining;
-            const isClickable = (remaining === 'Unlimited' || remaining > 0);
+            const isClickable = !data.isHistory && (remaining === 'Unlimited' || remaining > 0);
+            const clickAttr = isClickable
+                ? `onclick="openPurchaseModal('${med.medID}', '${escapeHtml(med.medicineName || '')}', ${med.amountRemaining}, '${data.prescID}')"`
+                : '';
 
             medicinesHtml += `
-                <tr class="${isClickable ? 'clickable-medicine' : 'disabled-medicine'}" 
-                    onclick="if(${isClickable}) openPurchaseModal('${med.medID}', '${escapeHtml(med.medicineName || '')}', ${med.amountRemaining}, '${data.prescID}')">
-                    
+                <tr class="${isClickable ? 'clickable-medicine' : 'disabled-medicine'}" ${clickAttr}>
                     <td>${escapeHtml(med.medicineName || 'Unknown')}</td>
                     <td>${escapeHtml(med.dosage || 'N/A')}</td>
                     <td>${remaining}</td>
@@ -151,6 +192,118 @@ function renderDetailsContent(data, container) {
     medicinesHtml += '</div>';
 
     container.innerHTML = infoHtml + medicinesHtml;
+}
+
+function setupTabs() {
+    const activeTabBtn = document.getElementById('tab-active-prescriptions');
+    const historyTabBtn = document.getElementById('tab-history');
+    const activeSection = document.getElementById('active-prescriptions-section');
+    const historySection = document.getElementById('history-prescriptions-section');
+
+    if (!activeTabBtn || !historyTabBtn || !activeSection || !historySection) {
+        return;
+    }
+
+    const activateActive = () => {
+        activeTabBtn.classList.add('btn-primary');
+        activeTabBtn.classList.remove('btn-secondary');
+        historyTabBtn.classList.add('btn-secondary');
+        historyTabBtn.classList.remove('btn-primary');
+
+        activeSection.style.display = '';
+        historySection.style.display = 'none';
+    };
+
+    const activateHistory = () => {
+        activeTabBtn.classList.add('btn-secondary');
+        activeTabBtn.classList.remove('btn-primary');
+        historyTabBtn.classList.add('btn-primary');
+        historyTabBtn.classList.remove('btn-secondary');
+
+        activeSection.style.display = 'none';
+        historySection.style.display = '';
+
+        // Ensure history table is rendered with current filter
+        const filterSelect = document.getElementById('history-filter');
+        const value = filterSelect ? filterSelect.value : 'all';
+        renderHistoryTable(getFilteredHistory(value));
+    };
+
+    activeTabBtn.addEventListener('click', activateActive);
+    historyTabBtn.addEventListener('click', activateHistory);
+
+    // Default: Active tab
+    activateActive();
+}
+
+function setupHistoryFilter() {
+    const filterSelect = document.getElementById('history-filter');
+    if (!filterSelect) return;
+
+    filterSelect.addEventListener('change', () => {
+        const value = filterSelect.value || 'all';
+        renderHistoryTable(getFilteredHistory(value));
+    });
+}
+
+function getFilteredHistory(filterValue) {
+    const value = (filterValue || 'all');
+
+    if (!Array.isArray(historyPrescriptions) || historyPrescriptions.length === 0) {
+        return [];
+    }
+
+    if (value === 'expired') {
+        return historyPrescriptions.filter(item => Number(item.isExpired) === 1);
+    }
+    if (value === 'fully-dispensed') {
+        return historyPrescriptions.filter(item => Number(item.isFullyDispensed) === 1);
+    }
+
+    // Default: all history (expired OR fully dispensed)
+    return historyPrescriptions;
+}
+
+function renderHistoryTable(list) {
+    const container = document.getElementById('history-table-body');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (!list || list.length === 0) {
+        container.innerHTML = '<tr><td colspan="5" class="muted-text" style="text-align:center; padding:24px;">No history prescriptions found.</td></tr>';
+        return;
+    }
+
+    list.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.onclick = () => openDetailsModal(item.prescID, true);
+
+        let statusLabel = '';
+        const isExpired = Number(item.isExpired) === 1;
+        const isFullyDispensed = Number(item.isFullyDispensed) === 1;
+
+        if (isExpired && isFullyDispensed) {
+            statusLabel = 'Expired & Fully Dispensed';
+        } else if (isExpired) {
+            statusLabel = 'Expired';
+        } else if (isFullyDispensed) {
+            statusLabel = 'Fully Dispensed';
+        } else {
+            statusLabel = '';
+        }
+
+        tr.innerHTML = `
+            <td>#${item.prescID}</td>
+            <td>${escapeHtml(item.clientFirstName)} ${escapeHtml(item.clientLastName)}</td>
+            <td>${formatDate(item.dateGiven)}</td>
+            <td>${formatDate(item.dateExpiry)}</td>
+            <td>${escapeHtml(statusLabel)}</td>
+        `;
+
+        container.appendChild(tr);
+    });
 }
 
 function openPurchaseModal(medID, medName, remaining, prescID) {

@@ -45,32 +45,81 @@
 
     <section class="item main-content">
       <div class="page-title-bar">
-        <h2 class="page-title">All Client Prescriptions</h2>
+        <h2 class="page-title">Client Prescriptions</h2>
         <div class="title-actions">
           <a href="./dashboard.php" class="btn" title="Back to Dashboard">Back</a>
         </div>
       </div>
-      
+
+      <!-- Tab Switcher -->
       <div class="card">
-        <?php include '../../includes/search-bar.php'; ?>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button id="tab-active-prescriptions" class="btn btn-primary">
+            Active Prescriptions
+          </button>
+          <button id="tab-history" class="btn btn-secondary">
+            History
+          </button>
+        </div>
       </div>
-      
-      <div class="card">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Client Name</th>
-              <th>Date Given</th>
-              <th>Date Expiry</th>
-            </tr>
-          </thead>
-          <tbody id="prescription-table-body">
-            <tr>
-              <td colspan="3" style="text-align: center; padding: 24px; color: #64748b;">Loading prescriptions...</td>
-            </tr>
-          </tbody>
-        </table>
+
+      <!-- Active Prescriptions Section -->
+      <div id="active-prescriptions-section">
+        <div class="card">
+          <?php include '../../includes/search-bar.php'; ?>
+        </div>
+        
+        <div class="card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Client Name</th>
+                <th>Date Given</th>
+                <th>Date Expiry</th>
+              </tr>
+            </thead>
+            <tbody id="prescription-table-body">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 24px; color: #64748b;">Loading prescriptions...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- History Section (Read-only) -->
+      <div id="history-prescriptions-section" style="display:none;">
+        <div class="card">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <label for="history-filter"><strong>History Filter:</strong></label>
+            <select id="history-filter" class="form-control" style="max-width:280px;">
+              <option value="all">All (Expired &amp; Fully Dispensed)</option>
+              <option value="expired">Expired Prescriptions</option>
+              <option value="fully-dispensed">Fully Dispensed Prescriptions</option>
+            </select>
+            <span class="muted-text">History is read-only and for audit/reference only.</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Client Name</th>
+                <th>Date Given</th>
+                <th>Date Expiry</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 24px; color: #64748b;">Loading history...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Prescription Details Modal -->
